@@ -1,0 +1,28 @@
+# ============================================================
+#      DiME - Diagnóstico Integral de Métricas E-commerce
+#              Dependencias del proyecto (MVP)
+# ============================================================
+
+# --- FastAPI + Servidor ---
+fastapi==0.136.3
+uvicorn==0.48.0
+pydantic==2.13.4
+pydantic-settings==2.13.1
+
+# --- Base de datos PostgreSQL ---
+psycopg2-binary==2.9.10
+
+# --- Autenticación OAuth 2.0 (Mercado Libre) ---
+PyJWT[cryptography]==2.13.0
+
+# --- ETL y procesamiento de datos ---
+pandas==2.2.3
+numpy==1.26.4
+python-dotenv==1.2.2
+
+# --- Cliente HTTP (API Mercado Libre) ---
+httpx==0.28.1
+
+# --- Testing ---
+pytest==9.0.3
+pytest-cov==6.1.0
