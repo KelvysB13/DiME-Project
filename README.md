@@ -1,5 +1,9 @@
 # 📊 DiME - Diagnóstico Integral de Métricas E-commerce
 
+<p align="center">
+  <img src="backend/assets/img/DiME_banner.svg" alt="DiME Banner" width="100%">
+</p>
+
 <div align="center">
 
 <a href="https://www.python.org/downloads/release/python-3129/">
