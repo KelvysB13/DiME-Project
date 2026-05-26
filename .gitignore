@@ -1,0 +1,53 @@
+# ============================================================
+#      CARPETAS O ARCHIVOS QUE NO SE SUBEN AL REPOSITORIO
+# ============================================================
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+*.egg
+
+# Entornos virtuales
+.venv/
+.venv*/
+venv/
+venv*/
+env/
+env*/
+virtualenv/
+virtualenvs/
+.myenv/
+myenv/
+pyenv/
+
+# Environment
+.env
+*.env.local
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+Thumbs.db
+.DS_Store
+
+# Data
+data/processed/*
+!data/processed/.gitkeep
+
+# Assets - user uploads (keep directory, ignore contents)
+backend/assets/uploads/*
+!backend/assets/uploads/.gitkeep
+
+# Docker
+docker-data/
+
+# Logs
+*.log
+logs/

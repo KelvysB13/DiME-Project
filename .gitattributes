@@ -1,0 +1,28 @@
+# ============================================================
+#    ATRIBUTOS DE GIT — LINGUIST (BARRA DE LENGUAJES)
+# ============================================================
+
+# --- Documentación (excluida de estadísticas de lenguaje) ---
+*.md            linguist-documentation=true
+docs/*          linguist-documentation=true
+README.md       linguist-documentation=true
+
+# --- Assets estáticos (imágenes, fuentes, estilos) ---
+backend/assets/img/*   linguist-documentation=true
+backend/assets/fonts/* linguist-documentation=true
+backend/assets/css/*   linguist-documentation=true
+backend/assets/js/*    linguist-documentation=true
+
+# --- Archivos de configuración del proyecto ---
+.env.example    linguist-documentation=true
+.gitignore      linguist-documentation=true
+.gitattributes  linguist-documentation=true
+LICENSE         linguist-documentation=true
+requirements.txt linguist-documentation=true
+
+# --- Lenguajes detectables en la barra (máx. 5 tipos) ---
+# Python      → backend/app/**
+# SQL         → scripts/sql/**
+# YAML        → scripts/docker/**/*.yml
+# Dockerfile  → scripts/docker/**/Dockerfile*
+# CSV         → data/raw/**/*.csv
