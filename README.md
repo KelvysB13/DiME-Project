@@ -1,10 +1,34 @@
-# 📊 DiME - Diagnóstico Integral de Métricas E-commerce
-
-<p align="center">
-  <img src="backend/assets/img/DiME_banner.svg" alt="DiME Banner" width="100%">
-</p>
+<style>
+.typing-wrapper {
+  display: inline-block;
+  overflow: hidden;
+  white-space: nowrap;
+  max-width: 0;
+  animation: typing 4s steps(52, end) forwards;
+}
+@keyframes typing {
+  from { max-width: 0; }
+  to { max-width: 100%; }
+}
+.cursor {
+  display: inline-block;
+  width: 3px;
+  height: 1em;
+  background: #e94560;
+  margin-left: 2px;
+  animation: blink 0.75s step-end infinite;
+  vertical-align: text-bottom;
+}
+@keyframes blink {
+  50% { opacity: 0; }
+}
+</style>
 
 <div align="center">
+
+<h1>
+  <span class="typing-wrapper">📊 DiME - Diagnóstico Integral de Métricas E-commerce</span><span class="cursor"></span>
+</h1>
 
 <a href="https://fastapi.tiangolo.com/">
     <img src="https://img.shields.io/badge/FastAPI-0.136.3-green?logo=fastapi" alt="FastAPI 0.136.3">
@@ -20,6 +44,10 @@
 </a>
 
 **Sistema de diagnóstico automatizado para vendedores de Mercado Libre**
+
+<p align="center">
+  <img src="backend/assets/img/DiME_Banner.png" alt="DiME Banner" width="100%">
+</p>
 
 </div>
 
