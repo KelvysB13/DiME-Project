@@ -6,9 +6,6 @@
 
 <div align="center">
 
-<a href="https://www.python.org/downloads/release/python-3129/">
-    <img src="https://img.shields.io/badge/Python-3.12-blue?logo=python" alt="Python 3.12">
-</a>
 <a href="https://fastapi.tiangolo.com/">
     <img src="https://img.shields.io/badge/FastAPI-0.136.3-green?logo=fastapi" alt="FastAPI 0.136.3">
 </a>
@@ -92,16 +89,16 @@
 ```text
 DiME-Project/
 │
-├── 📁 backend/                  # API FastAPI
+├── 📁 backend/                 # API - FastAPI
 │   └── 📁 app/
 │       ├── ⚙️ main.py          # Punto de entrada
 │       ├── ⚙️ config.py        # Configuración (pydantic-settings)
-│       ├── ⚙️ database.py      # Conexión PostgreSQL (psycopg2)
+│       ├── ⚙️ database.py      # Conexión PostgreSQL
 │       │
 │       └── 📁 auth/            # Autenticación OAuth 2.0
-│           └── ⚙️ routes.py    # Endpoints /auth/ml/*
+│           └── ⚙️ routes.py    # Endpoints
 │
-├── 📁 scripts/                  # Utilidades
+├── 📁 scripts/                 # Utilidades
 │   ├── 📁 etl/                 # Scripts de carga de datos
 │   │   ├── ⚙️ cargar_datos_contingencia.py
 │   │   └── ⚙️ conexion_api_ml.py
@@ -109,7 +106,7 @@ DiME-Project/
 │   └── 📁 docker/              # Infraestructura
 │       └── ⚙️ docker-compose.yml
 │
-├── 📁 data/                     # Datos de contingencia
+├── 📁 data/                    # Datos de contingencia
 │   ├── 📁 raw/                 # CSVs de entrada
 │   └── 📁 processed/           # Datos transformados
 │
@@ -129,25 +126,3 @@ DiME-Project/
 ├── ⚙️ .gitignore               # Archivos ignorados por git
 └── 📄 README.md
 ```
-
----
-
-## 🛠️ Tecnologías
-
-| Tecnología | Versión | Propósito |
-|---|---|---|
-| Python | 3.12 | Lenguaje principal |
-| FastAPI | 0.136.3 | Backend mínimo (auth OAuth) |
-| PostgreSQL | 16 | Base de datos multi-tenant |
-| Metabase | Latest | Dashboards y visualización |
-| psycopg2-binary | 2.9.10 | Conexión a PostgreSQL |
-| pandas | 2.2.3 | Procesamiento ETL |
-| PyJWT | 2.13.0 | Autenticación OAuth |
-| Docker | Latest | Infraestructura local |
-| pytest | 9.0.3 | Testing |
-
----
-
-## 📄 Licencia
-
-Este proyecto está bajo la licencia **MIT**.
