@@ -1,6 +1,5 @@
 # ============================================================
-#      DiME - Diagnóstico Integral de Métricas E-commerce
-#              Dependencias del proyecto (MVP)
+#                 DEPENDENCIAS DEL PROYECTO
 # ============================================================
 
 # --- FastAPI + Servidor ---

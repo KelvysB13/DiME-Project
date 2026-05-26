@@ -41,10 +41,6 @@ Thumbs.db
 data/processed/*
 !data/processed/.gitkeep
 
-# Assets - user uploads (keep directory, ignore contents)
-backend/assets/uploads/*
-!backend/assets/uploads/.gitkeep
-
 # Docker
 docker-data/
 

@@ -1,5 +1,5 @@
 # ============================================================
-#    ATRIBUTOS DE GIT — LINGUIST (BARRA DE LENGUAJES)
+#      ATRIBUTOS DE GIT — LINGUIST (BARRA DE LENGUAJES)
 # ============================================================
 
 # --- Documentación (excluida de estadísticas de lenguaje) ---
@@ -7,7 +7,7 @@
 docs/*          linguist-documentation=true
 README.md       linguist-documentation=true
 
-# --- Assets estáticos (imágenes, fuentes, estilos) ---
+# --- Assets estáticos ---
 backend/assets/images/*   linguist-documentation=true
 
 # --- Archivos de configuración del proyecto ---
