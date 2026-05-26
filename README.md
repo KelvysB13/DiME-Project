@@ -1,34 +1,14 @@
-<style>
-.typing-wrapper {
-  display: inline-block;
-  overflow: hidden;
-  white-space: nowrap;
-  max-width: 0;
-  animation: typing 4s steps(52, end) forwards;
-}
-@keyframes typing {
-  from { max-width: 0; }
-  to { max-width: 100%; }
-}
-.cursor {
-  display: inline-block;
-  width: 3px;
-  height: 1em;
-  background: #e94560;
-  margin-left: 2px;
-  animation: blink 0.75s step-end infinite;
-  vertical-align: text-bottom;
-}
-@keyframes blink {
-  50% { opacity: 0; }
-}
-</style>
-
 <div align="center">
 
-<h1>
-  <span class="typing-wrapper">📊 DiME - Diagnóstico Integral de Métricas E-commerce</span><span class="cursor"></span>
-</h1>
+<p align="center">
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=700&size=28&duration=3500&pause=2000&color=FFFFFF&center=true&vCenter=true&width=700&height=60&lines=%F0%9F%93%8A+DiME+-+Diagn%C3%B3stico+Integral+de+M%C3%A9tricas+E-commerce" alt="Typing animation">
+</p>
+
+<p align="center">
+  <img src="backend/assets/img/DiME_Banner.png" alt="DiME Banner" width="100%">
+</p>
+
+**Sistema de diagnóstico automatizado para vendedores de Mercado Libre**
 
 <a href="https://fastapi.tiangolo.com/">
     <img src="https://img.shields.io/badge/FastAPI-0.136.3-green?logo=fastapi" alt="FastAPI 0.136.3">
@@ -42,12 +22,6 @@
 <a href="#">
     <img src="https://img.shields.io/badge/Status-En%20Desarrollo-yellow" alt="Estado: En Desarrollo">
 </a>
-
-**Sistema de diagnóstico automatizado para vendedores de Mercado Libre**
-
-<p align="center">
-  <img src="backend/assets/img/DiME_Banner.png" alt="DiME Banner" width="100%">
-</p>
 
 </div>
 
