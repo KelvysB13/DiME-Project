@@ -8,10 +8,7 @@ docs/*          linguist-documentation=true
 README.md       linguist-documentation=true
 
 # --- Assets estáticos (imágenes, fuentes, estilos) ---
-backend/assets/img/*   linguist-documentation=true
-backend/assets/fonts/* linguist-documentation=true
-backend/assets/css/*   linguist-documentation=true
-backend/assets/js/*    linguist-documentation=true
+backend/assets/images/*   linguist-documentation=true
 
 # --- Archivos de configuración del proyecto ---
 .env.example    linguist-documentation=true
@@ -20,7 +17,7 @@ backend/assets/js/*    linguist-documentation=true
 LICENSE         linguist-documentation=true
 requirements.txt linguist-documentation=true
 
-# --- Lenguajes detectables en la barra (máx. 5 tipos) ---
+# --- Lenguajes detectables en la barra ---
 # Python      → backend/app/**
 # SQL         → scripts/sql/**
 # YAML        → scripts/docker/**/*.yml
