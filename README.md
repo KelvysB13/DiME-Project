@@ -8,7 +8,7 @@
   <img src="backend/assets/img/DiME_Banner.png" alt="DiME Banner" width="100%">
 </p>
 
-**Sistema de diagnóstico automatizado para vendedores de Mercado Libre**
+**Sistema de Diagnóstico Automatizado para Vendedores de Mercado Libre**
 
 <a href="https://fastapi.tiangolo.com/">
     <img src="https://img.shields.io/badge/FastAPI-0.136.3-green?logo=fastapi" alt="FastAPI 0.136.3">
@@ -59,7 +59,6 @@
     ```text
     cp .env.example .env
     ```
-    Editar `.env` con tus credenciales.
 
 4. **Levantar infraestructura con Docker:**
     ```text
@@ -73,12 +72,7 @@
     uvicorn app.main:app --reload
     ```
 
-6. **Cargar datos de contingencia (opcional):**
-    ```text
-    python scripts/etl/cargar_datos_contingencia.py
-    ```
-
-7. **Ejecutar tests:**
+6. **Ejecutar tests:**
     ```text
     cd backend
     pytest ../tests
