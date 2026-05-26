@@ -86,13 +86,16 @@
 DiME-Project/
 │
 ├── 📁 backend/                 # API - FastAPI
-│   └── 📁 app/
-│       ├── ⚙️ main.py          # Punto de entrada
-│       ├── ⚙️ config.py        # Configuración (pydantic-settings)
-│       ├── ⚙️ database.py      # Conexión PostgreSQL
-│       │
-│       └── 📁 auth/            # Autenticación OAuth 2.0
-│           └── ⚙️ routes.py    # Endpoints
+│   ├── 📁 app/
+│   │   ├── ⚙️ main.py          # Punto de entrada
+│   │   ├── ⚙️ config.py        # Configuración (pydantic-settings)
+│   │   ├── ⚙️ database.py      # Conexión PostgreSQL
+│   │   │
+│   │   └── 📁 auth/            # Autenticación OAuth 2.0
+│   │       └── ⚙️ routes.py    # Endpoints
+│   │
+│   └── 📁 assets/              # Recursos visuales
+│       └── 📁 images/          # Imagenes
 │
 ├── 📁 scripts/                 # Utilidades
 │   ├── 📁 etl/                 # Scripts de carga de datos
