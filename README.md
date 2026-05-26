@@ -125,25 +125,3 @@ DiME-Project/
 ├── ⚙️ .gitignore               # Archivos ignorados por git
 └── 📄 README.md
 ```
-
----
-
-## 🛠️ Tecnologías
-
-| Tecnología | Versión | Propósito |
-|---|---|---|
-| Python | 3.12 | Lenguaje principal |
-| FastAPI | 0.136.3 | Backend mínimo (auth OAuth) |
-| PostgreSQL | 16 | Base de datos multi-tenant |
-| Metabase | Latest | Dashboards y visualización |
-| psycopg2-binary | 2.9.10 | Conexión a PostgreSQL |
-| pandas | 2.2.3 | Procesamiento ETL |
-| PyJWT | 2.13.0 | Autenticación OAuth |
-| Docker | Latest | Infraestructura local |
-| pytest | 9.0.3 | Testing |
-
----
-
-## 📄 Licencia
-
-Este proyecto está bajo la licencia **MIT**.
