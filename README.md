@@ -60,13 +60,7 @@
     cp .env.example .env
     ```
 
-4. **Levantar infraestructura con Docker:**
-    ```text
-    cd scripts/docker
-    docker compose up -d
-    ```
-
-5. **Iniciar el backend:**
+4. **Iniciar el backend:**
     ```text
     cd backend
     uvicorn app.main:app --reload
@@ -74,8 +68,7 @@
 
 6. **Ejecutar tests:**
     ```text
-    cd backend
-    pytest ../tests
+    pytest tests -v
     ```
 
 ---
