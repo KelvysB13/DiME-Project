@@ -91,12 +91,11 @@ DiME-Project/
 │       └── 📁 images/          # Imagenes
 │
 ├── 📁 scripts/                 # Utilidades
-│   ├── 📁 etl/                 # Scripts de carga de datos
-│   │   ├── ⚙️ cargar_datos_contingencia.py
-│   │   └── ⚙️ conexion_api_ml.py
-│   │
-│   └── 📁 docker/              # Infraestructura
-│       └── ⚙️ docker-compose.yml
+│   └── 📁 etl/                 # Scripts de carga de datos
+│       │ 
+│       ├── ⚙️ cargar_datos_contingencia.py
+│       └── ⚙️ conexion_api_ml.py
+│ 
 │
 ├── 📁 data/                    # Datos de contingencia
 │   ├── 📁 raw/                 # CSVs de entrada
