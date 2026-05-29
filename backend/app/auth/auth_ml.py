@@ -1,27 +1,31 @@
-from fastapi import APIRouter, Request
+from fastapi import APIRouter
 from httpx import AsyncClient
-from app.config import settings
+from app.core.config import settings
 
 router = APIRouter()
 
 ML_AUTH_URL = "https://auth.mercadolibre.com.ar/authorization"
 ML_TOKEN_URL = "https://api.mercadolibre.com/oauth/token"
 
-
+# --- Autenticación con Mercado Libre ---
 @router.get("/ml/login")
 async def ml_login():
+
     params = {
         "client_id": settings.ml_client_id,
         "response_type": "code",
         "redirect_uri": settings.ml_redirect_uri,
     }
+
     url = f"{ML_AUTH_URL}?client_id={params['client_id']}&response_type=code&redirect_uri={params['redirect_uri']}"
     return {"auth_url": url}
 
-
+# --- Callback de autenticación ---
 @router.get("/ml/callback")
 async def ml_callback(code: str):
+
     async with AsyncClient() as client:
+
         data = {
             "grant_type": "authorization_code",
             "client_id": settings.ml_client_id,
@@ -29,5 +33,6 @@ async def ml_callback(code: str):
             "code": code,
             "redirect_uri": settings.ml_redirect_uri,
         }
+
         resp = await client.post(ML_TOKEN_URL, data=data)
         return resp.json()

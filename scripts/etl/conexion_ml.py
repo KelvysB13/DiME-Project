@@ -1,13 +1,3 @@
-"""
-DiME - Conexion con API de Mercado Libre
-
-Obtiene datos reales desde la API de Mercado Libre usando OAuth 2.0
-y los almacena en PostgreSQL local.
-
-Uso:
-    python conexion_api_ml.py --access_token TOKEN --client_id 1
-"""
-
 import argparse
 from pathlib import Path
 

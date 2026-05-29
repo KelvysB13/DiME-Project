@@ -47,32 +47,17 @@
 | Herramienta | Version | Descarga |
 |-------------|---------|----------|
 | Python | 3.12+ | [python.org](https://www.python.org/downloads/) |
-| PostgreSQL | 16 | [postgresql.org](https://www.postgresql.org/download/) |
+| PostgreSQL | 16+ | [postgresql.org](https://www.postgresql.org/download/) |
 | Java (JRE) | 17+ | [adoptium.net](https://adoptium.net/) |
 
 ### 1. Configurar PostgreSQL
 
-1. Instala PostgreSQL 16 y crea el usuario y las bases de datos:
-
-```bash
-# Accede a psql como superusuario (el comando puede variar segun el SO)
-psql -U postgres
-
-CREATE USER dime_user WITH PASSWORD 'dime_pass_2026';
-CREATE DATABASE dime_maestra WITH OWNER dime_user;
-CREATE DATABASE dime_metabase WITH OWNER dime_user;
-CREATE DATABASE dime_cliente_1 WITH OWNER dime_user;
-CREATE DATABASE dime_cliente_2 WITH OWNER dime_user;
-CREATE DATABASE dime_cliente_3 WITH OWNER dime_user;
-\q
-```
-
-2. Ejecuta los scripts SQL de inicializacion en orden:
-
-```bash
-psql -U dime_user -d dime_maestra -f scripts/sql/init/02-schema-maestra.sql
-psql -U dime_user -d dime_cliente_1 -f scripts/sql/init/03-schema-cliente.sql
-```
+1. Descarga PostgreSQL 16+ desde [postgresql.org](https://www.postgresql.org/download/).
+2. Instala PostgreSQL siguiendo las indicaciones en su documentación oficial.
+3. Crear servidor personalizado.
+4. Crear usuario administrador.
+5. Crear base de datos.
+6. Importar scripts SQL.
 
 ### 2. Configurar Metabase
 
@@ -82,7 +67,7 @@ psql -U dime_user -d dime_cliente_1 -f scripts/sql/init/03-schema-cliente.sql
 java -jar metabase.jar
 ```
 
-2. Abre http://localhost:3000, completa la configuracion inicial y conectalo a la base `dime_maestra` con credenciales `dime_user` / `dime_pass_2026`.
+2. Abre http://localhost:3000, completa la configuracion inicial y conectalo a la base de datos maestra.
 
 ### 3. Configurar variables de entorno
 
@@ -97,7 +82,7 @@ cp .env.example .env
 pip install -r requirements.txt
 ```
 
-### 5. Iniciar el backend
+### 5. Iniciar el servidor
 
 ```bash
 cd backend
@@ -116,7 +101,7 @@ uvicorn app.main:app --reload
 ### 7. Cargar datos de contingencia (opcional)
 
 ```bash
-python scripts/etl/cargar_datos_contingencia.py
+python scripts/etl/carga_datos.py
 ```
 
 ### 8. Ejecutar tests
@@ -131,45 +116,48 @@ pytest tests -v
 
 ```text
 DiME-Project/
-|
-+--- backend/                 # API - FastAPI
-|   +--- app/
-|   |   +--- main.py          # Punto de entrada
-|   |   +--- config.py        # Configuracion (pydantic-settings)
-|   |   +--- database.py      # Conexion PostgreSQL
-|   |   |
-|   |   +--- auth/            # Autenticacion OAuth 2.0
-|   |       +--- routes.py    # Endpoints
-|   |
-|   +--- assets/              # Recursos visuales
-|       +--- img/
-|
-+--- scripts/                 # Utilidades
-|   +--- etl/                 # Scripts de carga de datos
-|   |   +--- cargar_datos_contingencia.py
-|   |   +--- conexion_api_ml.py
-|   +--- sql/init/            # Inicializacion de base de datos
-|       +--- 01-create-databases.sql
-|       +--- 02-schema-maestra.sql
-|       +--- 03-schema-cliente.sql
-|
-+--- data/                    # Datos de contingencia
-|   +--- raw/                 # CSVs de entrada
-|   +--- processed/           # Datos transformados
-|
-+--- docs/                    # Documentacion
-|   +--- diagrama_er.md
-|   +--- plan_contingencia.md
-|
-+--- tests/                   # Tests unitarios
-|   +--- test_api.py
-|   +--- test_database.py
-|   +--- test_etl.py
-|
-+--- metabase/                # Exportacion de dashboards
-|
-+--- requirements.txt         # Dependencias del proyecto
-+--- .env.example             # Template de variables de entorno
-+--- .gitignore               # Archivos ignorados por git
-+--- README.md
+│
+├── 🖥️ backend/                    # API - FastAPI
+│   │
+│   └── app/
+│       │
+│       ├── 🧠 core/               # Nucleo de la aplicacion
+│       │   ├── config.py           
+│       │   └── database.py 
+│       │ 
+│       ├── 🔐 auth/               # Autenticacion OAuth 2.0
+│       │   └── auth_ml.py
+│       │
+│       ├── api_router.py           # Centralizador de rutas
+│       └── main.py                 # Punto de entrada FastAPI
+│
+├── 📊 data/                        # Datos de contingencia
+│   │
+│   ├── raw/
+│   └── processed/
+│
+├── 📚 docs/                        # Documentacion
+│   │
+│   └── plan_contingencia.md        # Plan de contingencia
+│
+├── 📈 metabase/                    # Exportacion de dashboards
+│
+├── 📜 scripts/                     # Utilidades
+│   │
+│   └── etl/
+│       ├── carga_datos.py          # Carga de CSVs a PostgreSQL
+│       └── conexion_ml.py          # ETL desde API de Mercado Libre
+│
+├── 🧪 tests/                      # Tests unitarios (pytest)
+│   │
+│   ├── pytest.ini                  # Configuracion de pytest
+│   ├── test_api.py                 # Tests de endpoints
+│   ├── test_database.py            # Tests de base de datos
+│   └── test_etl.py                 # Tests de ETL/CSV
+│
+├── 📦 requirements.txt             # Dependencias del proyecto
+├── 🔒 .env.example                 # Template de variables de entorno
+├── 🙈 .gitignore                  # Archivos ignorados por git
+│
+└── 📖 README.md                   # Este archivo.
 ```

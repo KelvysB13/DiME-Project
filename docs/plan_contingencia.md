@@ -8,8 +8,8 @@
 
 ## Escenario B: No hay tiempo o falla la integracion con API
 - Se utiliza un dataset de contingencia en formato CSV.
-- Gabriela prepara los CSV con datos realistas.
-- Kelvys ejecuta `scripts/etl/cargar_datos_contingencia.py` para insertar en PostgreSQL local.
+- Se preparan los CSV con datos realistas.
+- Se ejecuta `scripts/etl/carga_datos.py` para insertar en PostgreSQL local.
 - Se documenta explicitamente que el sistema esta disenado para recibir la API.
 
 ## Dataset de Contingencia

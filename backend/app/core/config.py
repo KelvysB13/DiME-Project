@@ -1,9 +1,12 @@
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
+    
+    database_url: str = "postgresql://dime_admin:DiME2K26_$@localhost:5432/dime_maestra"
+
     app_host: str = "0.0.0.0"
     app_port: int = 8000
-    app_secret_key: str = "supersecretkey_change_in_production"
+    app_secret_key: str = "supersecretkey_DiME_2026_change_in_production"
     app_debug: bool = True
 
     ml_client_id: str = ""
