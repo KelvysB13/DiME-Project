@@ -1,8 +1,8 @@
 """
-DiME - Conexión con API de Mercado Libre
+DiME - Conexion con API de Mercado Libre
 
 Obtiene datos reales desde la API de Mercado Libre usando OAuth 2.0
-y los almacena en PostgreSQL.
+y los almacena en PostgreSQL local.
 
 Uso:
     python conexion_api_ml.py --access_token TOKEN --client_id 1
@@ -21,7 +21,7 @@ load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent.parent / ".env")
 DATABASE_URL = os.getenv("DATABASE_URL")
 
 if not DATABASE_URL:
-    raise ValueError("DATABASE_URL no está definida en el archivo .env")
+    raise ValueError("DATABASE_URL no esta definida en el archivo .env")
 
 ML_API_BASE = "https://api.mercadolibre.com"
 
@@ -66,12 +66,12 @@ def main():
     item_ids = get_items(args.access_token, str(user["id"]))
     print(f"Publicaciones encontradas: {len(item_ids)}")
 
-    db_url = DATABASE_URL.replace("/postgres", f"/{args.client_db}")
+    db_url = DATABASE_URL.rsplit("/", 1)[0] + f"/{args.client_db}"
     engine = create_engine(db_url)
 
     for item_id in item_ids[:10]:
         detail = get_item_details(args.access_token, item_id)
-        print(f"  - {detail.get('title', 'Sin título')} | ${detail.get('price', 0)}")
+        print(f"  - {detail.get('title', 'Sin titulo')} | ${detail.get('price', 0)}")
 
     engine.dispose()
 

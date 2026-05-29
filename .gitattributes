@@ -20,6 +20,4 @@ requirements.txt linguist-documentation=true
 # --- Lenguajes detectables en la barra ---
 # Python      → backend/app/**
 # SQL         → scripts/sql/**
-# YAML        → scripts/docker/**/*.yml
-# Dockerfile  → scripts/docker/**/Dockerfile*
 # CSV         → data/raw/**/*.csv

@@ -1,16 +1,16 @@
 # Plan de Contingencia - API Mercado Libre
 
-## Escenario A: Conexión exitosa con API de ML
+## Escenario A: Conexion exitosa con API de ML
 - Se implementa OAuth 2.0 con FastAPI.
 - Se obtienen datos reales de una cuenta sandbox.
 - Los datos se almacenan en las tablas correspondientes por cliente.
-- Metabase muestra datos en vivo.
+- Metabase (http://localhost:3000) muestra datos en vivo.
 
-## Escenario B: No hay tiempo o falla la integración con API
+## Escenario B: No hay tiempo o falla la integracion con API
 - Se utiliza un dataset de contingencia en formato CSV.
 - Gabriela prepara los CSV con datos realistas.
-- Kelvys ejecuta `scripts/etl/cargar_datos_contingencia.py` para insertar en PostgreSQL.
-- Se documenta explícitamente que el sistema está diseñado para recibir la API.
+- Kelvys ejecuta `scripts/etl/cargar_datos_contingencia.py` para insertar en PostgreSQL local.
+- Se documenta explicitamente que el sistema esta disenado para recibir la API.
 
 ## Dataset de Contingencia
 | Archivo CSV | Tabla Destino | Registros |
@@ -21,3 +21,10 @@
 | `reputacion_mock.csv` | `metricas_reputacion` | 6 meses |
 | `envios_mock.csv` | `metricas_envios` | 200 por cliente |
 | `stock_mock.csv` | `metricas_stock` | 50 por cliente |
+
+## Infraestructura Local
+- **PostgreSQL 16**: `localhost:5432`
+- **Metabase**: `http://localhost:3000`
+- **Backend FastAPI**: `http://localhost:8000`
+- La base maestra `dime_maestra` y las bases de cliente `dime_cliente_X` se crean via los scripts en `scripts/sql/init/` o via script de contingencia.
+- Metabase usa su propia base `dime_metabase` en el mismo PostgreSQL.

@@ -11,15 +11,14 @@ def get_maestra_connection():
     if not DATABASE_URL:
         raise ValueError(
             "DATABASE_URL no está definida en el archivo .env. "
-            "Copia la cadena de conexión desde Supabase Dashboard -> Project Settings -> Database -> Connection string"
+            "Verifica que PostgreSQL esté corriendo y las credenciales sean correctas."
         )
     return psycopg2.connect(DATABASE_URL)
 
 def get_client_connection(db_name: str):
     if not DATABASE_URL:
         raise ValueError(
-            "DATABASE_URL no está definida en el archivo .env. "
-            "Copia la cadena de conexión desde Supabase Dashboard -> Project Settings -> Database -> Connection string"
+            "DATABASE_URL no está definida en el archivo .env."
         )
     return psycopg2.connect(DATABASE_URL, dbname=db_name)
 
