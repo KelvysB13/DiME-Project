@@ -9,13 +9,13 @@ pydantic==2.13.4
 pydantic-settings==2.13.1
 
 # --- Base de datos PostgreSQL ---
-psycopg2-binary==2.9.10
+psycopg2-binary==2.9.12
 
 # --- Autenticación OAuth 2.0 (Mercado Libre) ---
 PyJWT[cryptography]==2.13.0
 
 # --- ETL y procesamiento de datos ---
-pandas==2.2.3
+pandas==2.3.3
 numpy==1.26.4
 python-dotenv==1.2.2
 

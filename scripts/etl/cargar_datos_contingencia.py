@@ -10,28 +10,26 @@ Requisitos:
 """
 
 import os
+from pathlib import Path
+
 import pandas as pd
 import psycopg2
 from psycopg2.extras import execute_values
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent.parent / ".env")
 
-DB_HOST = os.getenv("DB_MAESTRA_HOST", "localhost")
-DB_PORT = os.getenv("DB_MAESTRA_PORT", "5432")
-DB_USER = os.getenv("DB_MAESTRA_USER", "postgres")
-DB_PASS = os.getenv("DB_MAESTRA_PASSWORD", "changeme")
-DB_NAME = os.getenv("DB_MAESTRA_NAME", "dime_maestra")
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL no está definida en el archivo .env")
 
 DATA_DIR = os.path.join(os.path.dirname(__file__), "..", "..", "data", "raw")
 CLIENTES_CSV = os.path.join(DATA_DIR, "clientes_mock.csv")
 
 
 def conectar_bd(db_name: str):
-    return psycopg2.connect(
-        host=DB_HOST, port=DB_PORT, dbname=db_name,
-        user=DB_USER, password=DB_PASS,
-    )
+    return psycopg2.connect(DATABASE_URL, dbname=db_name)
 
 
 def crear_bd_si_no_existe(conn, db_name: str):

@@ -1,13 +1,10 @@
 import pytest
-import psycopg2
+from app.database import get_maestra_connection
 
 
 @pytest.fixture
 def conn():
-    c = psycopg2.connect(
-        host="localhost", port=5432, dbname="dime_maestra",
-        user="postgres", password="changeme",
-    )
+    c = get_maestra_connection()
     yield c
     c.close()
 

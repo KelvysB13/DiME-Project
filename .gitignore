@@ -41,9 +41,6 @@ Thumbs.db
 data/processed/*
 !data/processed/.gitkeep
 
-# Docker
-docker-data/
-
 # Logs
 *.log
 logs/

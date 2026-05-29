@@ -9,18 +9,21 @@ Uso:
 """
 
 import argparse
+from pathlib import Path
+
 import requests
 from sqlalchemy import create_engine
 import os
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(dotenv_path=Path(__file__).resolve().parent.parent.parent / ".env")
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise ValueError("DATABASE_URL no está definida en el archivo .env")
 
 ML_API_BASE = "https://api.mercadolibre.com"
-DB_HOST = os.getenv("DB_CLIENT_HOST", "localhost")
-DB_PORT = os.getenv("DB_CLIENT_PORT", "5432")
-DB_USER = os.getenv("DB_CLIENT_USER", "postgres")
-DB_PASS = os.getenv("DB_CLIENT_PASSWORD", "changeme")
 
 
 def get_user_info(access_token: str) -> dict:
@@ -63,7 +66,7 @@ def main():
     item_ids = get_items(args.access_token, str(user["id"]))
     print(f"Publicaciones encontradas: {len(item_ids)}")
 
-    db_url = f"postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{args.client_db}"
+    db_url = DATABASE_URL.replace("/postgres", f"/{args.client_db}")
     engine = create_engine(db_url)
 
     for item_id in item_ids[:10]:
