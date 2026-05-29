@@ -46,9 +46,8 @@
 
 | Herramienta | Versión | Descarga |
 |-------------|---------|----------|
-| Python | 3.11+ | [python.org](https://www.python.org/downloads/) |
+| Python | 3.12+ | [python.org](https://www.python.org/downloads/) |
 | Java (JRE) | 17+ | [adoptium.net](https://adoptium.net/) |
-| Git | Última | [git-scm.com](https://git-scm.com/downloads) |
 
 ### 1. Clonar el repositorio
 
