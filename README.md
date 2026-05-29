@@ -27,11 +27,11 @@
 
 ---
 
-## Descripcion
+## 📖 Descripcion
 
 **DiME** es un sistema SaaS que automatiza el diagnostico estrategico de vendedores en Mercado Libre. Extrae datos mediante API (OAuth 2.0) y los transforma en KPIs claros, reportes analiticos y planes de accion concretos.
 
-### Areas de diagnostico
+### 🎯 Areas de diagnostico
 
 - **Comercial:** Maximiza ventas y posicionamiento.
 - **Finanzas:** Evalua rentabilidad y salud economica.
@@ -40,9 +40,9 @@
 
 ---
 
-## Instalacion y Uso
+## 🚀 Instalacion y Uso
 
-### Requisitos previos
+### 📋 Requisitos previos
 
 | Herramienta | Version | Descarga |
 |-------------|---------|----------|
@@ -50,16 +50,16 @@
 | PostgreSQL | 16+ | [postgresql.org](https://www.postgresql.org/download/) |
 | Java (JRE) | 17+ | [adoptium.net](https://adoptium.net/) |
 
-### 1. Configurar PostgreSQL
+### 🐘 1. Configurar PostgreSQL
 
 1. Descarga PostgreSQL 16+ desde [postgresql.org](https://www.postgresql.org/download/).
-2. Instala PostgreSQL siguiendo las indicaciones en su documentación oficial.
+2. Instala PostgreSQL siguiendo las indicaciones en su documentacion oficial.
 3. Crear servidor personalizado.
 4. Crear usuario administrador.
 5. Crear base de datos.
 6. Importar scripts SQL.
 
-### 2. Configurar Metabase
+### 📊 2. Configurar Metabase
 
 1. Descarga Metabase desde [metabase.com/start](https://www.metabase.com/start/) y ejecutalo:
 
@@ -69,27 +69,27 @@ java -jar metabase.jar
 
 2. Abre http://localhost:3000, completa la configuracion inicial y conectalo a la base de datos maestra.
 
-### 3. Configurar variables de entorno
+### 🔧 3. Configurar variables de entorno
 
 ```bash
 cp .env.example .env
 # Editar .env con las credenciales de tu PostgreSQL local
 ```
 
-### 4. Instalar dependencias
+### 📦 4. Instalar dependencias
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 5. Iniciar el servidor
+### ▶️ 5. Iniciar el servidor
 
 ```bash
 cd backend
 uvicorn app.main:app --reload
 ```
 
-### 6. Acceder a los servicios
+### 🌐 6. Acceder a los servicios
 
 | Servicio | URL |
 |----------|-----|
@@ -98,13 +98,13 @@ uvicorn app.main:app --reload
 | Metabase | http://localhost:3000 |
 | Health Check | http://localhost:8000/health |
 
-### 7. Cargar datos de contingencia (opcional)
+### 📥 7. Cargar datos de contingencia (opcional)
 
 ```bash
 python scripts/etl/carga_datos.py
 ```
 
-### 8. Ejecutar tests
+### ✅ 8. Ejecutar tests
 
 ```bash
 pytest tests -v
@@ -112,7 +112,7 @@ pytest tests -v
 
 ---
 
-## Estructura del Proyecto
+## 📁 Estructura del Proyecto
 
 ```text
 DiME-Project/
