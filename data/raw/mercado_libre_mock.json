@@ -13,26 +13,192 @@
       "type": "http",
       "documentation": "",
       "method": "get",
-      "endpoint": "users/me",
+      "endpoint": "users/vendedores",
       "responses": [
         {
-          "uuid": "853f17fc-8103-4d4e-be96-034eeff0421c",
-          "body": "{\r\n  \"id\": 123456789,\r\n  \"nickname\": \"DIME_VENDEDOR_TEST\",\r\n  \"email\": \"contacto@organizaciondime.com\",\r\n  \"site_id\": \"MLC\",\r\n  \"country_id\": \"CL\",\r\n  \"user_type\": \"regular\",\r\n  \"points\": 150,\r\n  \"site_status\": \"active\"\r\n}",
+          "uuid": "4c90047f-84ce-4147-a8a8-713a96f5b704",
+          "body": "{\"datos_basicos\": {\"id_vendedor\": 1, \"user_name\": \"TECNOHOGAR_AR\", \"nombre_tienda\": \"TecnoHogar Premium\", \"codigo_pais\": \"AR\", \"moneda_local\": \"ARS\", \"email\": \"ventas@tecnohogarpremium.com.ar\", \"tipo_plan\": \"Premium\", \"acces_token\": \"APP_USR-4587296103258746-060126-9f3a8b2c1d4e5f6a7b8c9d0e1f2a3b4c-185234697\", \"refresh_token\": \"TG-7c4d2e1f9a8b3c6d5e4f1a2b9c8d7e6f-185234697\", \"tiempo_token\": 21600, \"esta_activo\": true, \"fecha_creacion\": \"2018-03-15T00:00:00Z\"}, \"metricas_negocio\": {\"id_metricas_negocio\": 101, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"ventas_totales_periodo\": 4850, \"fecha_inicio_periodo\": \"2026-05-01\", \"fecha_final_periodo\": \"2026-05-31\", \"ventas_brutas_moneda_local\": 145500000.0, \"ventas_brutas_usd\": 111923.08, \"unidades_vendidas\": 4850, \"visitas_totales\": 285000, \"intencion_compra\": 11500, \"ventas_concretadas\": 4200, \"precio_promedio_unidad\": 30000.0, \"precio_promedio_venta\": 34642.86}, \"metricas_costo\": {\"id_metricas_costo\": 201, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"ventas_cobradas_total\": 145500000.0, \"neto_recibido\": 103305000.0, \"cargos_por_venta\": 21825000.0, \"costos_envio\": 8730000.0, \"inversion_ads\": 7275000.0, \"otros_cargos\": 1455000.0, \"cargos_envio_full\": 2910000.0, \"descuento_reputacion\": 0.0}, \"metricas_reputacion\": {\"id_metricas_reputacion\": 301, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"total_reclamos\": 8, \"total_mediaciones\": 0, \"total_canceladas\": 12, \"total_envios_incorrectos\": 1, \"nivel_reputacion\": \"green\", \"insignia\": \"mercado_lider_platinum\"}, \"metricas_stock_full\": {\"id_metricas_stock\": 401, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"espacios_p_asignados\": 320, \"espacios_g_asignados\": 85, \"productos_no_aptos_venta\": 0, \"productos_sin_rotacion\": 2, \"productos_antiguedad\": 3, \"productos_exceso_proyeccion\": 0}, \"metricas_mi_pagina\": {\"id_metricas_pagina\": 501, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"tiene_banner\": true, \"tiene_logo\": true, \"puntaje_calidad\": 98, \"tiene_carruseles\": true, \"categorias_organizadas\": true, \"otros_cargos\": 0.0}, \"reportes_diagnostico\": {\"id_reporte\": 601, \"fecha_generacion\": \"2026-06-01\", \"resumen_ejecutivo\": \"Desempeno excepcional en mayo 2026.\", \"plan_accion\": {\"prioridad_alta\": [], \"prioridad_media\": []}}, \"publicaciones\": [{\"id_publicacion\": 101, \"ml_item_id\": \"MLA1234567890\", \"titulo\": \"Smart TV LED 55 Pulgadas 4K UHD Android TV\", \"tipo_publicacion\": \"premium\", \"estado_publicacion\": \"active\", \"cantidad_fotos\": 12, \"tiene_video\": true, \"caractericas_completas\": true, \"puntaje_calidad\": 96}, {\"id_publicacion\": 102, \"ml_item_id\": \"MLA1234567891\", \"titulo\": \"Aire Acondicionado Split Inverter Frio/Calor 3000W\", \"tipo_publicacion\": \"premium\", \"estado_publicacion\": \"active\", \"cantidad_fotos\": 10, \"tiene_video\": true, \"caractericas_completas\": true, \"puntaje_calidad\": 94}]}",
           "latency": 0,
           "statusCode": 200,
-          "label": "",
+          "label": "Vendedor 1",
           "headers": [],
           "bodyType": "INLINE",
           "filePath": "",
           "databucketID": "",
           "sendFileAsBody": false,
-          "rules": [],
           "rulesOperator": "OR",
-          "disableTemplating": false,
+          "disableTemplating": true,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": [],
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "id",
+              "value": "1",
+              "invert": false,
+              "operator": "equals"
+            }
+          ]
+        },
+        {
+          "uuid": "bee9b2d4-d457-4753-9972-6c99f5036bd2",
+          "body": "{\"datos_basicos\": {\"id_vendedor\": 2, \"user_name\": \"MODAEXPRESS_MX\", \"nombre_tienda\": \"Moda Express MX\", \"codigo_pais\": \"MX\", \"moneda_local\": \"MXN\", \"email\": \"contacto@modaexpressmx.com\", \"tipo_plan\": \"Premium\", \"acces_token\": \"APP_USR-2891345672198345-060126-3e7f1a9b2c4d6e8f0a1b3c5d7e9f0a1b-203487561\", \"refresh_token\": \"TG-1b3d5f7a9c0e2f4a6b8d0e2f4a6c8e0a-203487561\", \"tiempo_token\": 21600, \"esta_activo\": true, \"fecha_creacion\": \"2016-07-22T00:00:00Z\"}, \"metricas_negocio\": {\"id_metricas_negocio\": 102, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"ventas_totales_periodo\": 12300, \"fecha_inicio_periodo\": \"2026-05-01\", \"fecha_final_periodo\": \"2026-05-31\", \"ventas_brutas_moneda_local\": 18450000.0, \"ventas_brutas_usd\": 997297.3, \"unidades_vendidas\": 12300, \"visitas_totales\": 980000, \"intencion_compra\": 35000, \"ventas_concretadas\": 11200, \"precio_promedio_unidad\": 1500.0, \"precio_promedio_venta\": 1647.32}, \"metricas_costo\": {\"id_metricas_costo\": 202, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"ventas_cobradas_total\": 18450000.0, \"neto_recibido\": 11900250.0, \"cargos_por_venta\": 2952000.0, \"costos_envio\": 1660500.0, \"inversion_ads\": 738000.0, \"otros_cargos\": 276750.0, \"cargos_envio_full\": 553500.0, \"descuento_reputacion\": 369000.0}, \"metricas_reputacion\": {\"id_metricas_reputacion\": 302, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"total_reclamos\": 145, \"total_mediaciones\": 38, \"total_canceladas\": 210, \"total_envios_incorrectos\": 67, \"nivel_reputacion\": \"orange\", \"insignia\": \"mercado_lider\"}, \"metricas_stock_full\": {\"id_metricas_stock\": 402, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"espacios_p_asignados\": 180, \"espacios_g_asignados\": 45, \"productos_no_aptos_venta\": 3, \"productos_sin_rotacion\": 8, \"productos_antiguedad\": 15, \"productos_exceso_proyeccion\": 5}, \"metricas_mi_pagina\": {\"id_metricas_pagina\": 502, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"tiene_banner\": true, \"tiene_logo\": true, \"puntaje_calidad\": 75, \"tiene_carruseles\": false, \"categorias_organizadas\": true, \"otros_cargos\": 1200.0}, \"reportes_diagnostico\": {\"id_reporte\": 602, \"fecha_generacion\": \"2026-06-01\", \"resumen_ejecutivo\": \"Facturacion elevada pero alertas en reputacion.\", \"plan_accion\": {\"prioridad_alta\": [], \"prioridad_media\": []}}, \"publicaciones\": [{\"id_publicacion\": 201, \"ml_item_id\": \"MLM2345678901\", \"titulo\": \"Chamarra Impermeable para Hombre Outdoor Resistente al Agua\", \"tipo_publicacion\": \"premium\", \"estado_publicacion\": \"active\", \"cantidad_fotos\": 8, \"tiene_video\": false, \"caractericas_completas\": true, \"puntaje_calidad\": 82}, {\"id_publicacion\": 202, \"ml_item_id\": \"MLM2345678902\", \"titulo\": \"Tenis Deportivos para Correr Unisex Transpirables\", \"tipo_publicacion\": \"clasica\", \"estado_publicacion\": \"active\", \"cantidad_fotos\": 6, \"tiene_video\": false, \"caractericas_completas\": true, \"puntaje_calidad\": 70}]}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Vendedor 2",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rulesOperator": "OR",
+          "disableTemplating": true,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": [],
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "id",
+              "value": "2",
+              "invert": false,
+              "operator": "equals"
+            }
+          ]
+        },
+        {
+          "uuid": "90dc07db-57a0-4b79-8d0f-5dc31f01987a",
+          "body": "{\"datos_basicos\": {\"id_vendedor\": 3, \"user_name\": \"FERRETERIACENTRAL_VE\", \"nombre_tienda\": \"Ferreteria Central VE\", \"codigo_pais\": \"VE\", \"moneda_local\": \"VES\", \"email\": \"ferreteriacentral.ve@gmail.com\", \"tipo_plan\": \"Clasico\", \"acces_token\": \"APP_USR-9034587621934876-060126-5a8c2e4f6b1d3a7c9e0b2d4f6a8c0e2b-318756294\", \"refresh_token\": \"TG-4e8a2c6f0b1d5e9a3c7f1b5d9a3e7c1f-318756294\", \"tiempo_token\": 21600, \"esta_activo\": true, \"fecha_creacion\": \"2019-11-05T00:00:00Z\"}, \"metricas_negocio\": {\"id_metricas_negocio\": 103, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"ventas_totales_periodo\": 320, \"fecha_inicio_periodo\": \"2026-05-01\", \"fecha_final_periodo\": \"2026-05-31\", \"ventas_brutas_moneda_local\": 400000.0, \"ventas_brutas_usd\": 2000.0, \"unidades_vendidas\": 320, \"visitas_totales\": 28000, \"intencion_compra\": 950, \"ventas_concretadas\": 290, \"precio_promedio_unidad\": 1250.0, \"precio_promedio_venta\": 1379.31}, \"metricas_costo\": {\"id_metricas_costo\": 203, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"ventas_cobradas_total\": 400000.0, \"neto_recibido\": 288000.0, \"cargos_por_venta\": 52000.0, \"costos_envio\": 28000.0, \"inversion_ads\": 8000.0, \"otros_cargos\": 4000.0, \"cargos_envio_full\": 20000.0, \"descuento_reputacion\": 0.0}, \"metricas_reputacion\": {\"id_metricas_reputacion\": 303, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"total_reclamos\": 12, \"total_mediaciones\": 2, \"total_canceladas\": 18, \"total_envios_incorrectos\": 4, \"nivel_reputacion\": \"green\", \"insignia\": \"mercado_lider\"}, \"metricas_stock_full\": {\"id_metricas_stock\": 403, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"espacios_p_asignados\": 95, \"espacios_g_asignados\": 60, \"productos_no_aptos_venta\": 6, \"productos_sin_rotacion\": 42, \"productos_antiguedad\": 38, \"productos_exceso_proyeccion\": 25}, \"metricas_mi_pagina\": {\"id_metricas_pagina\": 503, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"tiene_banner\": false, \"tiene_logo\": true, \"puntaje_calidad\": 55, \"tiene_carruseles\": false, \"categorias_organizadas\": false, \"otros_cargos\": 0.0}, \"reportes_diagnostico\": {\"id_reporte\": 603, \"fecha_generacion\": \"2026-06-01\", \"resumen_ejecutivo\": \"Comportamiento estancado.\", \"plan_accion\": {\"prioridad_alta\": [], \"prioridad_media\": []}}, \"publicaciones\": [{\"id_publicacion\": 301, \"ml_item_id\": \"MLV3456789012\", \"titulo\": \"Juego de Destornilladores Profesionales de 6 Piezas\", \"tipo_publicacion\": \"clasica\", \"estado_publicacion\": \"active\", \"cantidad_fotos\": 4, \"tiene_video\": false, \"caractericas_completas\": true, \"puntaje_calidad\": 60}, {\"id_publicacion\": 302, \"ml_item_id\": \"MLV3456789013\", \"titulo\": \"Taladro Percutor Electrico de 1/2 Pulgada 750W\", \"tipo_publicacion\": \"clasica\", \"estado_publicacion\": \"paused\", \"cantidad_fotos\": 3, \"tiene_video\": false, \"caractericas_completas\": false, \"puntaje_calidad\": 48}]}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Vendedor 3",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rulesOperator": "OR",
+          "disableTemplating": true,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": [],
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "id",
+              "value": "3",
+              "invert": false,
+              "operator": "equals"
+            }
+          ]
+        },
+        {
+          "uuid": "7bbbf432-a474-4fb5-b470-d397ec622bde",
+          "body": "{\"datos_basicos\": {\"id_vendedor\": 4, \"user_name\": \"ARTESANIASNATURALES_CO\", \"nombre_tienda\": \"Artesanias Naturales CO\", \"codigo_pais\": \"CO\", \"moneda_local\": \"COP\", \"email\": \"artesanias.naturales.co@hotmail.com\", \"tipo_plan\": \"Clasico\", \"acces_token\": \"APP_USR-6712398456712398-060126-2d6f8a0c4e1b3d5f7a9c1e3b5d7f9a1c-427689153\", \"refresh_token\": \"TG-0c4e8a2d6f1b3e5a7c9d1f3b5e7a9c1d-427689153\", \"tiempo_token\": 21600, \"esta_activo\": true, \"fecha_creacion\": \"2023-02-10T00:00:00Z\"}, \"metricas_negocio\": {\"id_metricas_negocio\": 104, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"ventas_totales_periodo\": 45, \"fecha_inicio_periodo\": \"2026-05-01\", \"fecha_final_periodo\": \"2026-05-31\", \"ventas_brutas_moneda_local\": 2925000.0, \"ventas_brutas_usd\": 731.25, \"unidades_vendidas\": 45, \"visitas_totales\": 3200, \"intencion_compra\": 180, \"ventas_concretadas\": 40, \"precio_promedio_unidad\": 65000.0, \"precio_promedio_venta\": 73125.0}, \"metricas_costo\": {\"id_metricas_costo\": 204, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"ventas_cobradas_total\": 2925000.0, \"neto_recibido\": 2237625.0, \"cargos_por_venta\": 409500.0, \"costos_envio\": 234000.0, \"inversion_ads\": 29250.0, \"otros_cargos\": 14625.0, \"cargos_envio_full\": 0.0, \"descuento_reputacion\": 0.0}, \"metricas_reputacion\": {\"id_metricas_reputacion\": 304, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"total_reclamos\": 1, \"total_mediaciones\": 0, \"total_canceladas\": 2, \"total_envios_incorrectos\": 0, \"nivel_reputacion\": \"green\", \"insignia\": \"none\"}, \"metricas_stock_full\": {\"id_metricas_stock\": 404, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"espacios_p_asignados\": 0, \"espacios_g_asignados\": 0, \"productos_no_aptos_venta\": 0, \"productos_sin_rotacion\": 5, \"productos_antiguedad\": 5, \"productos_exceso_proyeccion\": 0}, \"metricas_mi_pagina\": {\"id_metricas_pagina\": 504, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"tiene_banner\": false, \"tiene_logo\": false, \"puntaje_calidad\": 35, \"tiene_carruseles\": false, \"categorias_organizadas\": false, \"otros_cargos\": 0.0}, \"reportes_diagnostico\": {\"id_reporte\": 604, \"fecha_generacion\": \"2026-06-01\", \"resumen_ejecutivo\": \"Cuenta pequena en fase de crecimiento.\", \"plan_accion\": {\"prioridad_alta\": [], \"prioridad_media\": []}}, \"publicaciones\": [{\"id_publicacion\": 401, \"ml_item_id\": \"MLC4567890123\", \"titulo\": \"Bolso Tejido a Mano en Fibra Natural\", \"tipo_publicacion\": \"clasica\", \"estado_publicacion\": \"active\", \"cantidad_fotos\": 2, \"tiene_video\": false, \"caractericas_completas\": false, \"puntaje_calidad\": 32}, {\"id_publicacion\": 402, \"ml_item_id\": \"MLC4567890124\", \"titulo\": \"Sombrero Vueltiao Artesanal Tradicional\", \"tipo_publicacion\": \"clasica\", \"estado_publicacion\": \"active\", \"cantidad_fotos\": 3, \"tiene_video\": false, \"caractericas_completas\": false, \"puntaje_calidad\": 38}]}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Vendedor 4",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rulesOperator": "OR",
+          "disableTemplating": true,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": [],
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "id",
+              "value": "4",
+              "invert": false,
+              "operator": "equals"
+            }
+          ]
+        },
+        {
+          "uuid": "ac8a6ded-80d0-4ea7-973a-32d1f59a95aa",
+          "body": "{\"datos_basicos\": {\"id_vendedor\": 5, \"user_name\": \"DEPORTESMAX_CL\", \"nombre_tienda\": \"Deportes Max Chile\", \"codigo_pais\": \"CL\", \"moneda_local\": \"CLP\", \"email\": \"ventas@deportesmaxchile.cl\", \"tipo_plan\": \"Premium\", \"acces_token\": \"APP_USR-5103847261509384-060126-7b1d3f5a9c0e2b4d6f8a0c2e4b6d8f0a-539281476\", \"refresh_token\": \"TG-3a5c7e9b1d3f5a7c9e1b3d5f7a9c1e3b-539281476\", \"tiempo_token\": 21600, \"esta_activo\": true, \"fecha_creacion\": \"2017-04-18T00:00:00Z\"}, \"metricas_negocio\": {\"id_metricas_negocio\": 105, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"ventas_totales_periodo\": 2100, \"fecha_inicio_periodo\": \"2026-05-01\", \"fecha_final_periodo\": \"2026-05-31\", \"ventas_brutas_moneda_local\": 94500000.0, \"ventas_brutas_usd\": 99473.68, \"unidades_vendidas\": 2100, \"visitas_totales\": 410000, \"intencion_compra\": 8500, \"ventas_concretadas\": 1950, \"precio_promedio_unidad\": 45000.0, \"precio_promedio_venta\": 48461.54}, \"metricas_costo\": {\"id_metricas_costo\": 205, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"ventas_cobradas_total\": 94500000.0, \"neto_recibido\": 38745000.0, \"cargos_por_venta\": 14175000.0, \"costos_envio\": 17010000.0, \"inversion_ads\": 11340000.0, \"otros_cargos\": 5670000.0, \"cargos_envio_full\": 6615000.0, \"descuento_reputacion\": 945000.0}, \"metricas_reputacion\": {\"id_metricas_reputacion\": 305, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"total_reclamos\": 55, \"total_mediaciones\": 10, \"total_canceladas\": 80, \"total_envios_incorrectos\": 22, \"nivel_reputacion\": \"yellow\", \"insignia\": \"mercado_lider\"}, \"metricas_stock_full\": {\"id_metricas_stock\": 405, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"espacios_p_asignados\": 150, \"espacios_g_asignados\": 40, \"productos_no_aptos_venta\": 2, \"productos_sin_rotacion\": 6, \"productos_antiguedad\": 10, \"productos_exceso_proyeccion\": 4}, \"metricas_mi_pagina\": {\"id_metricas_pagina\": 505, \"fecha_captura\": \"2026-06-01T08:00:00Z\", \"tiene_banner\": true, \"tiene_logo\": true, \"puntaje_calidad\": 80, \"tiene_carruseles\": true, \"categorias_organizadas\": true, \"otros_cargos\": 850000.0}, \"reportes_diagnostico\": {\"id_reporte\": 605, \"fecha_generacion\": \"2026-06-01\", \"resumen_ejecutivo\": \"Volumen considerable con costos elevados.\", \"plan_accion\": {\"prioridad_alta\": [], \"prioridad_media\": []}}, \"publicaciones\": [{\"id_publicacion\": 501, \"ml_item_id\": \"MLC5678901234\", \"titulo\": \"Bicicleta de Montana Rodado 29 Aluminio 21 Velocidades\", \"tipo_publicacion\": \"premium\", \"estado_publicacion\": \"active\", \"cantidad_fotos\": 10, \"tiene_video\": true, \"caractericas_completas\": true, \"puntaje_calidad\": 88}, {\"id_publicacion\": 502, \"ml_item_id\": \"MLC5678901235\", \"titulo\": \"Set de Mancuernas Ajustables 20kg con Soporte\", \"tipo_publicacion\": \"premium\", \"estado_publicacion\": \"active\", \"cantidad_fotos\": 9, \"tiene_video\": true, \"caractericas_completas\": true, \"puntaje_calidad\": 85}]}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Vendedor 5",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rulesOperator": "OR",
+          "disableTemplating": true,
+          "fallbackTo404": false,
+          "default": false,
+          "crudKey": "id",
+          "callbacks": [],
+          "rules": [
+            {
+              "target": "query",
+              "modifier": "id",
+              "value": "5",
+              "invert": false,
+              "operator": "equals"
+            }
+          ]
+        },
+        {
+          "uuid": "a6f96eb8-ae21-40ec-bbd8-2b9a22a31541",
+          "body": "{\"error\": \"Vendedor no encontrado. Por favor usa un ID del 1 al 5.\"}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Error - ID no valido",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rulesOperator": "OR",
+          "disableTemplating": true,
           "fallbackTo404": false,
           "default": true,
           "crudKey": "id",
-          "callbacks": []
+          "callbacks": [],
+          "rules": []
+        }
+      ],
+      "responseMode": null,
+      "streamingMode": null,
+      "streamingInterval": 0
+    },
+    {
+      "uuid": "cdc5c338-d800-40e1-a623-5a0ab2b0a985",
+      "type": "http",
+      "documentation": "",
+      "method": "get",
+      "endpoint": "users/:user_id/items/search",
+      "responses": [
+        {
+          "uuid": "b4825939-0cac-4c45-90be-6233b9e7ca26",
+          "body": "{\"results\": [\"MLC987654321\", \"MLC555444333\", \"MLC111222333\"]}",
+          "latency": 0,
+          "statusCode": 200,
+          "label": "Items search",
+          "headers": [],
+          "bodyType": "INLINE",
+          "filePath": "",
+          "databucketID": "",
+          "sendFileAsBody": false,
+          "rulesOperator": "OR",
+          "disableTemplating": true,
+          "fallbackTo404": false,
+          "default": true,
+          "crudKey": "id",
+          "callbacks": [],
+          "rules": []
         }
       ],
       "responseMode": null,
@@ -44,6 +210,10 @@
     {
       "type": "route",
       "uuid": "3bc02848-e42f-4f13-9cbc-8b5e0f85d61c"
+    },
+    {
+      "type": "route",
+      "uuid": "cdc5c338-d800-40e1-a623-5a0ab2b0a985"
     }
   ],
   "proxyMode": false,

@@ -16,10 +16,10 @@ if not DATABASE_URL:
 # ML_API_BASE = "https://api.mercadolibre.com"
 ML_API_BASE = "http://localhost:3001"
 
-def get_user_info(access_token: str) -> dict:
+def get_vendedor(vendedor_id: str) -> dict:
     resp = requests.get(
-        f"{ML_API_BASE}/users/me",
-        headers={"Authorization": f"Bearer {access_token}"}
+        f"{ML_API_BASE}/users/vendedores",
+        params={"id": vendedor_id}
     )
     resp.raise_for_status()
     return resp.json()
@@ -47,22 +47,43 @@ def get_item_details(access_token: str, item_id: str) -> dict:
 def main():
     parser = argparse.ArgumentParser(description="Obtener datos de API Mercado Libre")
     parser.add_argument("--access_token", required=True, help="Token OAuth de ML")
+    parser.add_argument("--vendedor_id", default="1", help="ID del vendedor (1-5 para el mock de Mockoon)")
     parser.add_argument("--client_db", default="dime_cliente_1", help="Base de datos del cliente")
     args = parser.parse_args()
 
-    user = get_user_info(args.access_token)
-    print(f"Usuario: {user.get('nickname')} (ID: {user.get('id')})")
+    # --- Vendedor ---
+    vendedor = get_vendedor(args.vendedor_id)
 
-    item_ids = get_items(args.access_token, str(user["id"]))
-    print(f"Publicaciones encontradas: {len(item_ids)}")
+    datos_basicos = vendedor.get("datos_basicos")
+    if not datos_basicos:
+        print("Error: la respuesta de la API no contiene 'datos_basicos'")
+        return
 
+    id_vendedor = datos_basicos.get("id_vendedor")
+    user_name = datos_basicos.get("user_name")
+    if not id_vendedor or not user_name:
+        print("Error: 'id_vendedor' o 'user_name' no encontrado en datos_basicos")
+        return
+
+    print(f"Vendedor: {user_name} (ID: {id_vendedor})")
+
+    # --- Publicaciones (vienen dentro del JSON del vendedor) ---
+    publicaciones = vendedor.get("publicaciones")
+    if not publicaciones or not isinstance(publicaciones, list):
+        print("Error: no se encontraron publicaciones en la respuesta")
+        return
+
+    print(f"Publicaciones encontradas: {len(publicaciones)}")
+    for pub in publicaciones:
+        item_id = pub.get("ml_item_id", "N/A")
+        titulo = pub.get("titulo", "Sin titulo")
+        id_pub = pub.get("id_publicacion", "N/A")
+        print(f"  - [{id_pub}] {titulo} ({item_id})")
+
+    # --- Conexion a base de datos (futura carga) ---
     db_url = DATABASE_URL.rsplit("/", 1)[0] + f"/{args.client_db}"
     engine = create_engine(db_url)
-
-    for item_id in item_ids[:10]:
-        detail = get_item_details(args.access_token, item_id)
-        print(f"  - {detail.get('title', 'Sin titulo')} | ${detail.get('price', 0)}")
-
+    print(f"Base de datos conectada: {args.client_db}")
     engine.dispose()
 
 
