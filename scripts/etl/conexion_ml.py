@@ -13,8 +13,8 @@ DATABASE_URL = os.getenv("DATABASE_URL")
 if not DATABASE_URL:
     raise ValueError("DATABASE_URL no esta definida en el archivo .env")
 
-ML_API_BASE = "https://api.mercadolibre.com"
-
+# ML_API_BASE = "https://api.mercadolibre.com"
+ML_API_BASE = "http://localhost:3001"
 
 def get_user_info(access_token: str) -> dict:
     resp = requests.get(
