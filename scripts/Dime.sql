@@ -718,3 +718,283 @@ INSERT INTO metricas_calidad_publicacion (id_publicacion, cantidad_fotos, tiene_
 (23, 10, true, true, 100),
 (24, 8, true, true, 95),
 (25, 5, false, false, 68);
+
+
+-- ==============================================================================
+-- Vistas Materializadas para Diagnóstico DiME
+-- ==============================================================================
+-- Pre-calcula KPIs estratégicos para consumo directo desde Metabase y la API.
+-- Todas las vistas incluyen COALESCE + NULLIF para evitar división por cero.
+-- Se refrescan lote mediante:   REFRESH MATERIALIZED VIEW CONCURRENTLY <name>
+-- ==============================================================================
+
+-- ==============================================================================
+-- 1. Reputación y Calidad
+-- ==============================================================================
+CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_reputacion AS
+SELECT
+    v.id_vendedor,
+    
+    -- Fórmula: (Total de reclamos / Ventas totales del periodo) * 100
+    COALESCE(
+        (mr.total_reclamos::NUMERIC / NULLIF(mr.ventas_totales_periodo, 0)) * 100,
+        0
+    ) AS tasa_reclamos,
+    
+    -- Fórmula: (Total de ventas canceladas / Ventas totales del periodo) * 100
+    COALESCE(
+        (mr.total_canceladas::NUMERIC / NULLIF(mr.ventas_totales_periodo, 0)) * 100,
+        0
+    ) AS tasa_cancelaciones,
+    
+    -- Fórmula: (Total de mediaciones / Ventas totales del periodo) * 100
+    COALESCE(
+        (mr.total_mediaciones::NUMERIC / NULLIF(mr.ventas_totales_periodo, 0)) * 100,
+        0
+    ) AS tasa_mediaciones,
+    
+    -- Fórmula: (Total de envíos incorrectos / Ventas totales del periodo) * 100
+    COALESCE(
+        (mr.total_envios_incorrectos::NUMERIC / NULLIF(mr.ventas_totales_periodo, 0)) * 100,
+        0
+    ) AS tasa_envios_incorrectos,
+    
+    mr.nivel_reputacion,
+    mr.insignia,
+    mr.fecha_captura
+FROM vendedor v
+LEFT JOIN metricas_reputacion mr ON v.id_vendedor = mr.id_vendedor
+WHERE v.esta_activo = TRUE;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_reputacion_vendedor
+    ON mv_diagnostico_reputacion (id_vendedor);
+
+
+-- ==============================================================================
+-- 2. Ventas y Finanzas
+-- ==============================================================================
+-- NOTA: Crecimiento MoM requiere datos multi-período. Con la cardinalidad
+-- actual 1:1 entre vendedor y metricas_negocio, retorna NULL hasta contar
+-- con una serie histórica.
+-- ==============================================================================
+CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_finanzas AS
+SELECT
+    v.id_vendedor,
+    
+    -- Fórmula: (Ventas concretadas / Visitas totales) * 100
+    COALESCE(
+        (mn.ventas_concretadas::NUMERIC / NULLIF(mn.visitas_totales, 0)) * 100,
+        0
+    ) AS cvr_global,
+    
+    -- Fórmula: (Neto recibido / Ventas brutas en moneda local) * 100
+    COALESCE(
+        (mc.neto_recibido / NULLIF(mn.ventas_brutas_moneda_local, 0)) * 100,
+        0
+    ) AS margen_neto_real,
+    
+    -- Fórmula: Ventas brutas en USD / Unidades vendidas
+    COALESCE(
+        mn.ventas_brutas_usd / NULLIF(mn.unidades_vendidas, 0),
+        0
+    ) AS ticket_promedio,
+    
+    -- Fórmula: [(Cargos por venta + Costos de envío + Inversión Ads + Cargos envío full) / Ventas brutas en moneda local] * 100
+    COALESCE(
+        (
+            COALESCE(mc.cargos_por_venta, 0)
+            + COALESCE(mc.costos_envio, 0)
+            + COALESCE(mc.inversion_ads, 0)
+            + COALESCE(mc.cargos_envio_full, 0)
+        ) / NULLIF(mn.ventas_brutas_moneda_local, 0) * 100,
+        0
+    ) AS carga_total_costos,
+    
+    -- Fórmula: (Intención de compra / Visitas totales) * 100
+    COALESCE(
+        (mn.intencion_compra::NUMERIC / NULLIF(mn.visitas_totales, 0)) * 100,
+        0
+    ) AS ratio_intencion_compra,
+    
+    -- Fórmula: (Descuento por reputación / Ventas brutas en moneda local) * 100
+    COALESCE(
+        (mc.descuento_reputacion / NULLIF(mn.ventas_brutas_moneda_local, 0)) * 100,
+        0
+    ) AS descuento_reputacion,
+    
+    -- Fórmula: (Ventas cobradas totales / Ventas brutas en moneda local) * 100
+    COALESCE(
+        (mc.ventas_cobradas_total / NULLIF(mn.ventas_brutas_moneda_local, 0)) * 100,
+        0
+    ) AS tasa_cobro_efectivo,
+    
+    NULL::NUMERIC AS crecimiento_mom,
+    mn.ventas_concretadas AS ventas_periodo_actual,
+    mn.fecha_inicio_periodo,
+    mn.fecha_fin_periodo
+FROM vendedor v
+LEFT JOIN metricas_negocio mn ON v.id_vendedor = mn.id_vendedor
+LEFT JOIN metricas_costo mc ON v.id_vendedor = mc.id_vendedor
+WHERE v.esta_activo = TRUE;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_finanzas_vendedor
+    ON mv_diagnostico_finanzas (id_vendedor);
+
+
+-- ==============================================================================
+-- 3. Publicaciones (Calidad y Conversión Agregada)
+-- ==============================================================================
+CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_publicaciones AS
+SELECT
+    v.id_vendedor,
+    COUNT(DISTINCT p.id_publicacion) AS total_publicaciones,
+    
+    -- Fórmula: (Sumatoria de ventas / Sumatoria de visitas) * 100
+    COALESCE(
+        (SUM(rp.ventas)::NUMERIC / NULLIF(SUM(rp.visitas), 0)) * 100,
+        0
+    ) AS cvr_publicacion,
+    
+    -- Fórmula: (Cantidad de publicaciones con características completas / Total de publicaciones) * 100
+    COALESCE(
+        (COUNT(DISTINCT CASE WHEN mcp.caracteristicas_completas = TRUE THEN p.id_publicacion END)::NUMERIC
+        / NULLIF(COUNT(DISTINCT p.id_publicacion), 0)) * 100,
+        0
+    ) AS pct_catalogo_completo,
+    
+    -- Fórmula: (Cantidad de publicaciones con video / Total de publicaciones) * 100
+    COALESCE(
+        (COUNT(DISTINCT CASE WHEN mcp.tiene_video = TRUE THEN p.id_publicacion END)::NUMERIC
+        / NULLIF(COUNT(DISTINCT p.id_publicacion), 0)) * 100,
+        0
+    ) AS pct_publicaciones_con_video
+FROM vendedor v
+LEFT JOIN publicacion p ON v.id_vendedor = p.id_vendedor
+LEFT JOIN rendimiento_publicacion rp ON p.id_publicacion = rp.id_publicacion
+LEFT JOIN metricas_calidad_publicacion mcp ON p.id_publicacion = mcp.id_publicacion
+WHERE v.esta_activo = TRUE
+GROUP BY v.id_vendedor;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_publicaciones_vendedor
+    ON mv_diagnostico_publicaciones (id_vendedor);
+
+
+-- ==============================================================================
+-- 4. Publicidad (Mercado Ads)
+-- ==============================================================================
+-- NOTA: ventas_generadas_por_ads no está disponible directamente en el esquema
+-- actual. Se usa ventas_concretadas como proxy. Cuando ML exponga atribución
+-- por campaña, reemplazar la fuente.
+-- ==============================================================================
+CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_ads AS
+SELECT
+    v.id_vendedor,
+    
+    -- Fórmula ROAS (Return On Ad Spend): Ventas concretadas / Inversión en Ads
+    CASE
+        WHEN COALESCE(mc.inversion_ads, 0) > 0
+        THEN COALESCE(mn.ventas_concretadas::NUMERIC / NULLIF(mc.inversion_ads, 0), 0)
+        ELSE 0
+    END AS roas,
+    
+    -- Fórmula ACOS (Advertising Cost of Sales): (Inversión en Ads / Ventas concretadas) * 100
+    CASE
+        WHEN COALESCE(mn.ventas_concretadas, 0) > 0
+        THEN (mc.inversion_ads / NULLIF(mn.ventas_concretadas::NUMERIC, 0)) * 100
+        ELSE 0
+    END AS acos,
+    
+    -- Fórmula: (Inversión en Ads / Ventas brutas en moneda local) * 100
+    COALESCE(
+        (mc.inversion_ads / NULLIF(mn.ventas_brutas_moneda_local, 0)) * 100,
+        0
+    ) AS inversion_ads_sobre_ventas,
+    
+    mc.inversion_ads
+FROM vendedor v
+LEFT JOIN metricas_costo mc ON v.id_vendedor = mc.id_vendedor
+LEFT JOIN metricas_negocio mn ON v.id_vendedor = mn.id_vendedor
+WHERE v.esta_activo = TRUE;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_ads_vendedor
+    ON mv_diagnostico_ads (id_vendedor);
+
+
+-- ==============================================================================
+-- 5. Stock Full (Logística)
+-- ==============================================================================
+-- NOTA: "unidades_activas_vendibles" y "total_skus_en_full" no existen como
+-- columnas directas en metricas_stock_full. Se aproximan usando las columnas
+-- disponibles. Cuando ML exponga el inventario detallado, reemplazar.
+--
+-- NOTA MATEMÁTICA: Para estas métricas, el denominador común asumido como "Total de espacios" 
+-- es: (espacios_p_asignados + espacios_g_asignados)
+-- ==============================================================================
+CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_stock AS
+SELECT
+    v.id_vendedor,
+    
+    -- Fórmula: [Productos sin rotación / (Espacios P + Espacios G)] * 100
+    COALESCE(
+        (msf.productos_sin_rotacion::NUMERIC
+        / NULLIF(msf.espacios_p_asignados + msf.espacios_g_asignados, 0)) * 100,
+        0
+    ) AS dead_stock_rate,
+    
+    -- Fórmula: [Productos con antigüedad de riesgo / (Espacios P + Espacios G)] * 100
+    COALESCE(
+        (msf.productos_antiguedad::NUMERIC
+        / NULLIF(msf.espacios_p_asignados + msf.espacios_g_asignados, 0)) * 100,
+        0
+    ) AS antiguedad_riesgo,
+    
+    -- Fórmula: [Productos no aptos para venta / (Espacios P + Espacios G)] * 100
+    COALESCE(
+        (msf.productos_no_aptos_venta::NUMERIC
+        / NULLIF(msf.espacios_p_asignados + msf.espacios_g_asignados, 0)) * 100,
+        0
+    ) AS productos_no_aptos,
+    
+    -- Fórmula: [Productos con exceso de proyección / (Espacios P + Espacios G)] * 100
+    COALESCE(
+        (msf.productos_exceso_proyeccion::NUMERIC
+        / NULLIF(msf.espacios_p_asignados + msf.espacios_g_asignados, 0)) * 100,
+        0
+    ) AS overstock_rate,
+    
+    -- Fórmula: [((Espacios P + Espacios G) - Productos sin rotación - Productos no aptos) / (Espacios P + Espacios G)] * 100
+    COALESCE(
+        GREATEST(
+            ((msf.espacios_p_asignados + msf.espacios_g_asignados)
+            - msf.productos_sin_rotacion
+            - msf.productos_no_aptos_venta)::NUMERIC,
+            0
+        ) / NULLIF(msf.espacios_p_asignados + msf.espacios_g_asignados, 0) * 100,
+        0
+    ) AS utilizacion_espacios,
+    
+    msf.puntaje_calidad
+FROM vendedor v
+LEFT JOIN metricas_stock_full msf ON v.id_vendedor = msf.id_vendedor
+WHERE v.esta_activo = TRUE;
+
+CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_stock_vendedor
+    ON mv_diagnostico_stock (id_vendedor);
+
+
+-- Borrar las tablas(General)
+    DROP TABLE IF EXISTS 
+    metricas_calidad_publicacion, 
+    rendimiento_publicacion, 
+    metricas_mi_pagina, 
+    metricas_stock_full, 
+    metricas_costo, 
+    metricas_negocio, 
+    metricas_reputacion, 
+    reportes_diagnostico, 
+    publicacion, 
+    vendedor, 
+    plan_saas, 
+    moneda, 
+    pais 
+CASCADE;
