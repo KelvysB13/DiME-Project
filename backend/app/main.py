@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import RedirectResponse
-from app.api_router import api_router
+from app.api import api_router
 
 app = FastAPI(title="DiME - Diagnóstico Integral de Métricas E-commerce", version="1.0.0")
 
