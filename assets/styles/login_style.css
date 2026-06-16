@@ -3,11 +3,13 @@
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+     font-family: inherit;
 }
 
 body {
-    font-family: 'Inter', sans-serif;
-    background-color: #acd615;
+
+    font-family: 'Montserrat', sans-serif;
+    background-color: #f0eff5;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
@@ -44,13 +46,14 @@ a { text-decoration: none; }
     50% { transform: translateY(-10px); }
 }
 
-/* PANEL IZQUIERDO — FONDO MORADO */
+/* PANEL IZQUIERDO — FONDO AZUL OSCURO */
 .left-panel {
     width: 100%;
-    background-color: #361e7a;
-    background-image: linear-gradient(135deg, #361e7a 0%, #2a1a5e 25%, #361e7a 50%, #1f0f4a 75%, #251359 100%);
+    background-color: #031c3c;
+    /* Transición ultra suave: partimos de tu azul, bajamos a uno casi negro y subimos a uno ligeramente más claro */
+    background-image: linear-gradient(135deg, #031c3c 0%, #011126 35%, #05234a 70%, #031c3c 100%);
     background-size: 200% 200%;
-    animation: gradientShift 8s ease infinite;
+    animation: gradientShift 10s ease infinite; /* Subí a 10s para que el movimiento sea aún más sutil */
     position: relative;
     overflow: hidden;
     padding: 2rem;
@@ -59,7 +62,8 @@ a { text-decoration: none; }
     justify-content: space-between;
     min-height: 40vh;
     z-index: 10;
-    box-shadow: 25px 0 50px -12px rgba(54, 30, 122, 0.25);
+    /* Sombra ajustada a un azul marino oscuro traslúcido para que se fusione perfectamente */
+    box-shadow: 25px 0 50px -12px rgba(3, 28, 60, 0.4); 
 }
 
 @media (min-width: 768px) {
@@ -70,27 +74,59 @@ a { text-decoration: none; }
     }
 }
 
-/* CURVAS SVG DECORATIVAS */
-.decorative-curves {
+/* ==========================================================================
+   NUEVA ANIMACIÓN DE GRÁFICO DE BARRAS DE FONDO
+   ========================================================================== */
+
+/* Contenedor que ubica las barras en el fondo del panel */
+.decorative-bars {
     position: absolute;
-    inset: 0;
-    opacity: 0.1;
-    pointer-events: none;
-    z-index: 0;
+    bottom: 0;
+    left: 10%;
+    right: 10%;
+    height: 50%; /* Ocupa la mitad inferior del panel izquierdo */
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-around;
+    gap: 15px;
+    z-index: 1; /* Detrás del texto y del footer */
+    pointer-events: none; /* No interfiere con clics */
 }
 
-.decorative-curves svg {
-    width: 100%;
-    height: 100%;
+/* Estilo base para cada barra */
+.decorative-bars .bar {
+    width: 14%;
+    /* Mismo color blanco semitransparente sutil que tenían tus curvas originales */
+    background: linear-gradient(to top, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.12) 100%);
+    border-radius: 8px 8px 0 0;
+    transform-origin: bottom;
+    animation: barGrow 4s ease-in-out infinite alternate;
 }
 
-/* ANIMACION ESCALONADA DE CADA CURVA */
-.wave-path {
-    animation: waveFloat 4s ease-in-out infinite;
+/* Tiempos desfasados y alturas iniciales para que el movimiento sea orgánico y asíncrono */
+.decorative-bars .bar:nth-child(1) { height: 40%; animation-delay: 0.2s; animation-duration: 3.5s; }
+.decorative-bars .bar:nth-child(2) { height: 75%; animation-delay: 0.6s; animation-duration: 4.2s; }
+.decorative-bars .bar:nth-child(3) { height: 55%; animation-delay: 0.0s; animation-duration: 3.8s; }
+.decorative-bars .bar:nth-child(4) { height: 90%; animation-delay: 0.8s; animation-duration: 4.5s; }
+.decorative-bars .bar:nth-child(5) { height: 60%; animation-delay: 0.4s; animation-duration: 3.9s; }
+
+/* Animación keyframe para simular datos cargando suavemente */
+@keyframes barGrow {
+    0% {
+        transform: scaleY(0.85);
+        filter: brightness(0.9);
+    }
+    100% {
+        transform: scaleY(1.15);
+        filter: brightness(1.2);
+    }
 }
 
-.wave-path:nth-child(2) { animation-delay: 0.5s; }
-.wave-path:nth-child(3) { animation-delay: 1s; }
+/* Ajuste del contenedor de contenido para que quede perfectamente por encima del gráfico */
+.content-wrap {
+    position: relative;
+    z-index: 5;
+}
 
 /* ICONO DE MARCA */
 .brand-icon-wrap {
@@ -116,7 +152,7 @@ a { text-decoration: none; }
 }
 
 .title {
-    color: white;
+    color: #f7f6f4;
     font-size: 3rem;
     font-weight: 800;
     letter-spacing: -0.025em;
@@ -232,7 +268,7 @@ a { text-decoration: none; }
 
 /* TITULOS DEL FORMULARIO */
 .welcome-title {
-    color: #171717;
+    color: #031c3c;
     font-size: 1.875rem;
     font-weight: 700;
     letter-spacing: -0.025em;
@@ -246,14 +282,14 @@ a { text-decoration: none; }
 }
 
 .welcome-sub a {
-    color: #361e7a;
+    color: #031c3c;
     font-weight: 700;
     text-decoration: underline;
     text-underline-offset: 2px;
 }
 
 .welcome-sub a:hover {
-    color: #251359;
+    color: rgb(22, 10, 60);
 }
 
 /* ESPACIADO ENTRE CAMPOS DEL FORM */
@@ -272,7 +308,7 @@ a { text-decoration: none; }
 }
 
 .form-group:focus-within {
-    border-color: #361e7a;
+    border-color: #031c3c;
 }
 
 .form-group .input-icon {
@@ -331,7 +367,7 @@ a { text-decoration: none; }
 .remember-row input[type="checkbox"] {
     width: 1rem;
     height: 1rem;
-    accent-color: #361e7a;
+    accent-color: #031c3c;
     border-radius: 0.25rem;
     border: 1px solid #d4d4d4;
 }
@@ -374,7 +410,7 @@ a { text-decoration: none; }
 }
 
 .btn-google {
-    background-color: white;
+    background-color: #f7f6f4;
     border: 1px solid #d4d4d4;
     color: #262626;
     gap: 0.5rem;
@@ -398,12 +434,12 @@ a { text-decoration: none; }
 }
 
 .forgot-row a {
-    color: #361e7a;
+    color: #031c3c;
     font-weight: 700;
     text-decoration: underline;
     text-underline-offset: 2px;
 }
 
 .forgot-row a:hover {
-    color: #251359;
+    color: rgb(30, 14, 78);
 }
