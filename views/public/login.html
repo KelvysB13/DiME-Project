@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,22 +8,26 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    <link rel="icon" href="favicon.ico">
+
+    <!-- ICONO Y ESTILOS -->
+    <link rel="icon" href="../../assets/icons/favicon.ico">
     <link rel="stylesheet" href="../../assets/styles/login_style.css">
 </head>
 <body>
 
+    <!-- PANEL IZQUIERDO: FONDO MORADO CON CURVAS -->
     <div class="left-panel">
 
+        <!-- CURVAS DECORATIVAS SVG -->
         <div class="decorative-curves">
             <svg viewBox="0 0 1200 800" preserveAspectRatio="none">
-                <path class="wave-path" d="M-100,200 Q200,100 500,400 T1200,200" fill="none" stroke="white" stroke-width="1.5"/>
-                <path class="wave-path" d="M-100,280 Q250,160 580,500 T1200,320" fill="none" stroke="white" stroke-width="1.5"/>
-                <path class="wave-path" d="M-100,360 Q300,220 660,600 T1200,440" fill="none" stroke="white" stroke-width="1.5"/>
-                <path class="wave-path" d="M-100,440 Q350,280 740,700 T1200,560" fill="none" stroke="white" stroke-width="1.5"/>
+                <path class="wave-path" d="M-100,200 Q200,150 500,350 T1200,250" fill="none" stroke="white" stroke-width="1.5"/>
+                <path class="wave-path" d="M-100,280 Q250,210 580,430 T1200,340" fill="none" stroke="white" stroke-width="1.5"/>
+                <path class="wave-path" d="M-100,360 Q350,270 660,510 T1200,430" fill="none" stroke="white" stroke-width="1.5"/>
             </svg>
         </div>
 
+        <!-- ICONO DE MARCA (CRUZ) -->
         <div class="brand-icon-wrap">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
                 <line x1="12" y1="2" x2="12" y2="22"></line>
@@ -32,6 +37,7 @@
             </svg>
         </div>
 
+        <!-- TEXTO DE BIENVENIDA -->
         <div class="content-wrap">
             <h1 class="title">
                 Hola <br>DiME!<span class="hand-wave">👋🏼</span>
@@ -41,6 +47,7 @@
             </p>
         </div>
 
+        <!-- PIE: GITHUB + COPYRIGHT -->
         <div class="footer">
             <a href="https://github.com/KelvysB13/DiME-Project" target="_blank" rel="noopener noreferrer" class="github-link">
                 <svg fill="currentColor" viewBox="0 0 24 24">
@@ -53,14 +60,17 @@
         </div>
     </div>
 
+    <!-- PANEL DERECHO: FORMULARIO DE LOGIN -->
     <div class="right-panel">
 
         <div class="form-container">
 
+            <!-- LOGO -->
             <div class="logo-wrap">
                 <img src="../../assets/images/DiME_Logo.png" alt="DiME Logo">
             </div>
 
+            <!-- TITULO Y SUBTITULO -->
             <div>
                 <h2 class="welcome-title">&iexcl;Bienvenid@!</h2>
                 <p class="welcome-sub">
@@ -69,15 +79,18 @@
                 </p>
             </div>
 
+            <!-- FORMULARIO -->
             <form class="login-form">
 
+                <!-- CAMPO EMAIL -->
                 <div class="form-group email">
                     <svg class="input-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                     </svg>
-                    <input type="email" id="email" value="" placeholder="Correo Electr&oacute;nico">
+                    <input type="email" id="email" placeholder="Correo Electr&oacute;nico">
                 </div>
 
+                <!-- CAMPO CONTRASEÑA + BOTON VISIBILIDAD -->
                 <div class="form-group password">
                     <svg class="input-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
@@ -91,11 +104,13 @@
                     </button>
                 </div>
 
+                <!-- CHECKBOX RECORDAR -->
                 <div class="remember-row">
                     <input type="checkbox" id="remember">
                     <label for="remember">Recordar Sesi&oacute;n</label>
                 </div>
 
+                <!-- BOTONES: INICIAR SESION + GOOGLE -->
                 <div class="buttons-wrap">
                     <button type="submit" class="btn-primary">
                         Iniciar Sesi&oacute;n
@@ -113,6 +128,7 @@
 
             </form>
 
+            <!-- ENLACE OLVIDO CONTRASEÑA -->
             <div class="forgot-row">
                 &iquest;Olvidaste tu contrase&ntilde;a?
                 <a href="#">Haz clic aqu&iacute;</a>.
@@ -121,6 +137,7 @@
         </div>
     </div>
 
+<!-- SCRIPT: MOSTRAR/OCULTAR CONTRASEÑA -->
 <script>
     document.getElementById('togglePassword').addEventListener('click', function () {
         const password = document.getElementById('password');
