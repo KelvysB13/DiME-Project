@@ -30,16 +30,19 @@ CREATE TABLE IF NOT EXISTS moneda (
     simbolo VARCHAR(5) NOT NULL            -- Símbolo monetario. Ej: '$', 'R$', 'U$S'
 );
 
--- TABLA: plan_saas
+-- TABLA: plan
 -- Propósito: Define los planes de suscripción del sistema SaaS.
--- El plan determina qué funcionalidades tiene disponible cada vendedor.
 --   1 = Free:   plan gratuito con métricas básicas
---   2 = Pro:    plan pago con métricas avanzadas y reportes
---   3 = Enterprise: plan premium con soporte prioritario y multi-cuenta
-CREATE TABLE IF NOT EXISTS plan_saas (
-    id_plan INTEGER PRIMARY KEY, -- 1: Free, 2: Pro, 3: Enterprise
-    nombre_plan VARCHAR(50) NOT NULL, -- Nombre comercial del plan
-    descripcion TEXT                 -- Descripción detallada de beneficios
+--   2 = Básico: plan pago con métricas avanzadas y reportes
+--   3 = Premium: plan completo con soporte prioritario y máxima capacidad
+CREATE TABLE IF NOT EXISTS plan (
+    id INTEGER PRIMARY KEY,
+    nombre_plan VARCHAR(50) NOT NULL,
+    precio_mensual NUMERIC(10,2) NOT NULL DEFAULT 0.00,
+    limite_publicaciones INTEGER,           -- NULL = sin límite
+    limite_metricas_dias INTEGER NOT NULL DEFAULT 30, -- días históricos disponibles
+    features JSONB NOT NULL DEFAULT '[]'::jsonb, -- lista de funcionalidades disponibles
+    descripcion TEXT
 );
 
 
@@ -62,10 +65,11 @@ CREATE TABLE IF NOT EXISTS vendedor (
     -- Relaciones con tablas maestras
     codigo_pais VARCHAR(2) NOT NULL,  -- País donde opera el vendedor (FK -> pais)
     moneda_local VARCHAR(3) NOT NULL,  -- Moneda en la que factura (FK -> moneda)
-    tipo_plan INTEGER DEFAULT 1,       -- Plan SaaS contratado, 1=Free por defecto (FK -> plan_saas)
+    tipo_plan INTEGER DEFAULT 1,       -- Plan SaaS contratado, 1=Free por defecto (FK -> plan)
     
     -- Datos de autenticación y conexión con Mercado Libre
     email VARCHAR(255) NOT NULL UNIQUE, -- Correo electrónico del vendedor (único en el sistema)
+    password VARCHAR(255) NOT NULL,     -- Contraseña hash del vendedor (bcrypt/argon2)
     access_token TEXT,                  -- Token de acceso a la API de ML (se renueva periódicamente)
     refresh_token TEXT,                 -- Token para renovar el access_token sin pedir credenciales
     tiempo_token TIMESTAMPTZ,           -- Fecha/hora de expiración/emisión del token
@@ -75,7 +79,7 @@ CREATE TABLE IF NOT EXISTS vendedor (
     -- Restricciones de Integridad Referencial (Foreign Keys)
     CONSTRAINT fk_vendedor_pais FOREIGN KEY (codigo_pais) REFERENCES pais(codigo_pais),
     CONSTRAINT fk_vendedor_moneda FOREIGN KEY (moneda_local) REFERENCES moneda(codigo_moneda),
-    CONSTRAINT fk_vendedor_plan FOREIGN KEY (tipo_plan) REFERENCES plan_saas(id_plan),
+    CONSTRAINT fk_vendedor_plan FOREIGN KEY (tipo_plan) REFERENCES plan(id),
     
     -- Validación de formato de email mediante expresión regular
     -- Asegura que el email tenga el formato: usuario@dominio.ext (ext de 2 a 4 letras)
@@ -102,12 +106,12 @@ CREATE TABLE IF NOT EXISTS publicacion (
     estado_publicacion VARCHAR(20) NOT NULL CHECK (estado_publicacion IN ('active', 'paused', 'closed')), -- Estado: active (activa), paused (pausada), closed (cerrada)
     
     CONSTRAINT fk_publicacion_vendedor FOREIGN KEY (id_vendedor) 
-        REFERENCES vendedor(id_vendedor) ON DELETE CASCADE -- Si se elimina el vendedor, se eliminan sus publicaciones
+        REFERENCES vendedor(id) ON DELETE CASCADE -- Si se elimina el vendedor, se eliminan sus publicaciones
 );
 
 
 -- ==============================================================================
--- TABLA: reportes_diagnostico
+-- TABLA: reporte_diagnostico
 -- ==============================================================================
 -- Propósito: Almacena los reportes generados automáticamente para cada
 -- vendedor. Cada reporte contiene un resumen ejecutivo del desempeño
@@ -116,7 +120,7 @@ CREATE TABLE IF NOT EXISTS publicacion (
 -- 
 -- El plan_accion es JSONB (binario) lo que permite consultas flexibles
 -- sobre las tareas recomendadas sin esquema fijo.
-CREATE TABLE IF NOT EXISTS reportes_diagnostico (
+CREATE TABLE IF NOT EXISTS reporte_diagnostico (
     id_reporte BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, -- ID auto-generado del reporte
     id_vendedor BIGINT NOT NULL,                    -- Vendedor al que pertenece el reporte (FK -> vendedor)
     fecha_generacion DATE NOT NULL DEFAULT CURRENT_DATE, -- Fecha en que se generó el reporte
@@ -125,13 +129,13 @@ CREATE TABLE IF NOT EXISTS reportes_diagnostico (
     resumen_ejecutivo TEXT,                          -- Texto libre con análisis general del desempeño
     plan_accion JSONB NOT NULL DEFAULT '{}'::jsonb,  -- Lista de tareas recomendadas en formato JSON
     
-    CONSTRAINT fk_reportes_vendedor FOREIGN KEY (id_vendedor) REFERENCES vendedor(id_vendedor),
+    CONSTRAINT fk_reportes_vendedor FOREIGN KEY (id_vendedor) REFERENCES vendedor(id),
     CONSTRAINT chk_fechas_reporte CHECK (fecha_fin_periodo >= fecha_inicio_periodo) -- La fecha fin no puede ser anterior a la fecha inicio
 );
 
 
 -- ==============================================================================
--- TABLA: metricas_reputacion
+-- TABLA: metrica_reputacion
 -- ==============================================================================
 -- Propósito: Almacena las métricas de reputación de cada vendedor.
 -- La reputación en Mercado Libre se calcula en base a reclamos,
@@ -142,8 +146,8 @@ CREATE TABLE IF NOT EXISTS reportes_diagnostico (
 --   'yellow' = reputación en riesgo
 --   'red'    = mala reputación
 -- La insignia es un reconocimiento especial: 'platinum', 'gold', 'leader', etc.
-CREATE TABLE IF NOT EXISTS metricas_reputacion (
-  id_metricas_reputacion BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, -- ID auto-generado de la métrica de reputación
+CREATE TABLE IF NOT EXISTS metrica_reputacion (
+  id_metrica_reputacion BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, -- ID auto-generado de la métrica de reputación
   id_vendedor BIGINT NOT NULL UNIQUE, -- Vendedor evaluado (FK -> vendedor, 1:1)
   fecha_captura TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Momento de captura de la métrica
   ventas_totales_periodo INTEGER NOT NULL DEFAULT 0 CHECK (ventas_totales_periodo >= 0), -- Ventas totales en el período
@@ -153,12 +157,12 @@ CREATE TABLE IF NOT EXISTS metricas_reputacion (
   total_envios_incorrectos INTEGER NOT NULL DEFAULT 0 CHECK (total_envios_incorrectos >= 0), -- Envíos entregados incorrectamente
   nivel_reputacion VARCHAR(20) NOT NULL, -- Nivel: 'green', 'yellow', 'red'
   insignia VARCHAR(20), -- Insignia: 'platinum', 'gold', 'leader' o NULL
-  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id_vendedor)
+  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id)
 );
 
 
 -- ==============================================================================
--- TABLA: metricas_negocio
+-- TABLA: metrica_negocio
 -- ==============================================================================
 -- Propósito: Almacena las métricas comerciales clave de cada vendedor.
 -- Contiene información sobre ventas (en moneda local y USD), visitas,
@@ -167,8 +171,8 @@ CREATE TABLE IF NOT EXISTS metricas_reputacion (
 -- Los precios promedio se calculan a partir de los totales:
 --   precio_promedio_unidad = ventas_brutas / unidades_vendidas
 --   precio_promedio_venta  = ventas_brutas / ventas_concretadas
-CREATE TABLE IF NOT EXISTS metricas_negocio (
-  id_metricas_negocio BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, -- ID auto-generado de la métrica de negocio
+CREATE TABLE IF NOT EXISTS metrica_negocio (
+  id_metrica_negocio BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, -- ID auto-generado de la métrica de negocio
   id_vendedor BIGINT NOT NULL UNIQUE, -- Vendedor evaluado (FK -> vendedor, 1:1)
   fecha_captura TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Momento de captura de la métrica
   fecha_inicio_periodo DATE NOT NULL, -- Inicio del período analizado
@@ -181,12 +185,12 @@ CREATE TABLE IF NOT EXISTS metricas_negocio (
   ventas_concretadas INTEGER NOT NULL DEFAULT 0 CHECK (ventas_concretadas >= 0), -- Ventas efectivamente concretadas
   precio_promedio_unidad NUMERIC(15,2) NOT NULL DEFAULT 0.00 CHECK (precio_promedio_unidad >= 0), -- Precio promedio por unidad (ventas_brutas / unidades_vendidas)
   precio_promedio_venta NUMERIC(15,2) NOT NULL DEFAULT 0.00 CHECK (precio_promedio_venta >= 0), -- Precio promedio por venta (ventas_brutas / ventas_concretadas)
-  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id_vendedor)
+  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id)
 );
 
 
 -- ==============================================================================
--- TABLA: metricas_costo
+-- TABLA: metrica_costo
 -- ==============================================================================
 -- Propósito: Almacena el desglose de costos y comisiones que ML cobra
 -- a cada vendedor. Permite calcular el neto recibido después de todos
@@ -196,8 +200,8 @@ CREATE TABLE IF NOT EXISTS metricas_negocio (
 --   neto_recibido = ventas_cobradas_total - cargos_por_venta - costos_envio
 --                   - inversion_ads - otros_cargos - cargos_envio_full
 --                   - descuento_reputacion
-CREATE TABLE IF NOT EXISTS metricas_costo (
-  id_metricas_costo BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, -- ID auto-generado de la métrica de costo
+CREATE TABLE IF NOT EXISTS metrica_costo (
+  id_metrica_costo BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, -- ID auto-generado de la métrica de costo
   id_vendedor BIGINT NOT NULL UNIQUE, -- Vendedor evaluado (FK -> vendedor, 1:1)
   fecha_captura TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Momento de captura de la métrica
   ventas_cobradas_total NUMERIC(15,2) NOT NULL DEFAULT 0.00, -- Total de ventas cobradas por ML
@@ -208,12 +212,12 @@ CREATE TABLE IF NOT EXISTS metricas_costo (
   otros_cargos NUMERIC(15,2) NOT NULL DEFAULT 0.00 CHECK (otros_cargos >= 0), -- Otros cargos adicionales de ML
   cargos_envio_full NUMERIC(15,2) NOT NULL DEFAULT 0.00 CHECK (cargos_envio_full >= 0), -- Cargos de logística Full
   descuento_reputacion NUMERIC(15,2) NOT NULL DEFAULT 0.00, -- Penalización por reputación baja (yellow/red)
-  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id_vendedor)
+  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id)
 );
 
 
 -- ==============================================================================
--- TABLA: metricas_stock_full
+-- TABLA: metrica_stock_full
 -- ==============================================================================
 -- Propósito: Almacena métricas del programa Full de Mercado Libre
 -- (logística administrada por ML). Los vendedores que participan en
@@ -223,8 +227,8 @@ CREATE TABLE IF NOT EXISTS metricas_costo (
 --   - espacios asignados: cantidad de espacios en centros de distribución
 --   - puntaje_calidad: calidad del stock en escala 0-100
 --   - productos problemáticos: no aptos, sin rotación, con antigüedad, etc.
-CREATE TABLE IF NOT EXISTS metricas_stock_full (
-  id_metricas_stock BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, -- ID auto-generado de la métrica de stock Full
+CREATE TABLE IF NOT EXISTS metrica_stock_full (
+  id_metrica_stock BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, -- ID auto-generado de la métrica de stock Full
   id_vendedor BIGINT NOT NULL UNIQUE, -- Vendedor evaluado (FK -> vendedor, 1:1)
   fecha_captura TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Momento de captura de la métrica
   espacios_p_asignados INTEGER NOT NULL DEFAULT 0 CHECK (espacios_p_asignados >= 0), -- Espacios pequeños asignados en CD de ML
@@ -234,12 +238,12 @@ CREATE TABLE IF NOT EXISTS metricas_stock_full (
   productos_sin_rotacion INTEGER NOT NULL DEFAULT 0 CHECK (productos_sin_rotacion >= 0), -- Productos sin rotación (baja demanda)
   productos_antiguedad INTEGER NOT NULL DEFAULT 0 CHECK (productos_antiguedad >= 0), -- Productos con antigüedad excesiva en CD
   productos_exceso_proyeccion INTEGER NOT NULL DEFAULT 0 CHECK (productos_exceso_proyeccion >= 0), -- Productos en exceso vs proyección de ventas
-  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id_vendedor)
+  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id)
 );
 
 
 -- ==============================================================================
--- TABLA: metricas_mi_pagina
+-- TABLA: metrica_mi_pagina
 -- ==============================================================================
 -- Propósito: Almacena métricas sobre la personalización de la página
 -- oficial del vendedor en Mercado Libre ("Mi Página").
@@ -247,15 +251,15 @@ CREATE TABLE IF NOT EXISTS metricas_stock_full (
 -- Una página bien configurada (con banner, logo, carruseles y categorías
 -- organizadas) generalmente tiene mejor tasa de conversión porque
 -- genera más confianza en el comprador.
-CREATE TABLE IF NOT EXISTS metricas_mi_pagina (
-  id_metricas_pagina BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, -- ID auto-generado de la métrica de Mi Página
+CREATE TABLE IF NOT EXISTS metrica_mi_pagina (
+  id_metrica_pagina BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, -- ID auto-generado de la métrica de Mi Página
   id_vendedor BIGINT NOT NULL UNIQUE, -- Vendedor evaluado (FK -> vendedor, 1:1)
   fecha_captura TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Momento de captura de la métrica
   tiene_banner BOOLEAN NOT NULL DEFAULT FALSE, -- Indica si la página tiene banner personalizado
   tiene_logo BOOLEAN NOT NULL DEFAULT FALSE, -- Indica si la página tiene logo personalizado
   tiene_carruseles BOOLEAN NOT NULL DEFAULT FALSE, -- Indica si tiene carruseles de productos
   categorias_organizadas BOOLEAN NOT NULL DEFAULT FALSE, -- Indica si las categorías están organizadas
-  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id_vendedor)
+  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id)
 );
 
 
@@ -279,13 +283,13 @@ CREATE TABLE IF NOT EXISTS rendimiento_publicacion (
     ventas INTEGER NOT NULL DEFAULT 0 CHECK (ventas >= 0), -- Ventas generadas por esta publicación
     
     CONSTRAINT fk_rendimiento_publicacion FOREIGN KEY (id_publicacion) 
-        REFERENCES publicacion(id_publicacion) ON DELETE CASCADE, -- Si se elimina la publicación, se elimina su rendimiento
+        REFERENCES publicacion(id) ON DELETE CASCADE, -- Si se elimina la publicación, se elimina su rendimiento
     CONSTRAINT chk_fechas_rendimiento CHECK (fecha_fin_periodo >= fecha_inicio_periodo)
 );
 
 
 -- ==============================================================================
--- TABLA: metricas_calidad_publicacion
+-- TABLA: metrica_calidad_publicacion
 -- ==============================================================================
 -- Propósito: Almacena métricas de calidad de cada publicación.
 -- ML asigna un puntaje de calidad (0-100) basado en la cantidad de
@@ -293,15 +297,15 @@ CREATE TABLE IF NOT EXISTS rendimiento_publicacion (
 -- 
 -- Las publicaciones con mayor puntaje de calidad suelen tener mejor
 -- posicionamiento en los resultados de búsqueda de ML.
-CREATE TABLE IF NOT EXISTS metricas_calidad_publicacion (
-  id_metricas_calidad_publi BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, -- ID auto-generado de la métrica de calidad
+CREATE TABLE IF NOT EXISTS metrica_calidad_publicacion (
+  id_metrica_calidad_publi BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, -- ID auto-generado de la métrica de calidad
   id_publicacion BIGINT NOT NULL UNIQUE, -- Publicación evaluada (FK -> publicacion, 1:1)
   fecha_captura TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Momento de captura de la métrica
   cantidad_fotos INTEGER NOT NULL DEFAULT 0 CHECK (cantidad_fotos >= 0), -- Cantidad de fotos de la publicación
   tiene_video BOOLEAN NOT NULL DEFAULT FALSE, -- Indica si la publicación tiene video
   caracteristicas_completas BOOLEAN NOT NULL DEFAULT FALSE, -- Indica si todas las características están completas
   puntaje_calidad INTEGER NOT NULL CHECK (puntaje_calidad BETWEEN 0 AND 100), -- Puntaje de calidad de ML (0-100)
-  FOREIGN KEY (id_publicacion) REFERENCES publicacion(id_publicacion)
+  FOREIGN KEY (id_publicacion) REFERENCES publicacion(id)
 );
 
 -- ==============================================================================
@@ -337,12 +341,11 @@ INSERT INTO moneda (codigo_moneda, nombre_moneda, simbolo) VALUES
 ON CONFLICT (codigo_moneda) DO NOTHING;
 
 -- Inserts de Planes SaaS
--- Se definen 3 planes con diferentes niveles de funcionalidad.
-INSERT INTO plan_saas (id_plan, nombre_plan, descripcion) VALUES 
-(1, 'Plan Gratuito', 'Prueba gratis por 7 días con acceso básico a métricas.'),
-(2, 'Plan Pro', 'Métricas avanzadas, reportes y descargas ilimitadas.'),
-(3, 'Plan Enterprise', 'Soporte prioritario, reportes a medida y multi-cuenta.')
-ON CONFLICT (id_plan) DO NOTHING;
+INSERT INTO plan (id, nombre_plan, precio_mensual, limite_publicaciones, limite_metricas_dias, features, descripcion) VALUES 
+(1, 'Free', 0.00, 5, 30, '["metricas_basicas", "reporte_mensual"]', 'Métricas básicas para empezar.'),
+(2, 'Básico', 19.99, 50, 90, '["metricas_basicas", "metricas_avanzadas", "reporte_mensual", "reporte_personalizado", "exportar_datos"]', 'Métricas avanzadas y reportes personalizados.'),
+(3, 'Premium', 49.99, NULL, 365, '["metricas_basicas", "metricas_avanzadas", "reporte_mensual", "reporte_personalizado", "exportar_datos", "soporte_prioritario", "multi_cuenta", "api_acceso"]', 'Soporte prioritario, multi-cuenta y acceso API.')
+ON CONFLICT (id) DO NOTHING;
 
 
 -- ==============================================================================
@@ -450,7 +453,7 @@ INSERT INTO publicacion (id_vendedor, ml_item_id, titulo, tipo_publicacion, esta
 --   - Vendedores con buen desempeño: tareas de mantenimiento/expansión
 --   - Vendedores con problemas: tareas correctivas (embalaje, calidad, etc.)
 --   - Vendedores inactivos: tareas de reactivación
-INSERT INTO reportes_diagnostico (id_vendedor, fecha_inicio_periodo, fecha_fin_periodo, resumen_ejecutivo, plan_accion) VALUES 
+INSERT INTO reporte_diagnostico (id_vendedor, fecha_inicio_periodo, fecha_fin_periodo, resumen_ejecutivo, plan_accion) VALUES 
 (1, '2023-10-01', '2023-10-31', 'Buen desempeño mensual, oportunidad en retención.', '{"tarea1": "Mejorar fotos", "tarea2": "Ajustar precios"}'),
 (2, '2023-10-01', '2023-10-31', 'Ventas estables, revisar stock de productos clave.', '{"tarea1": "Reabastecer inventario"}'),
 (3, '2023-10-01', '2023-10-31', 'Caída leve en conversión.', '{"tarea1": "Activar Ads", "tarea2": "Revisar competencia"}'),
@@ -485,8 +488,8 @@ INSERT INTO reportes_diagnostico (id_vendedor, fecha_inicio_periodo, fecha_fin_p
 --   - red/sin insignia: mala reputación (v15)
 -- 
 -- Los vendedores con reputación yellow o red tienen descuentos
--- en sus comisiones (ver metricas_costo.descuento_reputacion).
-INSERT INTO metricas_reputacion (id_vendedor, ventas_totales_periodo, total_reclamos, total_mediaciones, total_canceladas, total_envios_incorrectos, nivel_reputacion, insignia) VALUES 
+-- en sus comisiones (ver metrica_costo.descuento_reputacion).
+INSERT INTO metrica_reputacion (id_vendedor, ventas_totales_periodo, total_reclamos, total_mediaciones, total_canceladas, total_envios_incorrectos, nivel_reputacion, insignia) VALUES 
 (1, 1500, 5, 0, 2, 0, 'green', 'platinum'),
 (2, 450, 2, 0, 1, 0, 'green', 'gold'),
 (3, 120, 1, 0, 0, 0, 'green', NULL),
@@ -515,12 +518,12 @@ INSERT INTO metricas_reputacion (id_vendedor, ventas_totales_periodo, total_recl
 -- Consistencias internas verificadas:
 --   precio_promedio_unidad = ventas_brutas_moneda_local / unidades_vendidas
 --   precio_promedio_venta  = ventas_brutas_moneda_local / ventas_concretadas
---   ventas_concretadas     = ventas_totales_periodo (en metricas_reputacion)
+--   ventas_concretadas     = ventas_totales_periodo (en metrica_reputacion)
 -- 
 -- Las tasas de cambio implícitas reflejan los valores de mercado de 2023:
 --   ARS/USD ~357, MXN/USD ~18, BRL/USD ~5, COP/USD ~4000, CLP/USD ~900
 --   VE usa USD como moneda local, por lo que moneda_local = USD
-INSERT INTO metricas_negocio (id_vendedor, fecha_inicio_periodo, fecha_fin_periodo, ventas_brutas_moneda_local, ventas_brutas_usd, unidades_vendidas, visitas_totales, intencion_compra, ventas_concretadas, precio_promedio_unidad, precio_promedio_venta) VALUES 
+INSERT INTO metrica_negocio (id_vendedor, fecha_inicio_periodo, fecha_fin_periodo, ventas_brutas_moneda_local, ventas_brutas_usd, unidades_vendidas, visitas_totales, intencion_compra, ventas_concretadas, precio_promedio_unidad, precio_promedio_venta) VALUES 
 (1, '2023-10-01', '2023-10-31', 1500000.00, 4200.00, 1550, 45000, 1800, 1500, 967.74, 1000.00),
 (2, '2023-10-01', '2023-10-31', 450000.00, 1260.00, 480, 15000, 500, 450, 937.50, 1000.00),
 (3, '2023-10-01', '2023-10-31', 240000.00, 670.00, 125, 8000, 150, 120, 1920.00, 2000.00),
@@ -555,7 +558,7 @@ INSERT INTO metricas_negocio (id_vendedor, fecha_inicio_periodo, fecha_fin_perio
 --   - v15 (red): descuento_reputacion = 800000 (penalización por mala reputación)
 --   - v7 (BR, Full): costos_envio = 0 porque usa Full, pero paga cargos_envio_full
 --   - v3, v6: sin inversión en ads (inversion_ads = 0)
-INSERT INTO metricas_costo (id_vendedor, ventas_cobradas_total, neto_recibido, cargos_por_venta, costos_envio, inversion_ads, otros_cargos, cargos_envio_full, descuento_reputacion) VALUES 
+INSERT INTO metrica_costo (id_vendedor, ventas_cobradas_total, neto_recibido, cargos_por_venta, costos_envio, inversion_ads, otros_cargos, cargos_envio_full, descuento_reputacion) VALUES 
 (1, 1500000.00, 1100000.00, 225000.00, 100000.00, 50000.00, 5000.00, 20000.00, 0.00),
 (2, 450000.00, 330000.00, 67500.00, 40000.00, 10000.00, 2500.00, 0.00, 0.00),
 (3, 240000.00, 180000.00, 36000.00, 20000.00, 0.00, 4000.00, 0.00, 0.00),
@@ -585,7 +588,7 @@ INSERT INTO metricas_costo (id_vendedor, ventas_cobradas_total, neto_recibido, c
 -- El puntaje_calidad indica qué tan bien está el inventario:
 --   >90 = excelente, 70-90 = bueno, <70 = necesita mejora
 -- El vendedor 3 no participa en Full (todos sus valores son 0).
-INSERT INTO metricas_stock_full (id_vendedor, espacios_p_asignados, espacios_g_asignados, puntaje_calidad, productos_no_aptos_venta, productos_sin_rotacion, productos_antiguedad, productos_exceso_proyeccion) VALUES 
+INSERT INTO metrica_stock_full (id_vendedor, espacios_p_asignados, espacios_g_asignados, puntaje_calidad, productos_no_aptos_venta, productos_sin_rotacion, productos_antiguedad, productos_exceso_proyeccion) VALUES 
 (1, 100, 20, 95, 2, 5, 0, 10),
 (2, 50, 10, 85, 0, 12, 3, 5),
 (3, 0, 0, 60, 0, 0, 0, 0), -- Vendedor sin envíos Full (no participa en el programa)
@@ -615,7 +618,7 @@ INSERT INTO metricas_stock_full (id_vendedor, espacios_p_asignados, espacios_g_a
 -- Una página completa (banner + logo + carruseles + categorías) transmite
 -- mayor profesionalismo y suele tener mejor tasa de conversión.
 -- Los vendedores 5, 12 y 17 no tienen nada configurado.
-INSERT INTO metricas_mi_pagina (id_vendedor, tiene_banner, tiene_logo, tiene_carruseles, categorias_organizadas) VALUES 
+INSERT INTO metrica_mi_pagina (id_vendedor, tiene_banner, tiene_logo, tiene_carruseles, categorias_organizadas) VALUES 
 (1, true, true, true, true),
 (2, true, true, false, true),
 (3, false, true, false, false),
@@ -641,7 +644,7 @@ INSERT INTO metricas_mi_pagina (id_vendedor, tiene_banner, tiene_logo, tiene_car
 -- ==============================================================================
 -- Un registro por cada publicación (25 total).
 -- Las ventas de cada publicación suman al total de ventas_concretadas
--- del vendedor correspondiente en metricas_negocio.
+-- del vendedor correspondiente en metrica_negocio.
 -- 
 -- Por ejemplo: vendedor 1 tiene 2 publicaciones (800 + 700 = 1500 ✓)
 --              vendedor 18 tiene 3 publicaciones (2000 + 1500 + 1000 = 4500 ✓)
@@ -692,7 +695,7 @@ INSERT INTO rendimiento_publicacion (id_publicacion, fecha_inicio_periodo, fecha
 --   - Pub 17 (v13, Vino): 10 fotos, video, completo → 100 puntos
 --   - Pub 23 (v18, Laptop): 10 fotos, video, completo → 100 puntos
 --   - Pub 5 (v4, Zapatos): solo 2 fotos, sin video, incompleto → 45 puntos (mejorable)
-INSERT INTO metricas_calidad_publicacion (id_publicacion, cantidad_fotos, tiene_video, caracteristicas_completas, puntaje_calidad) VALUES 
+INSERT INTO metrica_calidad_publicacion (id_publicacion, cantidad_fotos, tiene_video, caracteristicas_completas, puntaje_calidad) VALUES 
 (1, 8, true, true, 98),
 (2, 5, false, true, 85),
 (3, 6, true, true, 92),
@@ -733,7 +736,7 @@ INSERT INTO metricas_calidad_publicacion (id_publicacion, cantidad_fotos, tiene_
 -- ==============================================================================
 CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_reputacion AS
 SELECT
-    v.id_vendedor,
+    v.id,
     
     -- Fórmula: (Total de reclamos / Ventas totales del periodo) * 100
     COALESCE(
@@ -763,23 +766,23 @@ SELECT
     mr.insignia,
     mr.fecha_captura
 FROM vendedor v
-LEFT JOIN metricas_reputacion mr ON v.id_vendedor = mr.id_vendedor
+LEFT JOIN metrica_reputacion mr ON v.id = mr.id_vendedor
 WHERE v.esta_activo = TRUE;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_reputacion_vendedor
-    ON mv_diagnostico_reputacion (id_vendedor);
+    ON mv_diagnostico_reputacion (id);
 
 
 -- ==============================================================================
 -- 2. Ventas y Finanzas
 -- ==============================================================================
 -- NOTA: Crecimiento MoM requiere datos multi-período. Con la cardinalidad
--- actual 1:1 entre vendedor y metricas_negocio, retorna NULL hasta contar
+-- actual 1:1 entre vendedor y metrica_negocio, retorna NULL hasta contar
 -- con una serie histórica.
 -- ==============================================================================
 CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_finanzas AS
 SELECT
-    v.id_vendedor,
+    v.id,
     
     -- Fórmula: (Ventas concretadas / Visitas totales) * 100
     COALESCE(
@@ -833,12 +836,12 @@ SELECT
     mn.fecha_inicio_periodo,
     mn.fecha_fin_periodo
 FROM vendedor v
-LEFT JOIN metricas_negocio mn ON v.id_vendedor = mn.id_vendedor
-LEFT JOIN metricas_costo mc ON v.id_vendedor = mc.id_vendedor
+LEFT JOIN metrica_negocio mn ON v.id = mn.id_vendedor
+LEFT JOIN metrica_costo mc ON v.id = mc.id_vendedor
 WHERE v.esta_activo = TRUE;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_finanzas_vendedor
-    ON mv_diagnostico_finanzas (id_vendedor);
+    ON mv_diagnostico_finanzas (id);
 
 
 -- ==============================================================================
@@ -846,8 +849,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_finanzas_vendedor
 -- ==============================================================================
 CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_publicaciones AS
 SELECT
-    v.id_vendedor,
-    COUNT(DISTINCT p.id_publicacion) AS total_publicaciones,
+    v.id,
+    COUNT(DISTINCT p.id) AS total_publicaciones,
     
     -- Fórmula: (Sumatoria de ventas / Sumatoria de visitas) * 100
     COALESCE(
@@ -857,26 +860,26 @@ SELECT
     
     -- Fórmula: (Cantidad de publicaciones con características completas / Total de publicaciones) * 100
     COALESCE(
-        (COUNT(DISTINCT CASE WHEN mcp.caracteristicas_completas = TRUE THEN p.id_publicacion END)::NUMERIC
-        / NULLIF(COUNT(DISTINCT p.id_publicacion), 0)) * 100,
+        (COUNT(DISTINCT CASE WHEN mcp.caracteristicas_completas = TRUE THEN p.id END)::NUMERIC
+        / NULLIF(COUNT(DISTINCT p.id), 0)) * 100,
         0
     ) AS pct_catalogo_completo,
     
     -- Fórmula: (Cantidad de publicaciones con video / Total de publicaciones) * 100
     COALESCE(
-        (COUNT(DISTINCT CASE WHEN mcp.tiene_video = TRUE THEN p.id_publicacion END)::NUMERIC
-        / NULLIF(COUNT(DISTINCT p.id_publicacion), 0)) * 100,
+        (COUNT(DISTINCT CASE WHEN mcp.tiene_video = TRUE THEN p.id END)::NUMERIC
+        / NULLIF(COUNT(DISTINCT p.id), 0)) * 100,
         0
     ) AS pct_publicaciones_con_video
 FROM vendedor v
-LEFT JOIN publicacion p ON v.id_vendedor = p.id_vendedor
-LEFT JOIN rendimiento_publicacion rp ON p.id_publicacion = rp.id_publicacion
-LEFT JOIN metricas_calidad_publicacion mcp ON p.id_publicacion = mcp.id_publicacion
+LEFT JOIN publicacion p ON v.id = p.id_vendedor
+LEFT JOIN rendimiento_publicacion rp ON p.id = rp.id
+LEFT JOIN metrica_calidad_publicacion mcp ON p.id = mcp.id
 WHERE v.esta_activo = TRUE
-GROUP BY v.id_vendedor;
+GROUP BY v.id;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_publicaciones_vendedor
-    ON mv_diagnostico_publicaciones (id_vendedor);
+    ON mv_diagnostico_publicaciones (id);
 
 
 -- ==============================================================================
@@ -888,7 +891,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_publicaciones_vendedor
 -- ==============================================================================
 CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_ads AS
 SELECT
-    v.id_vendedor,
+    v.id,
     
     -- Fórmula ROAS (Return On Ad Spend): Ventas concretadas / Inversión en Ads
     CASE
@@ -912,19 +915,19 @@ SELECT
     
     mc.inversion_ads
 FROM vendedor v
-LEFT JOIN metricas_costo mc ON v.id_vendedor = mc.id_vendedor
-LEFT JOIN metricas_negocio mn ON v.id_vendedor = mn.id_vendedor
+LEFT JOIN metrica_costo mc ON v.id = mc.id_vendedor
+LEFT JOIN metrica_negocio mn ON v.id = mn.id_vendedor
 WHERE v.esta_activo = TRUE;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_ads_vendedor
-    ON mv_diagnostico_ads (id_vendedor);
+    ON mv_diagnostico_ads (id);
 
 
 -- ==============================================================================
 -- 5. Stock Full (Logística)
 -- ==============================================================================
 -- NOTA: "unidades_activas_vendibles" y "total_skus_en_full" no existen como
--- columnas directas en metricas_stock_full. Se aproximan usando las columnas
+-- columnas directas en metrica_stock_full. Se aproximan usando las columnas
 -- disponibles. Cuando ML exponga el inventario detallado, reemplazar.
 --
 -- NOTA MATEMÁTICA: Para estas métricas, el denominador común asumido como "Total de espacios" 
@@ -932,7 +935,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_ads_vendedor
 -- ==============================================================================
 CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_stock AS
 SELECT
-    v.id_vendedor,
+    v.id,
     
     -- Fórmula: [Productos sin rotación / (Espacios P + Espacios G)] * 100
     COALESCE(
@@ -975,26 +978,26 @@ SELECT
     
     msf.puntaje_calidad
 FROM vendedor v
-LEFT JOIN metricas_stock_full msf ON v.id_vendedor = msf.id_vendedor
+LEFT JOIN metrica_stock_full msf ON v.id = msf.id_vendedor
 WHERE v.esta_activo = TRUE;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_stock_vendedor
-    ON mv_diagnostico_stock (id_vendedor);
+    ON mv_diagnostico_stock (id);
 
 
 -- Borrar las tablas(General)
     DROP TABLE IF EXISTS 
-    metricas_calidad_publicacion, 
+    metrica_calidad_publicacion, 
     rendimiento_publicacion, 
-    metricas_mi_pagina, 
-    metricas_stock_full, 
-    metricas_costo, 
-    metricas_negocio, 
-    metricas_reputacion, 
-    reportes_diagnostico, 
+    metrica_mi_pagina, 
+    metrica_stock_full, 
+    metrica_costo, 
+    metrica_negocio, 
+    metrica_reputacion, 
+    reporte_diagnostico, 
     publicacion, 
     vendedor, 
-    plan_saas, 
+    plan, 
     moneda, 
     pais 
 CASCADE;
