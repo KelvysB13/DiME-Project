@@ -1,0 +1,34 @@
+from fastapi import APIRouter
+from web.routers.auth_router import router as auth_router
+from web.middlewares.health import router as health_router
+
+api_router = APIRouter()
+
+api_router.include_router(health_router)
+from web.routers.pais_router import router as pais_router
+api_router.include_router(pais_router)
+from web.routers.moneda_router import router as moneda_router
+api_router.include_router(moneda_router)
+from web.routers.plan_saas_router import router as plan_saas_router
+api_router.include_router(plan_saas_router)
+from web.routers.vendedor_router import router as vendedor_router
+api_router.include_router(vendedor_router)
+from web.routers.publicacion_router import router as publicacion_router
+api_router.include_router(publicacion_router)
+from web.routers.reportes_diagnostico_router import router as reportes_diagnostico_router
+api_router.include_router(reportes_diagnostico_router)
+from web.routers.metricas_reputacion_router import router as metricas_reputacion_router
+api_router.include_router(metricas_reputacion_router)
+from web.routers.metricas_negocio_router import router as metricas_negocio_router
+api_router.include_router(metricas_negocio_router)
+from web.routers.metricas_costo_router import router as metricas_costo_router
+api_router.include_router(metricas_costo_router)
+from web.routers.metricas_stock_full_router import router as metricas_stock_full_router
+api_router.include_router(metricas_stock_full_router)
+from web.routers.metricas_mi_pagina_router import router as metricas_mi_pagina_router
+api_router.include_router(metricas_mi_pagina_router)
+from web.routers.rendimiento_publicacion_router import router as rendimiento_publicacion_router
+api_router.include_router(rendimiento_publicacion_router)
+from web.routers.metricas_calidad_publicacion_router import router as metricas_calidad_publicacion_router
+api_router.include_router(metricas_calidad_publicacion_router)
+api_router.include_router(auth_router)

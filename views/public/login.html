@@ -78,7 +78,7 @@
             </div>
 
             <!-- FORMULARIO -->
-            <form class="login-form">
+            <form class="login-form" id="loginForm">
 
                 <!-- CAMPO EMAIL -->
                 <div class="form-group email">
@@ -135,7 +135,7 @@
         </div>
     </div>
 
-<!-- SCRIPT: MOSTRAR/OCULTAR CONTRASEÑA -->
+<!-- SCRIPT: MOSTRAR/OCULTAR CONTRASEÑA + LOGIN API -->
 <script>
     document.getElementById('togglePassword').addEventListener('click', function () {
         const password = document.getElementById('password');
@@ -148,6 +148,55 @@
             icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>';
         }
     });
+
+    document.getElementById('loginForm').addEventListener('submit', async function (e) {
+        e.preventDefault();
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const remember = document.getElementById('remember').checked;
+        const submitBtn = this.querySelector('.btn-primary');
+        const originalText = submitBtn.textContent;
+
+        submitBtn.disabled = true;
+        submitBtn.textContent = 'Ingresando...';
+
+        try {
+            const formData = new URLSearchParams();
+            formData.append('username', email);
+            formData.append('password', password);
+
+            const response = await fetch('/auth/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formData
+            });
+
+            if (!response.ok) {
+                const err = await response.json();
+                throw new Error(err.detail || 'Error al iniciar sesión');
+            }
+
+            const data = await response.json();
+            const storage = remember ? localStorage : sessionStorage;
+            storage.setItem('access_token', data.access_token);
+            storage.setItem('refresh_token', data.refresh_token);
+            storage.setItem('user_id', data.user_id);
+            storage.setItem('user_name', data.name);
+            storage.setItem('user_email', data.email);
+            storage.setItem('user_role', data.role);
+
+            window.location.href = '/dashboard';
+        } catch (err) {
+            alert(err.message);
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.textContent = originalText;
+        }
+    });
+
+    if (localStorage.getItem('access_token') || sessionStorage.getItem('access_token')) {
+        window.location.href = '/dashboard';
+    }
 </script>
 </body>
 </html>
