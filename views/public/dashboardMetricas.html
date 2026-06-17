@@ -1,0 +1,1246 @@
+<!DOCTYPE html>
+<!-- ==========================================
+     DiME - Dashboard de Métricas
+     Dashboard principal con KPIs, widgets,
+     tabla de publicaciones y gráficos Metabase.
+     ========================================== -->
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Título y branding -->
+  <title>DiME | Dashboard de Métricas</title>
+  <link rel="icon" href="../../assets/icons/favicon.ico">
+
+  <!-- Fuentes: Inter, Space Grotesk, JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <!-- Estilos del dashboard -->
+  <link rel="stylesheet" href="../../assets/styles/dashboardMetricas.css">
+
+  <!-- ==========================================
+       SDK de Metabase para embebido de dashboards
+       Se carga en defer para no bloquear el render
+       ========================================== -->
+  <script defer src="http://localhost:3000/app/embed.js"></script>
+
+  <!-- Configuración de Metabase (tema oscuro, URL de instancia) -->
+  <script>
+    function defineMetabaseConfig(config) {
+      window.metabaseConfig = config;
+    }
+    defineMetabaseConfig({
+      "theme": { "preset": "dark" },
+      "isGuest": true,
+      "instanceUrl": "http://localhost:3000"
+    });
+  </script>
+</head>
+<body>
+
+  <!-- ==========================================
+       CONTENEDOR PRINCIPAL
+       Sidebar + Main (flex horizontal)
+       ========================================== -->
+  <div class="flex min-h-screen bg-dime-bg text-dime-text">
+
+    <!-- ==========================================
+         SIDEBAR — Navegación principal
+         Logo, menú de navegación, badge de usuario
+         ========================================== -->
+    <aside class="sidebar">
+
+      <!-- Logo DiME -->
+      <div class="logo-area">
+        <div class="relative dime-logo" style="width:32px;height:32px">
+          <div class="dime-logo-dot"></div>
+          <div class="dime-logo-bars" style="width:16px;height:12px">
+            <div style="width:3px;height:4px"></div>
+            <div style="width:3px;height:8px"></div>
+            <div style="width:3px;height:6px"></div>
+          </div>
+        </div>
+        <div>
+          <h2 class="font-display font-bold text-base text-white leading-none">DiME</h2>
+          <p class="text-9 text-dime-yellow uppercase tracking-wider font-mono">Cerebro Estratégico</p>
+        </div>
+      </div>
+
+      <!-- Menú de navegación -->
+      <nav>
+        <button class="active" data-section="inicio">
+          <span class="dime-icon">⌂</span>
+          <span>Inicio</span>
+        </button>
+        <button data-section="diagnostico">
+          <span class="dime-icon">◉</span>
+          <span>Diagnóstico</span>
+          <span class="live-badge">LIVE</span>
+        </button>
+        <button data-section="admin">
+          <span class="dime-icon">⊙</span>
+          <span>Países</span>
+        </button>
+        <button data-section="admin">
+          <span class="dime-icon">$</span>
+          <span>Monedas</span>
+        </button>
+        <button data-section="admin" class="active">
+          <span class="dime-icon">♦</span>
+          <span>Vendedores</span>
+        </button>
+        <button data-section="admin">
+          <span class="dime-icon">☰</span>
+          <span>Publicaciones</span>
+        </button>
+        <button data-section="dashboard">
+          <span class="dime-icon">★</span>
+          <span>Reputación</span>
+        </button>
+        <button data-section="guia" style="color:rgba(246,227,55,0.80)">
+          <span class="dime-icon">◎</span>
+          <span class="font-semibold">Guías Oficiales</span>
+        </button>
+      </nav>
+
+      <!-- Badge de usuario (logueado) -->
+      <div class="user-badge">
+        <div class="user-avatar" id="dash-user-avatar">PA</div>
+        <div class="user-info">
+          <p class="user-name" id="dash-user-name">Invitado DiME</p>
+          <p class="user-email" id="dash-user-email">p.avendano@gmail.com</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ==========================================
+         MAIN — Contenido principal del dashboard
+         ========================================== -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+
+      <!-- ==========================================
+           TOPBAR — Barra superior con título y selector
+           ========================================== -->
+      <header class="topbar">
+        <div>
+          <h1 id="topbar-title" class="topbar-title">Tablero de Diagnóstico</h1>
+          <p class="topbar-subtitle">Consola Estratégica Mercado Libre</p>
+        </div>
+        <div class="flex items-center gap-4">
+
+          <!-- Selector de vendedor — permite cambiar entre cuentas -->
+          <div class="flex items-center gap-2">
+            <span class="text-xs text-dime-lavender font-semibold hidden md:inline">Auditar Cuenta:</span>
+            <div class="relative">
+              <select id="header-seller-select"
+                class="bg-dime-card border border-dime-purple/30 rounded-xl px-3 py-2 pr-10 text-xs text-white cursor-pointer appearance-none outline-none font-mono"
+                style="padding:8px 40px 8px 12px;border:1px solid rgba(157,154,255,0.30);border-radius:12px;background:var(--dime-card);color:#fff;font-size:12px;outline:none">
+              </select>
+              <div class="absolute inset-y-0 right-0 py-2 pr-3 flex items-center pointer-events-none text-dime-purple">▼</div>
+            </div>
+          </div>
+
+          <!-- Perfil / Dropdown de usuario -->
+          <div class="relative profile-dropdown-wrapper">
+            <button id="user-profile-button"
+              class="flex items-center gap-2 p-1.5 rounded-xl hover:bg-dime-card border border-transparent hover:border-dime-purple/15 transition-all"
+              style="background:none;cursor:pointer;border:1px solid transparent">
+              <div class="w-8 h-8 rounded-lg bg-dime-yellow text-dime-bg font-bold flex items-center justify-center text-xs shadow-md">TH</div>
+              <div class="text-left hidden md:block">
+                <p class="text-xs font-semibold text-white leading-tight" id="profile-name">TECNOHOGAR_AR</p>
+                <p class="text-9 text-dime-purple leading-none" id="profile-plan" style="color:#34D399">Vendedor Platinum</p>
+              </div>
+              <span>▾</span>
+            </button>
+
+            <!-- Menú desplegable del perfil -->
+            <div id="profile-dropdown-menu" class="dropdown-menu" style="display:none">
+              <div class="dropdown-header">
+                <p class="text-xs font-semibold text-white" id="dropdown-name">Tecnohogar S.A.</p>
+                <p class="text-10 text-dime-purple font-mono" id="dropdown-email">ventas@tecnohogar.com.ar</p>
+              </div>
+              <div class="py-1">
+                <button class="dropdown-item"><span>⚙</span> Gestionar Cuentas de Vendedor</button>
+                <button class="dropdown-item"><span>✦</span> Ver Guías de Desarrollo</button>
+              </div>
+              <div class="pt-1" style="border-top:1px solid rgba(157,154,255,0.10)">
+                <button id="btn-signout" class="dropdown-item danger"><span>✕</span> Cerrar Sesión DiME</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- ==========================================
+           CONTENIDO DEL DASHBOARD
+           Se oculta mientras carga; se muestra al listo
+           ========================================== -->
+      <div class="flex-1 p-5 space-y-5 max-w-7xl mx-auto" style="width:100%;padding:20px">
+
+        <!-- Spinner de carga -->
+        <div id="loadingSpinner" class="loading-spinner">
+          <div class="spinner-ring"></div>
+          <p class="text-xs text-dime-purple font-mono">Cargando métricas del vendedor...</p>
+        </div>
+
+        <!-- Dashboard (oculto hasta que carguen los datos) -->
+        <div id="dashboardContent" class="space-y-5" style="display:none">
+
+          <!-- ==========================================
+               SELLER RIBBON — Barra informativa del vendedor
+               ========================================== -->
+          <div id="seller-ribbon" class="seller-ribbon"></div>
+
+          <!-- ==========================================
+               KPI CARDS — Tarjetas de indicadores clave
+               Se renderizan dinámicamente con JS
+               ========================================== -->
+          <div id="kpi-cards" class="grid grid-cols-1 md:grid-cols-3 gap-4"></div>
+
+          <!-- ==========================================
+               WIDGETS — 3 columnas: Reputación, Alertas, Categorías
+               ========================================== -->
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+
+            <!-- Widget 1: Dial de Reputación -->
+            <div class="bg-dime-card border border-dime-purple/15 rounded-xl p-4 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xs font-semibold text-white tracking-tight">Salud de Reputación</h3>
+                  <span class="text-9 font-mono text-dime-purple" id="rep-badge-title">MercadoLíder</span>
+                </div>
+                <p class="text-11 text-dime-lavender mb-3">Nivel de cumplimiento según disputas, tiempos de despacho y despachos demorados.</p>
+              </div>
+              <div id="dial-container" class="dial-container"></div>
+              <div id="dial-details" class="space-y-1.5" style="border-top:1px solid rgba(157,154,255,0.10);padding-top:10px;margin-top:10px"></div>
+            </div>
+
+            <!-- Widget 2: Alertas de vendedores -->
+            <div class="bg-dime-card border border-dime-purple/15 rounded-xl p-4 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xs font-semibold text-white tracking-tight">Vendedores con Alertas</h3>
+                  <div class="w-2 h-2 rounded-full bg-dime-yellow" style="animation:ping 1s infinite"></div>
+                </div>
+                <p class="text-11 text-dime-lavender mb-2.5">Factores de riesgo que amenazan el estatus oficial de tus marcas registradas.</p>
+              </div>
+              <div id="alerts-container" class="space-y-2 flex-1 overflow-y-auto" style="max-height:140px"></div>
+              <div style="border-top:1px solid rgba(157,154,255,0.10);padding-top:10px;margin-top:10px">
+                <button class="w-full text-center text-11 text-dime-yellow hover:underline flex items-center justify-center gap-1.5" style="background:none;border:none;cursor:pointer;padding:2px 0">
+                  Ir a Panel de Gestión CRUD <span>↗</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Widget 3: Rendimiento por Categoría -->
+            <div class="bg-dime-card border border-dime-purple/15 rounded-xl p-4 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-2">
+                  <h3 class="text-xs font-semibold text-white tracking-tight">Rendimiento por Categoría</h3>
+                  <span class="text-9 font-mono text-emerald-400">Mensual</span>
+                </div>
+                <p class="text-11 text-dime-lavender mb-2.5">Distribución de mix de ventas y márgenes de ganancia.</p>
+              </div>
+              <div id="category-performance" class="space-y-2.5"></div>
+              <div class="text-center text-9 text-dime-lavender font-mono" style="border-top:1px solid rgba(157,154,255,0.10);padding-top:10px;margin-top:10px">
+                <span id="update-timestamp">Actualizado recientemente</span> • Fuente: Mock Data
+              </div>
+            </div>
+          </div>
+
+          <!-- ==========================================
+               TABLA DE PUBLICACIONES
+               Con buscador y filtro por categoría
+               ========================================== -->
+          <div class="bg-dime-card border border-dime-purple/15 rounded-xl p-4 overflow-hidden">
+            <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between pb-4 gap-3" style="border-bottom:1px solid rgba(157,154,255,0.10)">
+              <div>
+                <h3 class="text-sm font-semibold text-white tracking-tight">Publicaciones en Monitoreo</h3>
+                <p class="text-11 text-dime-lavender">Controles de stock, precios y nivel de relevancia atribuible al algoritmo.</p>
+              </div>
+              <div class="flex flex-wrap items-center gap-2.5">
+                <div class="relative">
+                  <span class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-dime-purple">⌕</span>
+                  <input id="pub-search" type="text" placeholder="Buscar título o ID..." class="input-dime" style="padding-left:36px;padding-top:6px;padding-bottom:6px;width:160px">
+                </div>
+                <div class="relative select-wrapper">
+                  <select id="pub-category-filter" class="select-dime" style="padding-top:6px;padding-bottom:6px;padding-right:32px">
+                    <option value="Todas">Todas las categorías</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="dime-table">
+                <thead>
+                  <tr>
+                    <th class="py-2 px-3">Título</th>
+                    <th class="py-2 px-3 font-normal">ML ID</th>
+                    <th class="py-2 px-3">Tipo</th>
+                    <th class="py-2 px-3 text-center">Estado</th>
+                    <th class="py-2 px-3 text-right">Visitas</th>
+                    <th class="py-2 px-3 text-right">Ventas</th>
+                    <th class="py-2 px-3 text-center">Calidad</th>
+                  </tr>
+                </thead>
+                <tbody id="publications-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- ==========================================
+               SECCIÓN METABASE — Gráficos embebidos
+               Filtro por vendedor + grid de iframes
+               ========================================== -->
+          <div class="metabase-section" id="metabaseSection">
+            <div class="metabase-header">
+              <h3>📊 Gráficos Metabase</h3>
+              <span class="badge badge-purple" id="metabase-chart-count">0 gráficos</span>
+            </div>
+
+            <!-- Botones de filtro por vendedor -->
+            <div class="metabase-filter" id="metabase-filter"></div>
+
+            <!-- Grid de gráficos (iframes) -->
+            <div class="metabase-charts-grid" id="metabase-charts">
+              <p class="metabase-empty">Selecciona un vendedor para ver sus gráficos.</p>
+            </div>
+          </div>
+
+        </div><!-- /dashboardContent -->
+      </div><!-- /main-content -->
+    </main>
+  </div>
+
+  <!-- ==========================================
+       JAVASCRIPT — Toda la lógica del dashboard
+       ========================================== -->
+  <script>
+    // ====================================================================
+    // 1. CONFIGURACIÓN GENERAL
+    // ====================================================================
+
+    /** Base URL de la API (vacío = mismo origen) */
+    const apiBase = '';
+
+    /** Mapa de planes SaaS a nombres descriptivos */
+    const PLAN_MAP = { 1: 'Gratuito', 2: 'Pro', 3: 'Enterprise' };
+
+    /** Mapa de niveles de reputación a colores */
+    const REPUTATION_COLORS = {
+      green: { color: '#10B981', label: 'Excelente' },
+      yellow: { color: '#F6E337', label: 'En observación' },
+      red: { color: '#EF4444', label: 'Crítico' }
+    };
+
+    /** Estado global del dashboard */
+    let state = {
+      selectedSellerId: null,    // ID del vendedor seleccionado
+      sellers: {},               // Todos los vendedores con sus datos
+      publications: [],          // Publicaciones del vendedor activo
+      filteredPublications: [],  // Publicaciones filtradas (búsqueda + categoría)
+      currentUser: null          // Datos del usuario autenticado
+    };
+
+    // ====================================================================
+    // 2. UTILIDADES DE AUTENTICACIÓN
+    // ====================================================================
+
+    /**
+     * Obtiene el token JWT de localStorage o sessionStorage.
+     * Compatible con el sistema de auth del backend FastAPI.
+     */
+    function getToken() {
+      return localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
+    }
+
+    function getRefreshToken() {
+      return localStorage.getItem('refresh_token') || sessionStorage.getItem('refresh_token');
+    }
+
+    /**
+     * Fetch autenticado a la API.
+     * Agrega automáticamente el header Authorization: Bearer.
+     * Si recibe 401, intenta refrescar el token automáticamente.
+     *
+     * @param {string} url - Ruta de la API (ej: '/auth/me')
+     * @param {object} options - Opciones de fetch adicionales
+     * @returns {Promise<object>} - Respuesta JSON
+     */
+    async function apiFetch(url, options = {}) {
+      const token = getToken();
+      const headers = { ...options.headers };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
+      const response = await fetch(apiBase + url, { ...options, headers });
+      if (response.status === 401) {
+        const refreshed = await tryRefresh();
+        if (refreshed) {
+          const newToken = getToken();
+          headers['Authorization'] = `Bearer ${newToken}`;
+          return fetch(apiBase + url, { ...options, headers });
+        }
+        redirectToLogin();
+      }
+      if (!response.ok) {
+        const err = await response.json().catch(() => ({ detail: 'Error en la solicitud' }));
+        throw new Error(err.detail || 'Error en la solicitud');
+      }
+      return response.json();
+    }
+
+    /** Intenta refrescar el token JWT usando el refresh_token */
+    async function tryRefresh() {
+      const refreshToken = getRefreshToken();
+      if (!refreshToken) return false;
+      try {
+        const resp = await fetch(apiBase + '/auth/refresh', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ refresh_token: refreshToken })
+        });
+        if (!resp.ok) return false;
+        const data = await resp.json();
+        const storage = localStorage.getItem('access_token') ? localStorage : sessionStorage;
+        storage.setItem('access_token', data.access_token);
+        storage.setItem('refresh_token', data.refresh_token);
+        return true;
+      } catch {
+        return false;
+      }
+    }
+
+    /** Redirige al login limpiando credenciales */
+    function redirectToLogin() {
+      localStorage.removeItem('access_token');
+      localStorage.removeItem('refresh_token');
+      localStorage.removeItem('user_id');
+      localStorage.removeItem('user_name');
+      sessionStorage.clear();
+      window.location.href = '/';
+    }
+
+    // ====================================================================
+    // 3. UTILIDADES DE FORMATEO
+    // ====================================================================
+
+    /** Formatea un número como moneda local */
+    function formatCurrency(val, decimals = 2) {
+      if (val == null || isNaN(val)) return '-';
+      const num = typeof val === 'string' ? parseFloat(val) : val;
+      return num.toLocaleString('es', { minimumFractionDigits: decimals, maximumFractionDigits: decimals });
+    }
+
+    /** Formatea un número con separadores de miles */
+    function formatNumber(val) {
+      if (val == null || isNaN(val)) return '-';
+      const num = typeof val === 'string' ? parseInt(val) : val;
+      return num.toLocaleString('es');
+    }
+
+    /** Convierte booleano a "Sí" / "No" */
+    function formatBool(val) {
+      if (val == null) return '-';
+      return val ? 'Sí' : 'No';
+    }
+
+    /** Retorna la clase CSS para el badge de reputación según el nivel */
+    function getReputationBadgeClass(nivel) {
+      if (!nivel) return '';
+      const map = { 'green': 'badge-green', 'yellow': 'badge-yellow', 'red': 'badge-red' };
+      return map[nivel.toLowerCase()] || '';
+    }
+
+    /** Retorna la clase CSS para el badge de estado de publicación */
+    function getStatusBadgeClass(estado) {
+      const map = {
+        'active': 'status-active',
+        'paused': 'status-paused',
+        'closed': 'status-closed',
+        'under_review': 'status-under-review'
+      };
+      return map[estado] || 'status-active';
+    }
+
+    // ====================================================================
+    // 4. MOCK DATA — Datos de ejemplo mientras el backend no está listo
+    //
+    //   IMPORTANTE: Cuando el backend tenga los endpoints reales,
+    //   reemplazar esta sección con llamadas a apiFetch().
+    //   Estructura esperada de la API:
+    //     GET /auth/me        → { id, name, email, ... }
+    //     GET /auth/dashboard → { vendedor, reputacion, negocio,
+    //                              costos, stock_full, mi_pagina,
+    //                              publicaciones, reportes }
+    //     GET /auth/metabase/dashboards → { vendedores: [...] }
+    // ====================================================================
+
+    const MOCK_SELLERS = {
+      1: {
+        id: 1,
+        user_name: 'Tecno Hogar AR',
+        nombre_tienda: 'TecnoHogar S.A.',
+        email: 'ventas@tecnohogar.com.ar',
+        codigo_pais: 'AR',
+        moneda_local: 'ARS',
+        tipo_plan: 2,
+        reputacion: {
+          nivel_reputacion: 'green',
+          insignia: 'MercadoLíder Platino',
+          total_reclamos: 12,
+          total_canceladas: 5,
+          total_mediaciones: 3,
+          total_envios_incorrectos: 8
+        },
+        negocio: {
+          ventas_brutas_moneda_local: 2847500.50,
+          ventas_brutas_usd: 2850.00,
+          unidades_vendidas: 342,
+          visitas_totales: 28500,
+          ventas_concretadas: 342,
+          precio_promedio_venta: 8326.00
+        },
+        costos: {
+          ventas_cobradas_total: 2562750.45,
+          neto_recibido: 2178337.88,
+          cargos_por_venta: 384412.57,
+          costos_envio: 125000.00,
+          inversion_ads: 45000.00,
+          descuento_reputacion: 0
+        },
+        stock_full: {
+          puntaje_calidad: 87,
+          espacios_p_asignados: 45,
+          espacios_g_asignados: 12,
+          productos_no_aptos_venta: 3,
+          productos_sin_rotacion: 8,
+          productos_antiguedad: 5
+        },
+        mi_pagina: {
+          tiene_banner: true,
+          tiene_logo: true,
+          tiene_carruseles: true,
+          categorias_organizadas: true
+        },
+        alertas: [
+          { nivel: 'high', mensaje: '3 productos sin rotación > 90 días' },
+          { nivel: 'medium', mensaje: 'Tasa de reclamos aumentó 15% este mes' },
+          { nivel: 'low', mensaje: 'Stock bajo en 2 espacios G' }
+        ],
+        categorias: [
+          { nombre: 'Electrónica', ventas: 45, margen: 32, color: 'yellow' },
+          { nombre: 'Celulares', ventas: 28, margen: 28, color: 'purple' },
+          { nombre: 'Accesorios', ventas: 18, margen: 45, color: 'lavender' },
+          { nombre: 'Audio', ventas: 9, margen: 22, color: 'rose' }
+        ],
+        publicaciones: [
+          { titulo: 'Auriculares Bluetooth Pro', ml_item_id: 'MLA-1234567890', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 2840, ventas: 125, calidad: 92 },
+          { titulo: 'Cargador Rápido USB-C 65W', ml_item_id: 'MLA-1234567891', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 1520, ventas: 89, calidad: 88 },
+          { titulo: 'Funda Silicona iPhone 15', ml_item_id: 'MLA-1234567892', tipo_publicacion: 'bronze', estado_publicacion: 'active', visitas: 3200, ventas: 210, calidad: 75 },
+          { titulo: 'Smartwatch Deportivo X200', ml_item_id: 'MLA-1234567893', tipo_publicacion: 'gold_premium', estado_publicacion: 'active', visitas: 980, ventas: 42, calidad: 95 },
+          { titulo: 'Parlante Portátil Resistente', ml_item_id: 'MLA-1234567894', tipo_publicacion: 'bronze', estado_publicacion: 'paused', visitas: 450, ventas: 18, calidad: 70 },
+          { titulo: 'Hub USB-C 7 en 1', ml_item_id: 'MLA-1234567895', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 1850, ventas: 95, calidad: 85 }
+        ],
+        metabaseCharts: [
+          { title: 'Panel de Ventas', url: 'http://localhost:3000/public/question/3aa4fffb-05e9-4635-bf0f-3bf2d8c32b18' },
+          { title: 'Reputación', url: 'http://localhost:3000/embed/dashboard/2' },
+          { title: 'Costos', url: 'http://localhost:3000/embed/dashboard/3' },
+          { title: 'Stock Full', url: 'http://localhost:3000/embed/dashboard/4' },
+          { title: 'Tráfico', url: 'http://localhost:3000/embed/dashboard/5' }
+        ]
+      },
+      2: {
+        id: 2,
+        user_name: 'Moda Infantil VE',
+        nombre_tienda: 'Moda Infantil Caracas C.A.',
+        email: 'contacto@modainfantil.com',
+        codigo_pais: 'VE',
+        moneda_local: 'USD',
+        tipo_plan: 1,
+        reputacion: {
+          nivel_reputacion: 'yellow',
+          insignia: 'MercadoLíder',
+          total_reclamos: 28,
+          total_canceladas: 12,
+          total_mediaciones: 7,
+          total_envios_incorrectos: 15
+        },
+        negocio: {
+          ventas_brutas_moneda_local: 12500.00,
+          ventas_brutas_usd: 12500.00,
+          unidades_vendidas: 180,
+          visitas_totales: 12400,
+          ventas_concretadas: 180,
+          precio_promedio_venta: 69.44
+        },
+        costos: {
+          ventas_cobradas_total: 11250.00,
+          neto_recibido: 9562.50,
+          cargos_por_venta: 1687.50,
+          costos_envio: 3200.00,
+          inversion_ads: 12000.00,
+          descuento_reputacion: 250.00
+        },
+        stock_full: {
+          puntaje_calidad: 68,
+          espacios_p_asignados: 22,
+          espacios_g_asignados: 8,
+          productos_no_aptos_venta: 7,
+          productos_sin_rotacion: 14,
+          productos_antiguedad: 9
+        },
+        mi_pagina: {
+          tiene_banner: true,
+          tiene_logo: true,
+          tiene_carruseles: false,
+          categorias_organizadas: true
+        },
+        alertas: [
+          { nivel: 'high', mensaje: 'Puntaje de calidad por debajo del mínimo (68/100)' },
+          { nivel: 'high', mensaje: '14 productos sin rotación en inventario' },
+          { nivel: 'medium', mensaje: 'Descuento por reputación activo: -$250 USD' }
+        ],
+        categorias: [
+          { nombre: 'Ropa Bebés', ventas: 52, margen: 38, color: 'yellow' },
+          { nombre: 'Juguetes', ventas: 30, margen: 25, color: 'purple' },
+          { nombre: 'Calzado', ventas: 12, margen: 42, color: 'lavender' },
+          { nombre: 'Accesorios', ventas: 6, margen: 35, color: 'rose' }
+        ],
+        publicaciones: [
+          { titulo: 'Set de Ropa Bebé 6 Piezas', ml_item_id: 'MLV-9876543210', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 1890, ventas: 78, calidad: 72 },
+          { titulo: 'Juguete Educativo Bloques 100pz', ml_item_id: 'MLV-9876543211', tipo_publicacion: 'bronze', estado_publicacion: 'active', visitas: 2450, ventas: 112, calidad: 65 },
+          { titulo: 'Zapatos Escolares Talla 28', ml_item_id: 'MLV-9876543212', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 780, ventas: 34, calidad: 80 },
+          { titulo: 'Cuna Plegable Viajera', ml_item_id: 'MLV-9876543213', tipo_publicacion: 'gold_premium', estado_publicacion: 'paused', visitas: 320, ventas: 8, calidad: 90 },
+          { titulo: 'Mochila Infantil Dinosaurio', ml_item_id: 'MLV-9876543214', tipo_publicacion: 'bronze', estado_publicacion: 'active', visitas: 1100, ventas: 55, calidad: 60 }
+        ],
+        metabaseCharts: [
+          { title: 'Panel de Ventas', url: 'http://localhost:3000/embed/dashboard/6' },
+          { title: 'Reputación', url: 'http://localhost:3000/embed/dashboard/7' },
+          { title: 'Costos', url: 'http://localhost:3000/embed/dashboard/8' }
+        ]
+      },
+      3: {
+        id: 3,
+        user_name: 'Tecno Chile',
+        nombre_tienda: 'Tecno Chile SpA',
+        email: 'ventas@tecnochile.cl',
+        codigo_pais: 'CL',
+        moneda_local: 'CLP',
+        tipo_plan: 2,
+        reputacion: {
+          nivel_reputacion: 'green',
+          insignia: 'MercadoLíder Platino',
+          total_reclamos: 5,
+          total_canceladas: 2,
+          total_mediaciones: 1,
+          total_envios_incorrectos: 3
+        },
+        negocio: {
+          ventas_brutas_moneda_local: 18750000,
+          ventas_brutas_usd: 20500.00,
+          unidades_vendidas: 520,
+          visitas_totales: 42000,
+          ventas_concretadas: 520,
+          precio_promedio_venta: 36057.69
+        },
+        costos: {
+          ventas_cobradas_total: 16875000,
+          neto_recibido: 14343750,
+          cargos_por_venta: 2531250,
+          costos_envio: 890000,
+          inversion_ads: 350000,
+          descuento_reputacion: 0
+        },
+        stock_full: {
+          puntaje_calidad: 94,
+          espacios_p_asignados: 68,
+          espacios_g_asignados: 20,
+          productos_no_aptos_venta: 1,
+          productos_sin_rotacion: 3,
+          productos_antiguedad: 2
+        },
+        mi_pagina: {
+          tiene_banner: true,
+          tiene_logo: true,
+          tiene_carruseles: true,
+          categorias_organizadas: true
+        },
+        alertas: [
+          { nivel: 'low', mensaje: '3 espacios P con ocupación > 85%' },
+          { nivel: 'low', mensaje: 'Actualizar fotos de 2 publicaciones antiguas' }
+        ],
+        categorias: [
+          { nombre: 'Computación', ventas: 42, margen: 35, color: 'yellow' },
+          { nombre: 'Periféricos', ventas: 30, margen: 40, color: 'purple' },
+          { nombre: 'Almacenamiento', ventas: 18, margen: 30, color: 'lavender' },
+          { nombre: 'Redes', ventas: 10, margen: 38, color: 'rose' }
+        ],
+        publicaciones: [
+          { titulo: 'Notebook Gamer RTX 4060', ml_item_id: 'MLC-5551112220', tipo_publicacion: 'gold_premium', estado_publicacion: 'active', visitas: 4200, ventas: 85, calidad: 98 },
+          { titulo: 'Monitor 27" 4K IPS', ml_item_id: 'MLC-5551112221', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 3500, ventas: 120, calidad: 95 },
+          { titulo: 'Teclado Mecánico RGB', ml_item_id: 'MLC-5551112222', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 5600, ventas: 230, calidad: 88 },
+          { titulo: 'SSD NVMe 1TB', ml_item_id: 'MLC-5551112223', tipo_publicacion: 'bronze', estado_publicacion: 'active', visitas: 2800, ventas: 145, calidad: 82 },
+          { titulo: 'Mouse Inalámbrico Pro', ml_item_id: 'MLC-5551112224', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 3100, ventas: 178, calidad: 90 },
+          { titulo: 'Webcam 4K Streaming', ml_item_id: 'MLC-5551112225', tipo_publicacion: 'bronze', estado_publicacion: 'active', visitas: 1200, ventas: 52, calidad: 75 },
+          { titulo: 'Hub Thunderbolt 4', ml_item_id: 'MLC-5551112226', tipo_publicacion: 'gold_premium', estado_publicacion: 'paused', visitas: 680, ventas: 22, calidad: 93 }
+        ],
+        metabaseCharts: [
+          { title: 'Panel de Ventas', url: 'http://localhost:3000/embed/dashboard/9' },
+          { title: 'Reputación', url: 'http://localhost:3000/embed/dashboard/10' },
+          { title: 'Costos', url: 'http://localhost:3000/embed/dashboard/11' },
+          { title: 'Stock Full', url: 'http://localhost:3000/embed/dashboard/12' },
+          { title: 'Tráfico', url: 'http://localhost:3000/embed/dashboard/13' },
+          { title: 'Publicaciones', url: 'http://localhost:3000/embed/dashboard/14' },
+          { title: 'Mi Página', url: 'http://localhost:3000/embed/dashboard/15' }
+        ]
+      }
+    };
+
+    // ====================================================================
+    // 5. FUNCIONES DE RENDERIZADO
+    // ====================================================================
+
+    /**
+     * Renderiza el select de vendedores en el topbar.
+     * Toma los IDs del mock data y crea opciones.
+     */
+    function renderSellerSelect() {
+      const select = document.getElementById('header-seller-select');
+      select.innerHTML = '';
+      Object.values(MOCK_SELLERS).forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.id;
+        const flagMap = { AR: '🇦🇷', VE: '🇻🇪', CL: '🇨🇱', MX: '🇲🇽', BR: '🇧🇷', CO: '🇨🇴' };
+        opt.textContent = `${flagMap[s.codigo_pais] || '🌐'} ${s.user_name}`;
+        select.appendChild(opt);
+      });
+      select.value = state.selectedSellerId;
+    }
+
+    /**
+     * Renderiza la barra informativa del vendedor activo.
+     */
+    function renderSellerRibbon(seller) {
+      const container = document.getElementById('seller-ribbon');
+      if (!seller) {
+        container.innerHTML = '<p class="text-xs text-dime-purple font-mono">Selecciona un vendedor</p>';
+        return;
+      }
+      container.innerHTML = `
+        <span class="seller-ribbon-label">Tienda</span>
+        <span class="seller-ribbon-value">${seller.nombre_tienda}</span>
+        <div class="seller-ribbon-divider"></div>
+        <span class="seller-ribbon-label">País</span>
+        <span class="seller-ribbon-value">${seller.codigo_pais}</span>
+        <div class="seller-ribbon-divider"></div>
+        <span class="seller-ribbon-label">Moneda</span>
+        <span class="seller-ribbon-value">${seller.moneda_local}</span>
+        <div class="seller-ribbon-divider"></div>
+        <span class="seller-ribbon-label">Plan</span>
+        <span class="seller-ribbon-value">${PLAN_MAP[seller.tipo_plan] || 'Gratuito'}</span>
+        <div class="seller-ribbon-divider"></div>
+        <span class="seller-ribbon-label">Insignia</span>
+        <span class="seller-ribbon-value">
+          <span class="badge ${getReputationBadgeClass(seller.reputacion.nivel_reputacion)}">
+            ${seller.reputacion.insignia || 'Sin insignia'}
+          </span>
+        </span>
+      `;
+    }
+
+    /**
+     * Renderiza las 6 tarjetas KPI (Reputación, Negocio, Costos, Stock, Mi Página, Cuenta).
+     */
+    function renderKpiCards(seller) {
+      const grid = document.getElementById('kpi-cards');
+      if (!seller) {
+        grid.innerHTML = '';
+        return;
+      }
+
+      const r = seller.reputacion;
+      const n = seller.negocio;
+      const c = seller.costos;
+      const s = seller.stock_full;
+      const p = seller.mi_pagina;
+
+      const cards = [
+        {
+          label: 'Reputación',
+          icon: '★',
+          iconClass: 'yellow',
+          value: r.insignia || 'Sin datos',
+          trend: `${formatNumber(r.total_reclamos)} reclamos`,
+          trendClass: r.total_reclamos > 15 ? 'warning' : 'positive',
+          detail: `Canceladas: ${formatNumber(r.total_canceladas)} · Mediaciones: ${formatNumber(r.total_mediaciones)}`
+        },
+        {
+          label: 'Negocio',
+          icon: '📈',
+          iconClass: 'purple',
+          value: formatCurrency(n.ventas_brutas_moneda_local),
+          trend: `${formatNumber(n.unidades_vendidas)} unidades vendidas`,
+          trendClass: 'positive',
+          detail: `${formatNumber(n.visitas_totales)} visitas · ${formatNumber(n.ventas_concretadas)} ventas`
+        },
+        {
+          label: 'Costos',
+          icon: '📉',
+          iconClass: 'yellow',
+          value: formatCurrency(c.neto_recibido),
+          trend: `Comisiones: ${formatCurrency(c.cargos_por_venta)}`,
+          trendClass: 'neutral',
+          detail: `Envíos: ${formatCurrency(c.costos_envio)} · Ads: ${formatCurrency(c.inversion_ads)}`
+        },
+        {
+          label: 'Stock Full',
+          icon: '📦',
+          iconClass: 'purple',
+          value: `${s.puntaje_calidad}/100`,
+          trend: `${formatNumber(s.espacios_p_asignados)} espacios P`,
+          trendClass: s.puntaje_calidad >= 80 ? 'positive' : 'warning',
+          detail: `${formatNumber(s.productos_no_aptos_venta)} no aptos · ${formatNumber(s.productos_sin_rotacion)} sin rotación`
+        },
+        {
+          label: 'Mi Página',
+          icon: '🛒',
+          iconClass: 'yellow',
+          value: formatBool(p.tiene_banner),
+          trend: formatBool(p.tiene_logo),
+          trendClass: 'positive',
+          detail: `Carruseles: ${formatBool(p.tiene_carruseles)} · Categorías: ${formatBool(p.categorias_organizadas)}`
+        },
+        {
+          label: 'Cuenta',
+          icon: '👤',
+          iconClass: 'purple',
+          value: seller.user_name || '-',
+          trend: seller.email || '-',
+          trendClass: 'neutral',
+          detail: `${seller.codigo_pais} · ${PLAN_MAP[seller.tipo_plan] || 'Gratuito'}`
+        }
+      ];
+
+      grid.innerHTML = cards.map(kpi => `
+        <div class="kpi-card">
+          <div class="glow-spot ${kpi.iconClass}"></div>
+          <div class="kpi-header">
+            <span class="kpi-label">${kpi.label}</span>
+            <div class="kpi-icon-box ${kpi.iconClass}">${kpi.icon}</div>
+          </div>
+          <div class="kpi-value">${kpi.value}</div>
+          <div class="kpi-trend ${kpi.trendClass}">${kpi.trend}</div>
+          <div class="kpi-chart">
+            ${Array.from({ length: 12 }, (_, i) => {
+              const h = Math.floor(Math.random() * 20) + 4;
+              return `<div class="bar ${kpi.iconClass === 'yellow' ? 'bg-dime-yellow/40' : 'bg-dime-purple/40'}" style="height:${h}px"></div>`;
+            }).join('')}
+          </div>
+          <div class="text-10 text-dime-lavender font-mono mt-1.5">${kpi.detail}</div>
+        </div>
+      `).join('');
+    }
+
+    /**
+     * Renderiza el dial SVG de reputación con animación.
+     */
+    function renderReputationDial(seller) {
+      const container = document.getElementById('dial-container');
+      const titleEl = document.getElementById('rep-badge-title');
+      const detailsEl = document.getElementById('dial-details');
+
+      if (!seller) {
+        container.innerHTML = '';
+        titleEl.textContent = '-';
+        detailsEl.innerHTML = '';
+        return;
+      }
+
+      const r = seller.reputacion;
+      // Calcula puntaje base en reputación (inverso de reclamos/cancelaciones/mediaciones/envíos)
+      const totalIssues = r.total_reclamos + r.total_canceladas + r.total_mediaciones + r.total_envios_incorrectos;
+      let score = Math.max(0, 100 - totalIssues * 2);
+      score = Math.min(100, score);
+
+      const levelColors = REPUTATION_COLORS[r.nivel_reputacion] || REPUTATION_COLORS.yellow;
+      titleEl.textContent = r.insignia || 'Sin insignia';
+      titleEl.style.color = levelColors.color;
+
+      // SVG circular estilo dial
+      const circumference = 2 * Math.PI * 36; // radio=36
+      const offset = circumference * (1 - score / 100);
+
+      container.innerHTML = `
+        <svg width="100" height="90" viewBox="0 0 100 90">
+          <path d="M 12 78 A 36 36 0 1 1 88 78"
+            fill="none" stroke="rgba(157,154,255,0.15)" stroke-width="6" stroke-linecap="round"/>
+          <path d="M 12 78 A 36 36 0 1 1 88 78"
+            fill="none" stroke="${levelColors.color}" stroke-width="6" stroke-linecap="round"
+            stroke-dasharray="${circumference}"
+            stroke-dashoffset="${offset}"
+            style="transition: stroke-dashoffset 1s ease-out"/>
+        </svg>
+        <div class="dial-score">
+          <div class="dial-score-value" style="color:${levelColors.color}">${score}</div>
+          <div class="dial-score-label">Puntaje</div>
+        </div>
+      `;
+
+      // Detalles del dial
+      const maxIssues = Math.max(r.total_reclamos, r.total_canceladas, r.total_mediaciones, r.total_envios_incorrectos, 1);
+      const items = [
+        { label: 'Reclamos', value: r.total_reclamos, max: maxIssues },
+        { label: 'Cancelaciones', value: r.total_canceladas, max: maxIssues },
+        { label: 'Mediaciones', value: r.total_mediaciones, max: maxIssues },
+        { label: 'Envíos Incorrectos', value: r.total_envios_incorrectos, max: maxIssues }
+      ];
+
+      detailsEl.innerHTML = items.map(item => {
+        const pct = (item.value / item.max) * 100;
+        const barColor = pct > 60 ? 'bg-red-500/10' : pct > 30 ? 'bg-dime-yellow/20' : 'bg-emerald-500/10';
+        return `
+          <div class="flex items-center justify-between text-10">
+            <span class="text-dime-lavender">${item.label}</span>
+            <div class="flex items-center gap-2 flex-1 ml-2">
+              <div style="flex:1;height:4px;background:rgba(157,154,255,0.10);border-radius:2px;overflow:hidden">
+                <div style="height:100%;width:${pct}%;background:${levelColors.color};border-radius:2px;transition:width 0.5s ease"></div>
+              </div>
+              <span class="font-mono font-semibold text-white" style="min-width:20px;text-align:right">${item.value}</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    /**
+     * Renderiza las alertas del vendedor activo.
+     */
+    function renderAlerts(seller) {
+      const container = document.getElementById('alerts-container');
+      if (!seller || !seller.alertas || seller.alertas.length === 0) {
+        container.innerHTML = '<p class="text-11 text-dime-lavender font-mono">Sin alertas activas ✓</p>';
+        return;
+      }
+      container.innerHTML = seller.alertas.map(a => `
+        <div class="alert-card alert-${a.nivel}">
+          <span>${a.nivel === 'high' ? '🔴' : a.nivel === 'medium' ? '🟡' : '🟢'}</span>
+          <span>${a.mensaje}</span>
+        </div>
+      `).join('');
+    }
+
+    /**
+     * Renderiza las barras de rendimiento por categoría.
+     */
+    function renderCategoryPerformance(seller) {
+      const container = document.getElementById('category-performance');
+      if (!seller || !seller.categorias || seller.categorias.length === 0) {
+        container.innerHTML = '<p class="text-11 text-dime-lavender font-mono">Sin datos de categorías</p>';
+        return;
+      }
+      const maxVentas = Math.max(...seller.categorias.map(c => c.ventas));
+      container.innerHTML = seller.categorias.map(cat => `
+        <div>
+          <div class="flex items-center justify-between text-10 mb-1">
+            <span class="text-dime-lavender">${cat.nombre}</span>
+            <span class="font-mono text-white font-semibold">${cat.ventas}% · ${cat.margen}% margen</span>
+          </div>
+          <div class="cat-bar">
+            <div class="cat-bar-fill cat-bar-${cat.color}" style="width:${(cat.ventas / maxVentas) * 100}%"></div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    /**
+     * Renderiza la tabla de publicaciones con búsqueda y filtro.
+     */
+    function renderPublicationsTable(seller) {
+      const tbody = document.getElementById('publications-tbody');
+      const categoryFilter = document.getElementById('pub-category-filter');
+
+      if (!seller || !seller.publicaciones || seller.publicaciones.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-dime-purple font-mono py-8">Sin publicaciones disponibles</td></tr>';
+        return;
+      }
+
+      // Actualizar catálogo de publicaciones en el estado global
+      state.publications = seller.publicaciones;
+      state.filteredPublications = [...seller.publicaciones];
+
+      // Poblar filtro de categorías (tipos de publicación únicos)
+      const tipos = [...new Set(seller.publicaciones.map(p => p.tipo_publicacion))];
+      categoryFilter.innerHTML = '<option value="Todas">Todas las categorías</option>' +
+        tipos.map(t => `<option value="${t}">${t.replace('_', ' ').toUpperCase()}</option>`).join('');
+
+      applyFilters();
+    }
+
+    /**
+     * Aplica los filtros de búsqueda y categoría a las publicaciones.
+     */
+    function applyFilters() {
+      const searchTerm = document.getElementById('pub-search').value.toLowerCase();
+      const category = document.getElementById('pub-category-filter').value;
+
+      state.filteredPublications = state.publications.filter(p => {
+        const matchSearch = !searchTerm ||
+          p.titulo.toLowerCase().includes(searchTerm) ||
+          p.ml_item_id.toLowerCase().includes(searchTerm);
+        const matchCategory = category === 'Todas' || p.tipo_publicacion === category;
+        return matchSearch && matchCategory;
+      });
+
+      renderFilteredPublications();
+    }
+
+    /**
+     * Renderiza las publicaciones filtradas en la tabla.
+     */
+    function renderFilteredPublications() {
+      const tbody = document.getElementById('publications-tbody');
+      if (state.filteredPublications.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="7" class="text-center text-dime-purple font-mono py-8">Sin resultados para tu búsqueda</td></tr>';
+        return;
+      }
+      tbody.innerHTML = state.filteredPublications.map(p => `
+        <tr>
+          <td class="font-semibold text-white">${p.titulo}</td>
+          <td><code style="color:var(--dime-yellow);font-size:10px">${p.ml_item_id}</code></td>
+          <td class="text-dime-lavender">${p.tipo_publicacion.replace('_', ' ').toUpperCase()}</td>
+          <td class="text-center"><span class="status-badge ${getStatusBadgeClass(p.estado_publicacion)}">${p.estado_publicacion}</span></td>
+          <td class="text-right font-mono">${formatNumber(p.visitas)}</td>
+          <td class="text-right font-mono">${formatNumber(p.ventas)}</td>
+          <td class="text-center font-mono">${p.calidad}/100</td>
+        </tr>
+      `).join('');
+    }
+
+    // ====================================================================
+    // 6. SECCIÓN METABASE — Gráficos embebidos
+    // ====================================================================
+
+    /**
+     * Renderiza los botones de filtro para seleccionar
+     * qué vendedor mostrar en los gráficos Metabase.
+     */
+    function renderMetabaseFilter() {
+      const container = document.getElementById('metabase-filter');
+      container.innerHTML = '';
+      Object.values(MOCK_SELLERS).forEach(s => {
+        const btn = document.createElement('button');
+        btn.className = 'metabase-filter-btn' + (state.selectedSellerId === s.id ? ' active' : '');
+        btn.textContent = `${s.user_name} (${s.metabaseCharts.length})`;
+        btn.dataset.id = s.id;
+        btn.addEventListener('click', () => {
+          state.selectedSellerId = s.id;
+          renderMetabaseFilter();
+          renderMetabaseCharts();
+        });
+        container.appendChild(btn);
+      });
+    }
+
+    /**
+     * Renderiza los gráficos Metabase del vendedor seleccionado
+     * como cards con iframes embebidos.
+     */
+    function renderMetabaseCharts() {
+      const container = document.getElementById('metabase-charts');
+      const countEl = document.getElementById('metabase-chart-count');
+      const seller = MOCK_SELLERS[state.selectedSellerId];
+
+      if (!seller || !seller.metabaseCharts || seller.metabaseCharts.length === 0) {
+        container.innerHTML = '<p class="metabase-empty">Selecciona un vendedor para ver sus gráficos.</p>';
+        countEl.textContent = '0 gráficos';
+        return;
+      }
+
+      countEl.textContent = `${seller.metabaseCharts.length} gráficos`;
+      container.innerHTML = seller.metabaseCharts.map(chart => `
+        <div class="metabase-chart-card">
+          <div class="metabase-chart-title">${chart.title}</div>
+          <iframe src="${chart.url}#bordered=true&titled=true"
+            loading="lazy"
+            allowtransparency>
+          </iframe>
+        </div>
+      `).join('');
+    }
+
+    // ====================================================================
+    // 7. ACTUALIZACIÓN COMPLETA DEL DASHBOARD
+    // ====================================================================
+
+    /**
+     * Actualiza todo el dashboard con los datos del vendedor seleccionado.
+     * Oculta el spinner y muestra el contenido.
+     */
+    function updateDashboard(sellerId) {
+      state.selectedSellerId = sellerId;
+      const seller = MOCK_SELLERS[sellerId];
+
+      // Actualizar info de perfil
+      const profileNameEl = document.getElementById('profile-name');
+      const profilePlanEl = document.getElementById('profile-plan');
+      const dropdownNameEl = document.getElementById('dropdown-name');
+      const dropdownEmailEl = document.getElementById('dropdown-email');
+      const userNameEl = document.getElementById('dash-user-name');
+      const userEmailEl = document.getElementById('dash-user-email');
+      const userAvatarEl = document.getElementById('dash-user-avatar');
+
+      if (seller) {
+        profileNameEl.textContent = seller.user_name;
+        profilePlanEl.textContent = PLAN_MAP[seller.tipo_plan] || 'Gratuito';
+        dropdownNameEl.textContent = seller.nombre_tienda;
+        dropdownEmailEl.textContent = seller.email;
+        userNameEl.textContent = seller.user_name;
+        userEmailEl.textContent = seller.email;
+        userAvatarEl.textContent = seller.user_name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase() || 'DM';
+        document.getElementById('topbar-title').textContent = `Dashboard: ${seller.user_name}`;
+      }
+
+      // Renderizar secciones
+      renderSellerRibbon(seller);
+      renderKpiCards(seller);
+      renderReputationDial(seller);
+      renderAlerts(seller);
+      renderCategoryPerformance(seller);
+      renderPublicationsTable(seller);
+      renderMetabaseFilter();
+      renderMetabaseCharts();
+
+      // Actualizar timestamp
+      document.getElementById('update-timestamp').textContent =
+        `Actualizado: ${new Date().toLocaleString('es')}`;
+
+      // Ocultar spinner, mostrar contenido
+      document.getElementById('loadingSpinner').style.display = 'none';
+      document.getElementById('dashboardContent').style.display = 'block';
+    }
+
+    /**
+     * Carga inicial del dashboard: verifica token, prepara datos mock.
+     *
+     * IMPORTANTE: Cuando el backend esté listo, reemplazar MOCK_SELLERS
+     * con llamadas reales a la API:
+     *
+     *   const [me, dashboard] = await Promise.all([
+     *     apiFetch('/auth/me'),
+     *     apiFetch('/auth/dashboard')
+     *   ]);
+     *   // Renderizar con los datos reales...
+     */
+    async function loadDashboard() {
+      try {
+        // Intentar obtener datos del backend (si existe)
+        // Si falla, usar mock data
+        let user = null;
+        let dashboardData = null;
+
+        try {
+          // TODO: Reemplazar con la API real cuando el backend esté listo
+          // user = await apiFetch('/auth/me');
+          // dashboardData = await apiFetch('/auth/dashboard');
+          throw new Error('API no disponible — usando mock data');
+        } catch (apiError) {
+          console.warn('[DiME] Usando datos mock:', apiError.message);
+        }
+
+        // Usar el primer vendedor por defecto
+        const firstId = Object.keys(MOCK_SELLERS)[0];
+        updateDashboard(Number(firstId));
+
+      } catch (err) {
+        document.getElementById('loadingSpinner').innerHTML = `
+          <div class="error-message">
+            <p>Error al cargar el dashboard: ${err.message}</p>
+            <button onclick="loadDashboard()" class="btn-retry">Reintentar</button>
+          </div>
+        `;
+      }
+    }
+
+    // ====================================================================
+    // 8. EVENT LISTENERS
+    // ====================================================================
+
+    // --- Selector de vendedor ---
+    document.getElementById('header-seller-select').addEventListener('change', function () {
+      const sellerId = Number(this.value);
+      // Mostrar spinner breve mientras cambia de vendedor
+      document.getElementById('dashboardContent').style.display = 'none';
+      document.getElementById('loadingSpinner').style.display = 'flex';
+      // Pequeño timeout para simular carga
+      setTimeout(() => updateDashboard(sellerId), 300);
+    });
+
+    // --- Toggle del menú de perfil ---
+    document.getElementById('user-profile-button').addEventListener('click', function (e) {
+      e.stopPropagation();
+      const menu = document.getElementById('profile-dropdown-menu');
+      menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
+    });
+
+    // Cerrar menú al hacer clic fuera
+    document.addEventListener('click', function () {
+      const menu = document.getElementById('profile-dropdown-menu');
+      if (menu.style.display !== 'none') {
+        menu.style.display = 'none';
+      }
+    });
+
+    // --- Cerrar sesión ---
+    document.getElementById('btn-signout').addEventListener('click', function () {
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = '/';
+    });
+
+    // --- Búsqueda en tabla de publicaciones ---
+    document.getElementById('pub-search').addEventListener('input', applyFilters);
+    document.getElementById('pub-category-filter').addEventListener('change', applyFilters);
+
+    // --- Navegación del sidebar ---
+    document.querySelectorAll('.sidebar nav button').forEach(btn => {
+      btn.addEventListener('click', function () {
+        // Quitar active de todos
+        document.querySelectorAll('.sidebar nav button').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        // Si el botón tiene data-section dashboard, mantener vista actual
+        const section = this.dataset.section;
+        if (section === 'dashboard' || section === 'inicio') {
+          // Ya estamos en el dashboard
+        } else if (section === 'guia') {
+          // TODO: Navegar a guías
+          console.log('Navegar a guías');
+        }
+      });
+    });
+
+    // ====================================================================
+    // 9. INICIALIZACIÓN
+    // ====================================================================
+
+    document.addEventListener('DOMContentLoaded', function () {
+      // Verificar si hay token (cuando el backend esté listo)
+      const token = getToken();
+      if (!token) {
+        // Sin token: mostrar dashboard con mock data igual
+        // En producción, redirigir al login:
+        // redirectToLogin();
+        // return;
+        console.warn('[DiME] Sin token — mostrando datos mock');
+      }
+
+      // Cargar el dashboard
+      loadDashboard();
+    });
+  </script>
+
+</body>
+</html>
