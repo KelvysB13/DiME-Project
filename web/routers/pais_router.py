@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Optional
 from resources.db import get_async_db
 from infrastructure.persistence.repositories.pais import PaisRepository
 from application.services.pais import PaisService
@@ -20,8 +19,8 @@ async def get_pais_service(db: AsyncSession = Depends(get_async_db)) -> PaisServ
 async def list_pais(
     skip: int = Query(0, ge=0, description="Registros a saltar"),
     limit: int = Query(100, ge=1, le=1000, description="Máximo de registros"),
-    search: Optional[str] = Query(None, description="Buscar en: codigo_pais, nombre_pais"),
-    sort_by: Optional[str] = Query(None, description="Ordenar por: codigo_pais, nombre_pais"),
+    search: str | None = Query(None, description="Buscar en: codigo_pais, nombre_pais"),
+    sort_by: str | None = Query(None, description="Ordenar por: codigo_pais, nombre_pais"),
     sort_desc: bool = Query(False, description="Orden descendente"),
     service: PaisService = Depends(get_pais_service),
 ):

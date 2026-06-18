@@ -1,11 +1,10 @@
 from datetime import datetime, timezone
 from sqlalchemy import Column, DateTime
 from sqlalchemy.orm import Mapped
-from typing import Optional
 
 
 class SoftDeleteMixin:
-    deleted_at: Mapped[Optional[datetime]] = Column(DateTime, nullable=True, default=None)
+    deleted_at: Mapped[datetime | None] = Column(DateTime, nullable=True, default=None)
 
     def soft_delete(self) -> None:
         self.deleted_at = datetime.now(timezone.utc)

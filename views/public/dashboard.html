@@ -6,145 +6,144 @@
     <title>DiME | Dashboard</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="icon" href="../../assets/icons/favicon.ico">
     <link rel="stylesheet" href="../../assets/styles/dashboard_style.css">
-    <script defer src="http://localhost:3000/app/embed.js"></script>
-    <script>
-        function defineMetabaseConfig(config) {
-            window.metabaseConfig = config;
-        }
-    </script>
-    <script>
-        defineMetabaseConfig({
-            "theme": { "preset": "dark" },
-            "isGuest": true,
-            "instanceUrl": "http://localhost:3000"
-        });
-    </script>
 </head>
 <body>
-    <nav class="navbar">
-        <div class="nav-brand">
-            <img src="../../assets/images/DiME_LogoNuevo.png" alt="DiME" class="nav-logo">
-            <span class="nav-title">Dashboard</span>
-        </div>
-        <div class="nav-user">
-            <span id="navUserName" class="nav-user-name"></span>
-            <span id="navUserEmail" class="nav-user-email"></span>
-            <button id="logoutBtn" class="btn-logout">Cerrar Sesión</button>
-        </div>
-    </nav>
-
-    <main class="dashboard-container">
-        <div id="loadingSpinner" class="loading-spinner">
-            <div class="spinner"></div>
-            <p>Cargando tus métricas...</p>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <img src="../../assets/images/DiME_LogoNuevo.png" alt="DiME" class="sidebar-logo">
+            <span class="sidebar-brand">DiME</span>
         </div>
 
-        <div id="dashboardContent" class="dashboard-content" style="display:none;">
-            <header class="dashboard-header">
-                <h1>Bienvenido, <span id="userDisplayName"></span></h1>
-                <p class="header-subtitle">Diagnóstico de métricas de tu tienda</p>
-            </header>
+        <div class="sidebar-user">
+            <div class="sidebar-avatar" id="sidebarAvatar">U</div>
+            <div class="sidebar-user-info">
+                <span class="sidebar-user-name" id="sidebarUserName">Usuario</span>
+                <span class="sidebar-user-email" id="sidebarUserEmail">email</span>
+            </div>
+        </div>
 
-            <section class="kpi-grid" id="kpiGrid">
-                <div class="kpi-card" id="kpiReputation">
-                    <div class="kpi-header">
-                        <span class="kpi-icon reputation-icon"></span>
-                        <h3>Reputación</h3>
-                    </div>
-                    <div class="kpi-body">
-                        <div class="kpi-row"><span>Nivel:</span> <strong id="repNivel">-</strong></div>
-                        <div class="kpi-row"><span>Insignia:</span> <strong id="repInsignia">-</strong></div>
-                        <div class="kpi-row"><span>Reclamos:</span> <strong id="repReclamos">-</strong></div>
-                        <div class="kpi-row"><span>Cancelaciones:</span> <strong id="repCancelaciones">-</strong></div>
-                        <div class="kpi-row"><span>Mediaciones:</span> <strong id="repMediaciones">-</strong></div>
-                        <div class="kpi-row"><span>Envíos Incorrectos:</span> <strong id="repEnvios">-</strong></div>
-                    </div>
-                </div>
+        <nav class="sidebar-nav">
+            <button class="nav-item active" data-section="resumen">
+                <span class="nav-icon">📊</span>
+                <span class="nav-label">Resumen</span>
+            </button>
+            <button class="nav-item" data-section="reputacion">
+                <span class="nav-icon">⭐</span>
+                <span class="nav-label">Reputación</span>
+            </button>
+            <button class="nav-item" data-section="negocio">
+                <span class="nav-icon">💼</span>
+                <span class="nav-label">Negocio</span>
+            </button>
+            <button class="nav-item" data-section="costos">
+                <span class="nav-icon">💰</span>
+                <span class="nav-label">Costos</span>
+            </button>
+            <button class="nav-item" data-section="stock">
+                <span class="nav-icon">📦</span>
+                <span class="nav-label">Stock Full</span>
+            </button>
+            <button class="nav-item" data-section="mipagina">
+                <span class="nav-icon">🏪</span>
+                <span class="nav-label">Mi Página</span>
+            </button>
+            <button class="nav-item" data-section="publicaciones">
+                <span class="nav-icon">📋</span>
+                <span class="nav-label">Publicaciones</span>
+            </button>
+            <button class="nav-item" data-section="reportes">
+                <span class="nav-icon">📝</span>
+                <span class="nav-label">Reportes</span>
+            </button>
+            <button class="nav-item" data-section="graficos">
+                <span class="nav-icon">📈</span>
+                <span class="nav-label">Gráficos</span>
+            </button>
+        </nav>
 
-                <div class="kpi-card" id="kpiBusiness">
-                    <div class="kpi-header">
-                        <span class="kpi-icon business-icon"></span>
-                        <h3>Negocio</h3>
-                    </div>
-                    <div class="kpi-body">
-                        <div class="kpi-row"><span>Ventas Brutas:</span> <strong id="bizVentasBrutas">-</strong></div>
-                        <div class="kpi-row"><span>Ventas USD:</span> <strong id="bizVentasUsd">-</strong></div>
-                        <div class="kpi-row"><span>Unidades Vendidas:</span> <strong id="bizUnidades">-</strong></div>
-                        <div class="kpi-row"><span>Visitas:</span> <strong id="bizVisitas">-</strong></div>
-                        <div class="kpi-row"><span>Conversión:</span> <strong id="bizConversion">-</strong></div>
-                        <div class="kpi-row"><span>Ticket Promedio:</span> <strong id="bizTicket">-</strong></div>
-                    </div>
-                </div>
+        <button id="logoutBtnSidebar" class="sidebar-logout">Cerrar Sesión</button>
+    </aside>
 
-                <div class="kpi-card" id="kpiCosts">
-                    <div class="kpi-header">
-                        <span class="kpi-icon costs-icon"></span>
-                        <h3>Costos</h3>
-                    </div>
-                    <div class="kpi-body">
-                        <div class="kpi-row"><span>Ventas Cobradas:</span> <strong id="costVentasCobradas">-</strong></div>
-                        <div class="kpi-row"><span>Neto Recibido:</span> <strong id="costNeto">-</strong></div>
-                        <div class="kpi-row"><span>Comisiones:</span> <strong id="costComisiones">-</strong></div>
-                        <div class="kpi-row"><span>Envíos:</span> <strong id="costEnvios">-</strong></div>
-                        <div class="kpi-row"><span>Inversión Ads:</span> <strong id="costAds">-</strong></div>
-                        <div class="kpi-row"><span>Dto. Reputación:</span> <strong id="costDtoRep">-</strong></div>
-                    </div>
-                </div>
+    <main class="main-content">
+        <header class="topbar">
+            <button class="hamburger" id="hamburgerBtn">☰</button>
+            <div class="topbar-title">
+                <span id="topbarSection">Resumen</span>
+            </div>
+        </header>
 
-                <div class="kpi-card" id="kpiStock">
-                    <div class="kpi-header">
-                        <span class="kpi-icon stock-icon"></span>
-                        <h3>Stock Full</h3>
-                    </div>
-                    <div class="kpi-body">
-                        <div class="kpi-row"><span>Puntaje Calidad:</span> <strong id="stockPuntaje">-</strong></div>
-                        <div class="kpi-row"><span>Espacios P:</span> <strong id="stockEspaciosP">-</strong></div>
-                        <div class="kpi-row"><span>Espacios G:</span> <strong id="stockEspaciosG">-</strong></div>
-                        <div class="kpi-row"><span>No Aptos:</span> <strong id="stockNoAptos">-</strong></div>
-                        <div class="kpi-row"><span>Sin Rotación:</span> <strong id="stockSinRotacion">-</strong></div>
-                        <div class="kpi-row"><span>Antigüedad:</span> <strong id="stockAntiguedad">-</strong></div>
-                    </div>
-                </div>
+        <div class="content-area" id="contentArea">
+            <div id="loadingSpinner" class="loading-spinner">
+                <div class="spinner"></div>
+                <p>Cargando tus métricas...</p>
+            </div>
 
-                <div class="kpi-card" id="kpiMiPagina">
-                    <div class="kpi-header">
-                        <span class="kpi-icon pagina-icon"></span>
-                        <h3>Mi Página</h3>
-                    </div>
-                    <div class="kpi-body">
-                        <div class="kpi-row"><span>Banner:</span> <strong id="pageBanner">-</strong></div>
-                        <div class="kpi-row"><span>Logo:</span> <strong id="pageLogo">-</strong></div>
-                        <div class="kpi-row"><span>Carruseles:</span> <strong id="pageCarruseles">-</strong></div>
-                        <div class="kpi-row"><span>Categorías:</span> <strong id="pageCategorias">-</strong></div>
-                    </div>
-                </div>
+            <div id="section-resumen" class="section-content active">
+                <div id="kpiCards"></div>
+                <div class="resumen-charts" id="resumenCharts"></div>
+            </div>
 
-                <div class="kpi-card" id="kpiUserInfo">
-                    <div class="kpi-header">
-                        <span class="kpi-icon user-icon"></span>
-                        <h3>Tu Cuenta</h3>
-                    </div>
-                    <div class="kpi-body">
-                        <div class="kpi-row"><span>Usuario:</span> <strong id="userName">-</strong></div>
-                        <div class="kpi-row"><span>Tienda:</span> <strong id="userTienda">-</strong></div>
-                        <div class="kpi-row"><span>Email:</span> <strong id="userEmail">-</strong></div>
-                        <div class="kpi-row"><span>País:</span> <strong id="userPais">-</strong></div>
-                        <div class="kpi-row"><span>Moneda:</span> <strong id="userMoneda">-</strong></div>
-                        <div class="kpi-row"><span>Plan:</span> <strong id="userPlan">-</strong></div>
-                    </div>
+            <div id="section-reputacion" class="section-content">
+                <div class="table-wrap">
+                    <table class="dt">
+                        <thead>
+                            <tr><th>Indicador</th><th>Valor</th></tr>
+                        </thead>
+                        <tbody id="reputacionBody"></tbody>
+                    </table>
                 </div>
-            </section>
+            </div>
 
-            <section class="section-card" id="publicacionesSection">
-                <div class="section-header">
-                    <h2>Publicaciones</h2>
-                    <span class="badge" id="pubCount">0</span>
+            <div id="section-negocio" class="section-content">
+                <div class="table-wrap">
+                    <table class="dt">
+                        <thead>
+                            <tr><th>Indicador</th><th>Valor</th></tr>
+                        </thead>
+                        <tbody id="negocioBody"></tbody>
+                    </table>
                 </div>
-                <div class="table-responsive">
-                    <table class="data-table" id="publicacionesTable">
+            </div>
+
+            <div id="section-costos" class="section-content">
+                <div class="table-wrap">
+                    <table class="dt">
+                        <thead>
+                            <tr><th>Indicador</th><th>Valor</th></tr>
+                        </thead>
+                        <tbody id="costosBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="section-stock" class="section-content">
+                <div class="table-wrap">
+                    <table class="dt">
+                        <thead>
+                            <tr><th>Indicador</th><th>Valor</th></tr>
+                        </thead>
+                        <tbody id="stockBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="section-mipagina" class="section-content">
+                <div class="table-wrap">
+                    <table class="dt">
+                        <thead>
+                            <tr><th>Indicador</th><th>Valor</th></tr>
+                        </thead>
+                        <tbody id="mipaginaBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="section-publicaciones" class="section-content">
+                <div class="table-wrap">
+                    <table class="dt">
                         <thead>
                             <tr>
                                 <th>Título</th>
@@ -161,15 +160,11 @@
                         <tbody id="publicacionesBody"></tbody>
                     </table>
                 </div>
-            </section>
+            </div>
 
-            <section class="section-card" id="reportesSection">
-                <div class="section-header">
-                    <h2>Reportes de Diagnóstico</h2>
-                    <span class="badge" id="repCount">0</span>
-                </div>
-                <div class="table-responsive">
-                    <table class="data-table" id="reportesTable">
+            <div id="section-reportes" class="section-content">
+                <div class="table-wrap">
+                    <table class="dt">
                         <thead>
                             <tr>
                                 <th>Período</th>
@@ -180,18 +175,15 @@
                         <tbody id="reportesBody"></tbody>
                     </table>
                 </div>
-            </section>
+            </div>
 
-            <section class="section-card" id="metabaseSection">
-                <div class="section-header">
-                    <h2>Gráficos Metabase</h2>
-                    <span class="badge" id="metabaseChartCount">0</span>
-                </div>
-                <div class="metabase-filter" id="metabaseFilter"></div>
-                <div class="metabase-charts" id="metabaseCharts"></div>
-            </section>
+            <div id="section-graficos" class="section-content">
+                <div class="graficos-grid" id="graficosContainer"></div>
+            </div>
         </div>
     </main>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
 <script>
     const apiBase = '';
@@ -273,259 +265,270 @@
         return val ? 'Sí' : 'No';
     }
 
-    function getReputationBadgeClass(nivel) {
-        if (!nivel) return '';
-        const map = { 'green': 'badge-green', 'yellow': 'badge-yellow', 'red': 'badge-red' };
-        return map[nivel.toLowerCase()] || '';
+    let dashboardData = null;
+
+    function navigateTo(section) {
+        document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+
+        const sectionEl = document.getElementById('section-' + section);
+        const navItem = document.querySelector(`.nav-item[data-section="${section}"]`);
+        if (sectionEl) sectionEl.classList.add('active');
+        if (navItem) navItem.classList.add('active');
+
+        const labels = {
+            resumen: 'Resumen', reputacion: 'Reputación', negocio: 'Negocio',
+            costos: 'Costos', stock: 'Stock Full', mipagina: 'Mi Página',
+            publicaciones: 'Publicaciones', reportes: 'Reportes', graficos: 'Gráficos'
+        };
+        document.getElementById('topbarSection').textContent = labels[section] || section;
+
+        if (window.innerWidth <= 768) {
+            document.getElementById('sidebar').classList.remove('open');
+            document.getElementById('sidebarOverlay').classList.remove('visible');
+        }
     }
 
-    async function loadDashboard() {
-        try {
-            const [me, dashboard] = await Promise.all([
-                apiFetch('/auth/me'),
-                apiFetch('/auth/dashboard')
+    function initNavigation() {
+        document.querySelectorAll('.nav-item').forEach(btn => {
+            btn.addEventListener('click', () => {
+                navigateTo(btn.dataset.section);
+            });
+        });
+    }
+
+    function initHamburger() {
+        const btn = document.getElementById('hamburgerBtn');
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebarOverlay');
+        btn.addEventListener('click', () => {
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('visible');
+        });
+        overlay.addEventListener('click', () => {
+            sidebar.classList.remove('open');
+            overlay.classList.remove('visible');
+        });
+    }
+
+    function buildResumen(data) {
+        const container = document.getElementById('kpiCards');
+        container.innerHTML = '';
+
+        function section(icon, title, color) {
+            const sec = document.createElement('div');
+            sec.className = 'ks';
+            sec.innerHTML = `
+                <div class="ks-header">
+                    <span class="ks-header-icon">${icon}</span>
+                    <span class="ks-header-title">${title}</span>
+                </div>
+                <div class="ks-grid"></div>
+            `;
+            container.appendChild(sec);
+            return sec.querySelector('.ks-grid');
+        }
+
+        function card(grid, label, value, icon, color) {
+            const div = document.createElement('div');
+            div.className = 'kc';
+            div.style.setProperty('--kc-accent', color);
+            div.innerHTML = `
+                <div class="kc-bar"></div>
+                <div class="kc-body">
+                    <div class="kc-icon">${icon}</div>
+                    <div class="kc-info">
+                        <div class="kc-value">${value}</div>
+                        <div class="kc-label">${label}</div>
+                    </div>
+                </div>
+            `;
+            grid.appendChild(div);
+        }
+
+        const rep = data.reputacion;
+        if (rep) {
+            const g = section('⭐', 'Reputación', '#f59e0b');
+            card(g, 'Nivel', `<span class="rb rb-${(rep.nivel_reputacion || '').toLowerCase()}">${rep.nivel_reputacion || '-'}</span>`, '⭐', '#f59e0b');
+            card(g, 'Reclamos', formatNumber(rep.total_reclamos), '⚠️', '#ef4444');
+        }
+
+        const neg = data.negocio;
+        if (neg) {
+            const g = section('💼', 'Negocio', '#10b981');
+            card(g, 'Ventas Brutas', formatCurrency(neg.ventas_brutas_moneda_local), '💰', '#10b981');
+            card(g, 'Visitas', formatNumber(neg.visitas_totales), '👁️', '#3b82f6');
+            card(g, 'Conversión', neg.ventas_concretadas && neg.visitas_totales ? ((neg.ventas_concretadas / neg.visitas_totales) * 100).toFixed(2) + '%' : '-', '📈', '#8b5cf6');
+        }
+
+        const cos = data.costos;
+        if (cos) {
+            const g = section('💰', 'Costos', '#f97316');
+            card(g, 'Costos Totales', formatCurrency(cos.cargos_por_venta + cos.costos_envio + cos.inversion_ads + (cos.descuento_reputacion || 0)), '💸', '#f97316');
+            card(g, 'Neto Recibido', formatCurrency(cos.neto_recibido), '✅', '#06b6d4');
+        }
+
+        const stk = data.stock_full;
+        if (stk) {
+            const g = section('📦', 'Stock Full', '#6366f1');
+            card(g, 'Stock Score', stk.puntaje_calidad != null ? stk.puntaje_calidad + '/100' : '-', '📦', '#6366f1');
+        }
+
+        renderCharts(data.metabase, 'resumenCharts');
+    }
+
+    function renderCharts(metabase, containerId) {
+        const container = document.getElementById(containerId);
+        if (!container) return;
+        container.innerHTML = '';
+        if (!metabase || !metabase.charts || !metabase.charts.length) return;
+        metabase.charts.forEach(chart => {
+            const w = document.createElement('div');
+            w.className = 'gf';
+            w.innerHTML = `
+                <div class="gf-title">${chart.title}</div>
+                <iframe src="${chart.url}#bordered=true&titled=true" width="100%" height="380" frameborder="0" allowtransparency></iframe>
+            `;
+            container.appendChild(w);
+        });
+    }
+
+    function buildKpiTable(bodyId, category, dataObj, metrics) {
+        const tbody = document.getElementById(bodyId);
+        tbody.innerHTML = '';
+        if (!dataObj) return;
+        const catRow = document.createElement('tr');
+        catRow.className = 'cr';
+        catRow.innerHTML = `<td colspan="2">${category.toUpperCase()}</td>`;
+        tbody.appendChild(catRow);
+        metrics.forEach(m => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `<td>${m.label}</td><td class="cv">${m.value}</td>`;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function loadDashboard() {
+        const token = getToken();
+        if (!token) { redirectToLogin(); return; }
+
+        apiFetch('/auth/me').then(me => {
+            document.getElementById('sidebarUserName').textContent = me.name || me.email;
+            document.getElementById('sidebarUserEmail').textContent = me.email;
+            document.getElementById('sidebarAvatar').textContent = (me.name || me.email).charAt(0).toUpperCase();
+        }).catch(() => {});
+
+        apiFetch('/auth/dashboard').then(data => {
+            dashboardData = data;
+            buildResumen(data);
+
+            buildKpiTable('reputacionBody', 'Reputación', data.reputacion, [
+                { label: 'Nivel', value: `<span class="rb rb-${(data.reputacion?.nivel_reputacion || '').toLowerCase()}">${data.reputacion?.nivel_reputacion || '-'}</span>` },
+                { label: 'Insignia', value: data.reputacion?.insignia || '-' },
+                { label: 'Reclamos', value: formatNumber(data.reputacion?.total_reclamos) },
+                { label: 'Cancelaciones', value: formatNumber(data.reputacion?.total_canceladas) },
+                { label: 'Mediaciones', value: formatNumber(data.reputacion?.total_mediaciones) },
+                { label: 'Envíos Inc.', value: formatNumber(data.reputacion?.total_envios_incorrectos) },
             ]);
 
-            document.getElementById('userDisplayName').textContent = me.name || me.email;
-            document.getElementById('navUserName').textContent = me.name || 'Usuario';
-            document.getElementById('navUserEmail').textContent = me.email;
+            buildKpiTable('negocioBody', 'Negocio', data.negocio, [
+                { label: 'Ventas Brutas', value: formatCurrency(data.negocio?.ventas_brutas_moneda_local) },
+                { label: 'Ventas USD', value: formatCurrency(data.negocio?.ventas_brutas_usd) },
+                { label: 'Unidades Vend.', value: formatNumber(data.negocio?.unidades_vendidas) },
+                { label: 'Visitas', value: formatNumber(data.negocio?.visitas_totales) },
+                { label: 'Conversión', value: data.negocio?.ventas_concretadas && data.negocio?.visitas_totales ? ((data.negocio.ventas_concretadas / data.negocio.visitas_totales) * 100).toFixed(2) + '%' : '-' },
+                { label: 'Ticket Prom.', value: data.negocio?.precio_promedio_venta ? formatCurrency(data.negocio.precio_promedio_venta) : '-' },
+            ]);
 
-            const data = dashboard;
+            buildKpiTable('costosBody', 'Costos', data.costos, [
+                { label: 'Ventas Cobradas', value: formatCurrency(data.costos?.ventas_cobradas_total) },
+                { label: 'Neto Recibido', value: formatCurrency(data.costos?.neto_recibido) },
+                { label: 'Comisiones', value: formatCurrency(data.costos?.cargos_por_venta) },
+                { label: 'Envíos', value: formatCurrency(data.costos?.costos_envio) },
+                { label: 'Inversión Ads', value: formatCurrency(data.costos?.inversion_ads) },
+                { label: 'Dto. Reputación', value: formatCurrency(data.costos?.descuento_reputacion) },
+            ]);
 
-            if (data.vendedor) {
-                const v = data.vendedor;
-                document.getElementById('userName').textContent = v.user_name || '-';
-                document.getElementById('userTienda').textContent = v.nombre_tienda || '-';
-                document.getElementById('userEmail').textContent = v.email || '-';
-                document.getElementById('userPais').textContent = v.codigo_pais || '-';
-                document.getElementById('userMoneda').textContent = v.moneda_local || '-';
-                const planMap = { 1: 'Gratuito', 2: 'Pro', 3: 'Enterprise' };
-                document.getElementById('userPlan').textContent = planMap[v.tipo_plan] || 'Gratuito';
-            }
+            buildKpiTable('stockBody', 'Stock Full', data.stock_full, [
+                { label: 'Puntaje Calidad', value: data.stock_full?.puntaje_calidad != null ? data.stock_full.puntaje_calidad + '/100' : '-' },
+                { label: 'Espacios P', value: formatNumber(data.stock_full?.espacios_p_asignados) },
+                { label: 'Espacios G', value: formatNumber(data.stock_full?.espacios_g_asignados) },
+                { label: 'No Aptos', value: formatNumber(data.stock_full?.productos_no_aptos_venta) },
+                { label: 'Sin Rotación', value: formatNumber(data.stock_full?.productos_sin_rotacion) },
+                { label: 'Antigüedad', value: formatNumber(data.stock_full?.productos_antiguedad) },
+            ]);
 
-            if (data.reputacion) {
-                const r = data.reputacion;
-                document.getElementById('repNivel').textContent = r.nivel_reputacion || '-';
-                document.getElementById('repNivel').className = getReputationBadgeClass(r.nivel_reputacion);
-                document.getElementById('repInsignia').textContent = r.insignia || 'Sin insignia';
-                document.getElementById('repReclamos').textContent = formatNumber(r.total_reclamos);
-                document.getElementById('repCancelaciones').textContent = formatNumber(r.total_canceladas);
-                document.getElementById('repMediaciones').textContent = formatNumber(r.total_mediaciones);
-                document.getElementById('repEnvios').textContent = formatNumber(r.total_envios_incorrectos);
-            }
+            buildKpiTable('mipaginaBody', 'Mi Página', data.mi_pagina, [
+                { label: 'Banner', value: formatBool(data.mi_pagina?.tiene_banner) },
+                { label: 'Logo', value: formatBool(data.mi_pagina?.tiene_logo) },
+                { label: 'Carruseles', value: formatBool(data.mi_pagina?.tiene_carruseles) },
+                { label: 'Categorías', value: formatBool(data.mi_pagina?.categorias_organizadas) },
+            ]);
 
-            if (data.negocio) {
-                const n = data.negocio;
-                document.getElementById('bizVentasBrutas').textContent = formatCurrency(n.ventas_brutas_moneda_local);
-                document.getElementById('bizVentasUsd').textContent = formatCurrency(n.ventas_brutas_usd);
-                document.getElementById('bizUnidades').textContent = formatNumber(n.unidades_vendidas);
-                document.getElementById('bizVisitas').textContent = formatNumber(n.visitas_totales);
-                const conv = n.ventas_concretadas && n.visitas_totales
-                    ? ((n.ventas_concretadas / n.visitas_totales) * 100).toFixed(2) + '%'
-                    : '-';
-                document.getElementById('bizConversion').textContent = conv;
-                document.getElementById('bizTicket').textContent = n.precio_promedio_venta ? formatCurrency(n.precio_promedio_venta) : '-';
-            }
-
-            if (data.costos) {
-                const c = data.costos;
-                document.getElementById('costVentasCobradas').textContent = formatCurrency(c.ventas_cobradas_total);
-                document.getElementById('costNeto').textContent = formatCurrency(c.neto_recibido);
-                document.getElementById('costComisiones').textContent = formatCurrency(c.cargos_por_venta);
-                document.getElementById('costEnvios').textContent = formatCurrency(c.costos_envio);
-                document.getElementById('costAds').textContent = formatCurrency(c.inversion_ads);
-                document.getElementById('costDtoRep').textContent = formatCurrency(c.descuento_reputacion);
-            }
-
-            if (data.stock_full) {
-                const s = data.stock_full;
-                document.getElementById('stockPuntaje').textContent = s.puntaje_calidad != null ? s.puntaje_calidad + '/100' : '-';
-                document.getElementById('stockEspaciosP').textContent = formatNumber(s.espacios_p_asignados);
-                document.getElementById('stockEspaciosG').textContent = formatNumber(s.espacios_g_asignados);
-                document.getElementById('stockNoAptos').textContent = formatNumber(s.productos_no_aptos_venta);
-                document.getElementById('stockSinRotacion').textContent = formatNumber(s.productos_sin_rotacion);
-                document.getElementById('stockAntiguedad').textContent = formatNumber(s.productos_antiguedad);
-            }
-
-            if (data.mi_pagina) {
-                const p = data.mi_pagina;
-                document.getElementById('pageBanner').textContent = formatBool(p.tiene_banner);
-                document.getElementById('pageLogo').textContent = formatBool(p.tiene_logo);
-                document.getElementById('pageCarruseles').textContent = formatBool(p.tiene_carruseles);
-                document.getElementById('pageCategorias').textContent = formatBool(p.categorias_organizadas);
-            }
-
-            if (data.publicaciones && data.publicaciones.length > 0) {
-                document.getElementById('pubCount').textContent = data.publicaciones.length;
+            if (data.publicaciones && data.publicaciones.length) {
                 const tbody = document.getElementById('publicacionesBody');
                 tbody.innerHTML = '';
                 data.publicaciones.forEach(pub => {
-                    const tr = document.createElement('tr');
                     const rend = pub.rendimiento || {};
                     const calidad = pub.calidad || {};
+                    const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>${pub.titulo || '-'}</td>
                         <td><code>${pub.ml_item_id || '-'}</code></td>
                         <td>${pub.tipo_publicacion || '-'}</td>
-                        <td><span class="status-badge status-${pub.estado_publicacion || 'unknown'}">${pub.estado_publicacion || '-'}</span></td>
-                        <td>${formatNumber(rend.visitas)}</td>
-                        <td>${formatNumber(rend.ventas)}</td>
-                        <td>${formatNumber(calidad.cantidad_fotos)}</td>
-                        <td>${formatBool(calidad.tiene_video)}</td>
-                        <td>${calidad.puntaje_calidad != null ? calidad.puntaje_calidad + '/100' : '-'}</td>
+                        <td><span class="sb sb-${pub.estado_publicacion || 'unknown'}">${pub.estado_publicacion || '-'}</span></td>
+                        <td class="cv">${formatNumber(rend.visitas)}</td>
+                        <td class="cv">${formatNumber(rend.ventas)}</td>
+                        <td class="cv">${formatNumber(calidad.cantidad_fotos)}</td>
+                        <td class="cv">${formatBool(calidad.tiene_video)}</td>
+                        <td class="cv">${calidad.puntaje_calidad != null ? calidad.puntaje_calidad + '/100' : '-'}</td>
                     `;
                     tbody.appendChild(tr);
                 });
             }
 
-            if (data.reportes && data.reportes.length > 0) {
-                document.getElementById('repCount').textContent = data.reportes.length;
+            if (data.reportes && data.reportes.length) {
                 const tbody = document.getElementById('reportesBody');
                 tbody.innerHTML = '';
                 data.reportes.forEach(rep => {
-                    const tr = document.createElement('tr');
                     const periodo = rep.fecha_inicio_periodo && rep.fecha_fin_periodo
-                        ? `${rep.fecha_inicio_periodo} al ${rep.fecha_fin_periodo}`
-                        : '-';
-                    let planAccion = '-';
+                        ? rep.fecha_inicio_periodo + ' al ' + rep.fecha_fin_periodo : '-';
+                    let plan = '-';
                     if (rep.plan_accion && typeof rep.plan_accion === 'object') {
-                        const tareas = Object.values(rep.plan_accion);
-                        planAccion = tareas.length > 0 ? tareas.join(', ') : 'Sin tareas';
+                        const t = Object.values(rep.plan_accion);
+                        plan = t.length ? t.join(', ') : 'Sin tareas';
                     }
-                    tr.innerHTML = `
-                        <td>${periodo}</td>
-                        <td>${rep.resumen_ejecutivo || 'Sin resumen'}</td>
-                        <td>${planAccion}</td>
-                    `;
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `<td>${periodo}</td><td>${rep.resumen_ejecutivo || '-'}</td><td>${plan}</td>`;
                     tbody.appendChild(tr);
                 });
             }
 
+            renderCharts(data.metabase, 'graficosContainer');
+
             document.getElementById('loadingSpinner').style.display = 'none';
-            document.getElementById('dashboardContent').style.display = 'block';
-            setupMetabaseAfterDashboard();
-        } catch (err) {
+            document.getElementById('contentArea').style.display = 'block';
+        }).catch(err => {
             document.getElementById('loadingSpinner').innerHTML = `
                 <div class="error-message">
                     <p>Error al cargar el dashboard: ${err.message}</p>
                     <button onclick="loadDashboard()" class="btn-retry">Reintentar</button>
                 </div>
             `;
-        }
-    }
-
-    const salespersonCharts = {
-        1: {
-            name: "Vendedor 1",
-            store: "Tienda Ejemplo",
-            charts: [
-                { title: "Panel de Ventas", url: "http://localhost:3000/public/question/3aa4fffb-05e9-4635-bf0f-3bf2d8c32b18" },
-                { title: "Reputación", url: "http://localhost:3000/embed/dashboard/2" },
-                { title: "Costos", url: "http://localhost:3000/embed/dashboard/3" },
-                { title: "Stock Full", url: "http://localhost:3000/embed/dashboard/4" },
-                { title: "Tráfico", url: "http://localhost:3000/embed/dashboard/5" }
-            ]
-        },
-        2: {
-            name: "Vendedor 2",
-            store: "Tienda Ejemplo 2",
-            charts: [
-                { title: "Panel de Ventas", url: "http://localhost:3000/embed/dashboard/6" },
-                { title: "Reputación", url: "http://localhost:3000/embed/dashboard/7" },
-                { title: "Costos", url: "http://localhost:3000/embed/dashboard/8" }
-            ]
-        },
-        3: {
-            name: "Vendedor 3",
-            store: "Tienda Ejemplo 3",
-            charts: [
-                { title: "Panel de Ventas", url: "http://localhost:3000/embed/dashboard/9" },
-                { title: "Reputación", url: "http://localhost:3000/embed/dashboard/10" },
-                { title: "Costos", url: "http://localhost:3000/embed/dashboard/11" },
-                { title: "Stock Full", url: "http://localhost:3000/embed/dashboard/12" },
-                { title: "Tráfico", url: "http://localhost:3000/embed/dashboard/13" },
-                { title: "Publicaciones", url: "http://localhost:3000/embed/dashboard/14" },
-                { title: "Mi Página", url: "http://localhost:3000/embed/dashboard/15" }
-            ]
-        }
-    };
-
-    let selectedSalespersonId = null;
-
-    function renderMetabaseFilter() {
-        const container = document.getElementById('metabaseFilter');
-        const ids = Object.keys(salespersonCharts);
-        if (ids.length === 0) {
-            document.getElementById('metabaseSection').style.display = 'none';
-            return;
-        }
-        container.innerHTML = '';
-        ids.forEach(id => {
-            const sp = salespersonCharts[id];
-            const btn = document.createElement('button');
-            btn.className = 'metabase-filter-btn' + (selectedSalespersonId === Number(id) ? ' active' : '');
-            btn.textContent = `${sp.name} (${sp.charts.length})`;
-            btn.title = `${sp.store} — ${sp.charts.length} gráficos`;
-            btn.dataset.id = id;
-            btn.addEventListener('click', () => {
-                selectedSalespersonId = Number(id);
-                renderMetabaseFilter();
-                renderMetabaseCharts();
-            });
-            container.appendChild(btn);
         });
     }
 
-    function renderMetabaseCharts() {
-        const container = document.getElementById('metabaseCharts');
-        const sp = salespersonCharts[selectedSalespersonId];
-        if (!sp) {
-            container.innerHTML = '<p class="metabase-empty">Selecciona un vendedor para ver sus gráficos.</p>';
-            document.getElementById('metabaseChartCount').textContent = '0';
-            return;
-        }
-        document.getElementById('metabaseChartCount').textContent = sp.charts.length;
-        container.innerHTML = '';
-        sp.charts.forEach(chart => {
-            const wrapper = document.createElement('div');
-            wrapper.className = 'metabase-chart-wrapper';
-            wrapper.innerHTML = `
-                <h4 class="metabase-chart-title">${chart.title}</h4>
-                <iframe src="${chart.url}#bordered=true&titled=true"
-                    width="100%" height="400" frameborder="0"
-                    allowtransparency></iframe>
-            `;
-            container.appendChild(wrapper);
-        });
-    }
-
-    function initMetabase() {
-        const ids = Object.keys(salespersonCharts);
-        if (ids.length === 0) return;
-        selectedSalespersonId = Number(ids[0]);
-        renderMetabaseFilter();
-        renderMetabaseCharts();
-    }
-
-    function setupMetabaseAfterDashboard() {
-        const section = document.getElementById('metabaseSection');
-        if (section) initMetabase();
-    }
-
-    document.getElementById('logoutBtn').addEventListener('click', function () {
+    function handleLogout() {
         localStorage.clear();
         sessionStorage.clear();
         window.location.href = '/';
-    });
+    }
 
-    document.addEventListener('DOMContentLoaded', function () {
-        const token = getToken();
-        if (!token) {
-            redirectToLogin();
-            return;
-        }
-        loadDashboard();
-    });
+    document.getElementById('logoutBtnSidebar').addEventListener('click', handleLogout);
+
+    initNavigation();
+    initHamburger();
+    loadDashboard();
 </script>
 </body>
 </html>

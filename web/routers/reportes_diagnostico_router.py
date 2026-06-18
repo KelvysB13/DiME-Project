@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Optional
 from resources.db import get_async_db
 from infrastructure.persistence.repositories.reportes_diagnostico import Reportes_diagnosticoRepository
 from application.services.reportes_diagnostico import Reportes_diagnosticoService
@@ -20,8 +19,8 @@ async def get_reportes_diagnostico_service(db: AsyncSession = Depends(get_async_
 async def list_reportes_diagnosticos(
     skip: int = Query(0, ge=0, description="Registros a saltar"),
     limit: int = Query(100, ge=1, le=1000, description="Máximo de registros"),
-    search: Optional[str] = Query(None, description="Buscar en: resumen_ejecutivo"),
-    sort_by: Optional[str] = Query(None, description="Ordenar por: id_reporte, id_vendedor, fecha_generacion, fecha_inicio_periodo, fecha_fin_periodo, resumen_ejecutivo, plan_accion"),
+    search: str | None = Query(None, description="Buscar en: resumen_ejecutivo"),
+    sort_by: str | None = Query(None, description="Ordenar por: id_reporte, id_vendedor, fecha_generacion, fecha_inicio_periodo, fecha_fin_periodo, resumen_ejecutivo, plan_accion"),
     sort_desc: bool = Query(False, description="Orden descendente"),
     service: Reportes_diagnosticoService = Depends(get_reportes_diagnostico_service),
 ):

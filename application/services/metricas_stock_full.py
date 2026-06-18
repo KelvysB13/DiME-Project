@@ -1,4 +1,3 @@
-from typing import Optional, List
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, or_
 from infrastructure.persistence.models.metricas_stock_full import Metricas_stock_full
@@ -16,10 +15,10 @@ class Metricas_stock_fullService(BaseService[Metricas_stock_fullRepository, Metr
         self,
         skip: int = 0,
         limit: int = 100,
-        search: Optional[str] = None,
-        sort_by: Optional[str] = None,
+        search: str | None = None,
+        sort_by: str | None = None,
         sort_desc: bool = False,
-        eager_load: Optional[List[str]] = None,
+        eager_load: list[str] | None = None,
     ):
         stmt = select(self._repository.model)
         from sqlalchemy.orm import selectinload

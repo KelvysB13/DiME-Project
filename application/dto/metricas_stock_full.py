@@ -1,11 +1,10 @@
 from pydantic import BaseModel, field_validator
-from typing import Optional
 from datetime import date, datetime
 import re
 
 
 class Metricas_stock_fullBase(BaseModel):
-    id_metricas_stock: Optional[int] = None
+    id_metricas_stock: int | None = None
     id_vendedor: int = ...
     fecha_captura: str = 'CURRENT_TIMESTAMP'
     espacios_p_asignados: int = '0 CHECK'
@@ -42,15 +41,15 @@ class Metricas_stock_fullCreate(BaseModel):
 
 
 class Metricas_stock_fullUpdate(BaseModel):
-    id_vendedor: Optional[int] = None
-    fecha_captura: Optional[str] = None
-    espacios_p_asignados: Optional[int] = None
-    espacios_g_asignados: Optional[int] = None
-    puntaje_calidad: Optional[int] = None
-    productos_no_aptos_venta: Optional[int] = None
-    productos_sin_rotacion: Optional[int] = None
-    productos_antiguedad: Optional[int] = None
-    productos_exceso_proyeccion: Optional[int] = None
+    id_vendedor: int | None = None
+    fecha_captura: str | None = None
+    espacios_p_asignados: int | None = None
+    espacios_g_asignados: int | None = None
+    puntaje_calidad: int | None = None
+    productos_no_aptos_venta: int | None = None
+    productos_sin_rotacion: int | None = None
+    productos_antiguedad: int | None = None
+    productos_exceso_proyeccion: int | None = None
 
     model_config = {"extra": "forbid"}
 

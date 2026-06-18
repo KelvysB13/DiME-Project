@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta, timezone
-from typing import Optional, Dict, List
 import hashlib
 import jwt
 from fastapi import Request, HTTPException, status, Depends
@@ -18,7 +17,7 @@ def create_access_token(
     role: str,
     email: str = "",
     name: str = "",
-    expires_delta: Optional[timedelta] = None,
+    expires_delta: timedelta | None = None,
 ) -> str:
     expire = datetime.now(timezone.utc) + (expires_delta or timedelta(hours=JWT_EXPIRATION_HOURS))
     payload = {
@@ -37,7 +36,7 @@ def create_refresh_token(
     user_id: str,
     role: str,
     email: str = "",
-    expires_delta: Optional[timedelta] = None,
+    expires_delta: timedelta | None = None,
 ) -> str:
     expire = datetime.now(timezone.utc) + (expires_delta or timedelta(days=JWT_REFRESH_EXPIRATION_DAYS))
     payload = {
@@ -52,7 +51,7 @@ def create_refresh_token(
     return jwt.encode(payload, KEY_REFRESH_TOKEN or KEY_TOKEN_PASSWORD, algorithm=JWT_ALGORITHM)
 
 
-def decode_token(token: str, secret: Optional[str] = None) -> dict:
+def decode_token(token: str, secret: str | None = None) -> dict:
     return jwt.decode(
         token,
         secret or KEY_TOKEN_PASSWORD,
@@ -62,7 +61,7 @@ def decode_token(token: str, secret: Optional[str] = None) -> dict:
 
 
 async def get_current_user(
-    credentials: Optional[HTTPAuthorizationCredentials] = Depends(security_scheme),
+    credentials: HTTPAuthorizationCredentials | None = Depends(security_scheme),
 ) -> dict:
     if credentials is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token requerido")
@@ -83,7 +82,7 @@ async def get_current_user(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token inválido")
 
 
-failed_attempts: Dict[str, List[float]] = {}
+failed_attempts: dict[str, list[float]] = {}
 
 
 async def login_rate_limit(request: Request):

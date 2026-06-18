@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Optional
 from resources.db import get_async_db
 from infrastructure.persistence.repositories.metricas_mi_pagina import Metricas_mi_paginaRepository
 from application.services.metricas_mi_pagina import Metricas_mi_paginaService

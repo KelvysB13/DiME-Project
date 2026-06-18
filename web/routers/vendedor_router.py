@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Optional
 from resources.db import get_async_db
 from infrastructure.persistence.repositories.vendedor import VendedorRepository
 from application.services.vendedor import VendedorService
@@ -20,8 +19,8 @@ async def get_vendedor_service(db: AsyncSession = Depends(get_async_db)) -> Vend
 async def list_vendedors(
     skip: int = Query(0, ge=0, description="Registros a saltar"),
     limit: int = Query(100, ge=1, le=1000, description="Máximo de registros"),
-    search: Optional[str] = Query(None, description="Buscar en: user_name, nombre_tienda, codigo_pais, moneda_local, email, access_token, refresh_token"),
-    sort_by: Optional[str] = Query(None, description="Ordenar por: id_vendedor, user_name, nombre_tienda, codigo_pais, moneda_local, tipo_plan, email, access_token, refresh_token, tiempo_token, esta_activo, fecha_creacion"),
+    search: str | None = Query(None, description="Buscar en: user_name, nombre_tienda, codigo_pais, moneda_local, email, access_token, refresh_token"),
+    sort_by: str | None = Query(None, description="Ordenar por: id_vendedor, user_name, nombre_tienda, codigo_pais, moneda_local, tipo_plan, email, access_token, refresh_token, tiempo_token, esta_activo, fecha_creacion"),
     sort_desc: bool = Query(False, description="Orden descendente"),
     service: VendedorService = Depends(get_vendedor_service),
 ):

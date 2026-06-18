@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Optional
 from resources.db import get_async_db
 from infrastructure.persistence.repositories.metricas_calidad_publicacion import Metricas_calidad_publicacionRepository
 from application.services.metricas_calidad_publicacion import Metricas_calidad_publicacionService

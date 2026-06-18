@@ -1,11 +1,10 @@
 from pydantic import BaseModel, field_validator
-from typing import Optional
 from datetime import date, datetime
 import re
 
 
 class Rendimiento_publicacionBase(BaseModel):
-    id_rendimiento_publi: Optional[int] = None
+    id_rendimiento_publi: int | None = None
     id_publicacion: int = ...
     fecha_captura: str = 'CURRENT_TIMESTAMP'
     fecha_inicio_periodo: date = ...
@@ -53,12 +52,12 @@ class Rendimiento_publicacionCreate(BaseModel):
 
 
 class Rendimiento_publicacionUpdate(BaseModel):
-    id_publicacion: Optional[int] = None
-    fecha_captura: Optional[str] = None
-    fecha_inicio_periodo: Optional[date] = None
-    fecha_fin_periodo: Optional[date] = None
-    visitas: Optional[int] = None
-    ventas: Optional[int] = None
+    id_publicacion: int | None = None
+    fecha_captura: str | None = None
+    fecha_inicio_periodo: date | None = None
+    fecha_fin_periodo: date | None = None
+    visitas: int | None = None
+    ventas: int | None = None
 
     model_config = {"extra": "forbid"}
 

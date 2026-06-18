@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Optional
 from resources.db import get_async_db
 from infrastructure.persistence.repositories.moneda import MonedaRepository
 from application.services.moneda import MonedaService
@@ -20,8 +19,8 @@ async def get_moneda_service(db: AsyncSession = Depends(get_async_db)) -> Moneda
 async def list_monedas(
     skip: int = Query(0, ge=0, description="Registros a saltar"),
     limit: int = Query(100, ge=1, le=1000, description="Máximo de registros"),
-    search: Optional[str] = Query(None, description="Buscar en: codigo_moneda, nombre_moneda, simbolo"),
-    sort_by: Optional[str] = Query(None, description="Ordenar por: codigo_moneda, nombre_moneda, simbolo"),
+    search: str | None = Query(None, description="Buscar en: codigo_moneda, nombre_moneda, simbolo"),
+    sort_by: str | None = Query(None, description="Ordenar por: codigo_moneda, nombre_moneda, simbolo"),
     sort_desc: bool = Query(False, description="Orden descendente"),
     service: MonedaService = Depends(get_moneda_service),
 ):

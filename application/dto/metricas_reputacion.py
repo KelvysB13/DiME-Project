@@ -1,11 +1,10 @@
 from pydantic import BaseModel, field_validator
-from typing import Optional
 from datetime import date, datetime
 import re
 
 
 class Metricas_reputacionBase(BaseModel):
-    id_metricas_reputacion: Optional[int] = None
+    id_metricas_reputacion: int | None = None
     id_vendedor: int = ...
     fecha_captura: str = 'CURRENT_TIMESTAMP'
     ventas_totales_periodo: int = '0 CHECK'
@@ -14,7 +13,7 @@ class Metricas_reputacionBase(BaseModel):
     total_canceladas: int = '0 CHECK'
     total_envios_incorrectos: int = '0 CHECK'
     nivel_reputacion: str = ...
-    insignia: Optional[str] = None
+    insignia: str | None = None
 
     model_config = {"extra": "forbid"}
 
@@ -28,7 +27,7 @@ class Metricas_reputacionCreate(BaseModel):
     total_canceladas: int = '0 CHECK'
     total_envios_incorrectos: int = '0 CHECK'
     nivel_reputacion: str = ...
-    insignia: Optional[str] = None
+    insignia: str | None = None
 
     model_config = {"extra": "forbid"}
 
@@ -50,15 +49,15 @@ class Metricas_reputacionCreate(BaseModel):
 
 
 class Metricas_reputacionUpdate(BaseModel):
-    id_vendedor: Optional[int] = None
-    fecha_captura: Optional[str] = None
-    ventas_totales_periodo: Optional[int] = None
-    total_reclamos: Optional[int] = None
-    total_mediaciones: Optional[int] = None
-    total_canceladas: Optional[int] = None
-    total_envios_incorrectos: Optional[int] = None
-    nivel_reputacion: Optional[str] = None
-    insignia: Optional[str] = None
+    id_vendedor: int | None = None
+    fecha_captura: str | None = None
+    ventas_totales_periodo: int | None = None
+    total_reclamos: int | None = None
+    total_mediaciones: int | None = None
+    total_canceladas: int | None = None
+    total_envios_incorrectos: int | None = None
+    nivel_reputacion: str | None = None
+    insignia: str | None = None
 
     model_config = {"extra": "forbid"}
 

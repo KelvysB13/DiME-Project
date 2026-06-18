@@ -1,16 +1,15 @@
 from pydantic import BaseModel, field_validator
-from typing import Optional
 from datetime import date, datetime
 import re
 
 
 class Reportes_diagnosticoBase(BaseModel):
-    id_reporte: Optional[int] = None
+    id_reporte: int | None = None
     id_vendedor: int = ...
     fecha_generacion: date = 'CURRENT_DATE'
     fecha_inicio_periodo: date = ...
     fecha_fin_periodo: date = ...
-    resumen_ejecutivo: Optional[str] = None
+    resumen_ejecutivo: str | None = None
     plan_accion: dict = '{}'
 
     model_config = {"extra": "forbid"}
@@ -21,7 +20,7 @@ class Reportes_diagnosticoCreate(BaseModel):
     fecha_generacion: date = 'CURRENT_DATE'
     fecha_inicio_periodo: date = ...
     fecha_fin_periodo: date = ...
-    resumen_ejecutivo: Optional[str] = None
+    resumen_ejecutivo: str | None = None
     plan_accion: dict = '{}'
 
     model_config = {"extra": "forbid"}
@@ -64,12 +63,12 @@ class Reportes_diagnosticoCreate(BaseModel):
 
 
 class Reportes_diagnosticoUpdate(BaseModel):
-    id_vendedor: Optional[int] = None
-    fecha_generacion: Optional[date] = None
-    fecha_inicio_periodo: Optional[date] = None
-    fecha_fin_periodo: Optional[date] = None
-    resumen_ejecutivo: Optional[str] = None
-    plan_accion: Optional[dict] = None
+    id_vendedor: int | None = None
+    fecha_generacion: date | None = None
+    fecha_inicio_periodo: date | None = None
+    fecha_fin_periodo: date | None = None
+    resumen_ejecutivo: str | None = None
+    plan_accion: dict | None = None
 
     model_config = {"extra": "forbid"}
 

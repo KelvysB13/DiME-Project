@@ -1,4 +1,3 @@
-from typing import Optional, Union
 
 
 class AppException(Exception):
@@ -7,7 +6,7 @@ class AppException(Exception):
         message: str,
         code: str = "INTERNAL_ERROR",
         status_code: int = 500,
-        details: Optional[dict] = None,
+        details: dict | None = None,
     ):
         self.message = message
         self.code = code
@@ -17,7 +16,7 @@ class AppException(Exception):
 
 
 class NotFoundException(AppException):
-    def __init__(self, entity: str, identifier: Union[int, str]):
+    def __init__(self, entity: str, identifier: int | str):
         self.entity = entity
         self.identifier = identifier
         super().__init__(

@@ -2,7 +2,6 @@ import os
 import time
 import logging
 import requests
-from typing import Optional
 from infrastructure.external.adapters.circuit_breaker import CircuitBreaker
 
 logger = logging.getLogger(__name__)

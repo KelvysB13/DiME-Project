@@ -1,11 +1,10 @@
 from pydantic import BaseModel, field_validator
-from typing import Optional
 from datetime import date, datetime
 import re
 
 
 class Metricas_mi_paginaBase(BaseModel):
-    id_metricas_pagina: Optional[int] = None
+    id_metricas_pagina: int | None = None
     id_vendedor: int = ...
     fecha_captura: str = 'CURRENT_TIMESTAMP'
     tiene_banner: bool = 'FALSE'
@@ -76,12 +75,12 @@ class Metricas_mi_paginaCreate(BaseModel):
 
 
 class Metricas_mi_paginaUpdate(BaseModel):
-    id_vendedor: Optional[int] = None
-    fecha_captura: Optional[str] = None
-    tiene_banner: Optional[bool] = None
-    tiene_logo: Optional[bool] = None
-    tiene_carruseles: Optional[bool] = None
-    categorias_organizadas: Optional[bool] = None
+    id_vendedor: int | None = None
+    fecha_captura: str | None = None
+    tiene_banner: bool | None = None
+    tiene_logo: bool | None = None
+    tiene_carruseles: bool | None = None
+    categorias_organizadas: bool | None = None
 
     model_config = {"extra": "forbid"}
 

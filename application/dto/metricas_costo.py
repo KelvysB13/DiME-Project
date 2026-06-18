@@ -1,11 +1,10 @@
 from pydantic import BaseModel, field_validator
-from typing import Optional
 from datetime import date, datetime
 import re
 
 
 class Metricas_costoBase(BaseModel):
-    id_metricas_costo: Optional[int] = None
+    id_metricas_costo: int | None = None
     id_vendedor: int = ...
     fecha_captura: str = 'CURRENT_TIMESTAMP'
     ventas_cobradas_total: float = '0.00'
@@ -52,16 +51,16 @@ class Metricas_costoCreate(BaseModel):
 
 
 class Metricas_costoUpdate(BaseModel):
-    id_vendedor: Optional[int] = None
-    fecha_captura: Optional[str] = None
-    ventas_cobradas_total: Optional[float] = None
-    neto_recibido: Optional[float] = None
-    cargos_por_venta: Optional[float] = None
-    costos_envio: Optional[float] = None
-    inversion_ads: Optional[float] = None
-    otros_cargos: Optional[float] = None
-    cargos_envio_full: Optional[float] = None
-    descuento_reputacion: Optional[float] = None
+    id_vendedor: int | None = None
+    fecha_captura: str | None = None
+    ventas_cobradas_total: float | None = None
+    neto_recibido: float | None = None
+    cargos_por_venta: float | None = None
+    costos_envio: float | None = None
+    inversion_ads: float | None = None
+    otros_cargos: float | None = None
+    cargos_envio_full: float | None = None
+    descuento_reputacion: float | None = None
 
     model_config = {"extra": "forbid"}
 

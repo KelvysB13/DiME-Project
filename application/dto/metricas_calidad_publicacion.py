@@ -1,11 +1,10 @@
 from pydantic import BaseModel, field_validator
-from typing import Optional
 from datetime import date, datetime
 import re
 
 
 class Metricas_calidad_publicacionBase(BaseModel):
-    id_metricas_calidad_publi: Optional[int] = None
+    id_metricas_calidad_publi: int | None = None
     id_publicacion: int = ...
     fecha_captura: str = 'CURRENT_TIMESTAMP'
     cantidad_fotos: int = '0 CHECK'
@@ -60,12 +59,12 @@ class Metricas_calidad_publicacionCreate(BaseModel):
 
 
 class Metricas_calidad_publicacionUpdate(BaseModel):
-    id_publicacion: Optional[int] = None
-    fecha_captura: Optional[str] = None
-    cantidad_fotos: Optional[int] = None
-    tiene_video: Optional[bool] = None
-    caracteristicas_completas: Optional[bool] = None
-    puntaje_calidad: Optional[int] = None
+    id_publicacion: int | None = None
+    fecha_captura: str | None = None
+    cantidad_fotos: int | None = None
+    tiene_video: bool | None = None
+    caracteristicas_completas: bool | None = None
+    puntaje_calidad: int | None = None
 
     model_config = {"extra": "forbid"}
 

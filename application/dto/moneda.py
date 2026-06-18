@@ -1,11 +1,10 @@
 from pydantic import BaseModel, field_validator
-from typing import Optional
 from datetime import date, datetime
 import re
 
 
 class MonedaBase(BaseModel):
-    codigo_moneda: Optional[str] = None
+    codigo_moneda: str | None = None
     nombre_moneda: str = ...
     simbolo: str = ...
 
@@ -45,8 +44,8 @@ class MonedaCreate(BaseModel):
 
 
 class MonedaUpdate(BaseModel):
-    nombre_moneda: Optional[str] = None
-    simbolo: Optional[str] = None
+    nombre_moneda: str | None = None
+    simbolo: str | None = None
 
     model_config = {"extra": "forbid"}
 

@@ -1,8 +1,8 @@
 from datetime import datetime, timezone
+from typing import Optional
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, BigInteger
 from sqlalchemy.orm import relationship, Mapped
 from resources.db import Base
-from typing import Optional, List
 from infrastructure.persistence.models.soft_delete_mixin import SoftDeleteMixin
 
 

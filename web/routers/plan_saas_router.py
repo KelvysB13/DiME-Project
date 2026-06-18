@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Optional
 from resources.db import get_async_db
 from infrastructure.persistence.repositories.plan_saas import Plan_saasRepository
 from application.services.plan_saas import Plan_saasService
@@ -20,8 +19,8 @@ async def get_plan_saas_service(db: AsyncSession = Depends(get_async_db)) -> Pla
 async def list_plan_saas(
     skip: int = Query(0, ge=0, description="Registros a saltar"),
     limit: int = Query(100, ge=1, le=1000, description="Máximo de registros"),
-    search: Optional[str] = Query(None, description="Buscar en: nombre_plan, descripcion"),
-    sort_by: Optional[str] = Query(None, description="Ordenar por: id_plan, nombre_plan, descripcion"),
+    search: str | None = Query(None, description="Buscar en: nombre_plan, descripcion"),
+    sort_by: str | None = Query(None, description="Ordenar por: id_plan, nombre_plan, descripcion"),
     sort_desc: bool = Query(False, description="Orden descendente"),
     service: Plan_saasService = Depends(get_plan_saas_service),
 ):

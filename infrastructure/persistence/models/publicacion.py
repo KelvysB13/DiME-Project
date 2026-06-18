@@ -1,8 +1,8 @@
 from datetime import datetime, timezone
+from typing import Optional
 from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, BigInteger
 from sqlalchemy.orm import relationship, Mapped
 from resources.db import Base
-from typing import Optional, List
 from infrastructure.persistence.models.soft_delete_mixin import SoftDeleteMixin
 
 
@@ -17,5 +17,5 @@ class Publicacion(SoftDeleteMixin, Base):
     estado_publicacion = Column(String(20))
 
     vendedor_ref: Mapped[Optional["Vendedor"]] = relationship("Vendedor", back_populates="publicacion", lazy="selectin", uselist=False)
-    rendimiento_publicacion: Mapped[List["Rendimiento_publicacion"]] = relationship("Rendimiento_publicacion", back_populates="publicacion_ref", lazy="selectin")
+    rendimiento_publicacion: Mapped[list["Rendimiento_publicacion"]] = relationship("Rendimiento_publicacion", back_populates="publicacion_ref", lazy="selectin")
     metricas_calidad_publicacion: Mapped[Optional["Metricas_calidad_publicacion"]] = relationship("Metricas_calidad_publicacion", back_populates="publicacion_ref", uselist=False, lazy="selectin")

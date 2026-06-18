@@ -1,6 +1,5 @@
 import math
 import time
-from typing import Dict, List
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
 from starlette.responses import JSONResponse, Response
@@ -17,7 +16,7 @@ class RateLimit:
 
 DEFAULT_RATE_LIMIT = RateLimit(requests=100, window=60)
 
-ENDPOINT_LIMITS: Dict[str, RateLimit] = {
+ENDPOINT_LIMITS: dict[str, RateLimit] = {
     "/auth/login": RateLimit(requests=5, window=60),
     "/auth/register": RateLimit(requests=3, window=3600),
 }
@@ -30,7 +29,7 @@ def get_limit_for_path(path: str) -> RateLimit:
 class RateLimiterMiddleware(BaseHTTPMiddleware):
     def __init__(self, app: ASGIApp) -> None:
         super().__init__(app)
-        self._store: Dict[str, List[float]] = {}
+        self._store: dict[str, list[float]] = {}
 
     async def dispatch(self, request: Request, call_next) -> Response:
         client_ip = self._extract_ip(request)

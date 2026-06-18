@@ -1,5 +1,5 @@
 from functools import wraps
-from typing import List, Optional, Callable
+from typing import Callable
 from fastapi import HTTPException, Request, status
 from config.settings import ALLOWED_ROLES
 import logging
@@ -9,14 +9,14 @@ logger.setLevel(logging.INFO)
 
 
 class RoleGuard:
-    def __init__(self, allowed_roles: Optional[List[str]] = None):
+    def __init__(self, allowed_roles: list[str] | None = None):
         self.allowed_roles = allowed_roles or list(ALLOWED_ROLES)
         logger.info(f"RoleGuard initialized with roles: {self.allowed_roles}")
 
     def is_valid_role(self, role: str) -> bool:
         return role in self.allowed_roles
 
-    def validate_role(self, user_role: str, required_roles: List[str]) -> bool:
+    def validate_role(self, user_role: str, required_roles: list[str]) -> bool:
         if not user_role:
             raise ValueError("User role cannot be empty")
         if not isinstance(required_roles, list) or len(required_roles) == 0:
@@ -28,7 +28,7 @@ class RoleGuard:
             logger.warning(f"Access denied. Role '{user_role}' not in {required_roles}")
         return has_permission
 
-    def require_role(self, required_roles: List[str]) -> Callable:
+    def require_role(self, required_roles: list[str]) -> Callable:
         if not required_roles:
             raise ValueError("At least one role must be specified")
 

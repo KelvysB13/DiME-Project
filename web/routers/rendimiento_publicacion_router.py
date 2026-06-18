@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Optional
 from resources.db import get_async_db
 from infrastructure.persistence.repositories.rendimiento_publicacion import Rendimiento_publicacionRepository
 from application.services.rendimiento_publicacion import Rendimiento_publicacionService

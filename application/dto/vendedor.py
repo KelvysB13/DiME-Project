@@ -1,20 +1,19 @@
 from pydantic import BaseModel, field_validator
-from typing import Optional
 from datetime import date, datetime
 import re
 
 
 class VendedorBase(BaseModel):
-    id_vendedor: Optional[int] = None
+    id_vendedor: int | None = None
     user_name: str = ...
     nombre_tienda: str = ...
     codigo_pais: str = ...
     moneda_local: str = ...
-    tipo_plan: Optional[int] = None
+    tipo_plan: int | None = None
     email: str = ...
-    access_token: Optional[str] = None
-    refresh_token: Optional[str] = None
-    tiempo_token: Optional[str] = None
+    access_token: str | None = None
+    refresh_token: str | None = None
+    tiempo_token: str | None = None
     esta_activo: bool = 'TRUE'
     fecha_creacion: str = 'CURRENT_TIMESTAMP'
 
@@ -26,11 +25,11 @@ class VendedorCreate(BaseModel):
     nombre_tienda: str = ...
     codigo_pais: str = ...
     moneda_local: str = ...
-    tipo_plan: Optional[int] = None
+    tipo_plan: int | None = None
     email: str = ...
-    access_token: Optional[str] = None
-    refresh_token: Optional[str] = None
-    tiempo_token: Optional[str] = None
+    access_token: str | None = None
+    refresh_token: str | None = None
+    tiempo_token: str | None = None
     esta_activo: bool = 'TRUE'
     fecha_creacion: str = 'CURRENT_TIMESTAMP'
 
@@ -106,17 +105,17 @@ class VendedorCreate(BaseModel):
 
 
 class VendedorUpdate(BaseModel):
-    user_name: Optional[str] = None
-    nombre_tienda: Optional[str] = None
-    codigo_pais: Optional[str] = None
-    moneda_local: Optional[str] = None
-    tipo_plan: Optional[int] = None
-    email: Optional[str] = None
-    access_token: Optional[str] = None
-    refresh_token: Optional[str] = None
-    tiempo_token: Optional[str] = None
-    esta_activo: Optional[bool] = None
-    fecha_creacion: Optional[str] = None
+    user_name: str | None = None
+    nombre_tienda: str | None = None
+    codigo_pais: str | None = None
+    moneda_local: str | None = None
+    tipo_plan: int | None = None
+    email: str | None = None
+    access_token: str | None = None
+    refresh_token: str | None = None
+    tiempo_token: str | None = None
+    esta_activo: bool | None = None
+    fecha_creacion: str | None = None
 
     model_config = {"extra": "forbid"}
 

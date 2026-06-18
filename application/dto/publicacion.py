@@ -1,11 +1,10 @@
 from pydantic import BaseModel, field_validator
-from typing import Optional
 from datetime import date, datetime
 import re
 
 
 class PublicacionBase(BaseModel):
-    id_publicacion: Optional[int] = None
+    id_publicacion: int | None = None
     id_vendedor: int = ...
     ml_item_id: str = ...
     titulo: str = ...
@@ -58,11 +57,11 @@ class PublicacionCreate(BaseModel):
 
 
 class PublicacionUpdate(BaseModel):
-    id_vendedor: Optional[int] = None
-    ml_item_id: Optional[str] = None
-    titulo: Optional[str] = None
-    tipo_publicacion: Optional[str] = None
-    estado_publicacion: Optional[str] = None
+    id_vendedor: int | None = None
+    ml_item_id: str | None = None
+    titulo: str | None = None
+    tipo_publicacion: str | None = None
+    estado_publicacion: str | None = None
 
     model_config = {"extra": "forbid"}
 

@@ -1,11 +1,10 @@
 from pydantic import BaseModel, field_validator
-from typing import Optional
 from datetime import date, datetime
 import re
 
 
 class PaisBase(BaseModel):
-    codigo_pais: Optional[str] = None
+    codigo_pais: str | None = None
     nombre_pais: str = ...
 
     model_config = {"extra": "forbid"}
@@ -35,7 +34,7 @@ class PaisCreate(BaseModel):
 
 
 class PaisUpdate(BaseModel):
-    nombre_pais: Optional[str] = None
+    nombre_pais: str | None = None
 
     model_config = {"extra": "forbid"}
 

@@ -1,20 +1,19 @@
 from pydantic import BaseModel, field_validator
-from typing import Optional
 from datetime import date, datetime
 import re
 
 
 class Plan_saasBase(BaseModel):
-    id_plan: Optional[int] = None
+    id_plan: int | None = None
     nombre_plan: str = ...
-    descripcion: Optional[str] = None
+    descripcion: str | None = None
 
     model_config = {"extra": "forbid"}
 
 
 class Plan_saasCreate(BaseModel):
     nombre_plan: str = ...
-    descripcion: Optional[str] = None
+    descripcion: str | None = None
 
     model_config = {"extra": "forbid"}
 
@@ -28,8 +27,8 @@ class Plan_saasCreate(BaseModel):
 
 
 class Plan_saasUpdate(BaseModel):
-    nombre_plan: Optional[str] = None
-    descripcion: Optional[str] = None
+    nombre_plan: str | None = None
+    descripcion: str | None = None
 
     model_config = {"extra": "forbid"}
 

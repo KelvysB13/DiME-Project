@@ -1,8 +1,8 @@
 from datetime import datetime, timezone
+from typing import Optional
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean, DateTime, Text, BigInteger
 from sqlalchemy.orm import relationship, Mapped
 from resources.db import Base
-from typing import Optional, List
 from infrastructure.persistence.models.soft_delete_mixin import SoftDeleteMixin
 
 
@@ -34,8 +34,8 @@ class Vendedor(SoftDeleteMixin, Base):
     pais_ref: Mapped[Optional["Pais"]] = relationship("Pais", back_populates="vendedor", lazy="selectin", uselist=False)
     moneda_ref: Mapped[Optional["Moneda"]] = relationship("Moneda", back_populates="vendedor", lazy="selectin", uselist=False)
     plan_saas_ref: Mapped[Optional["Plan_saas"]] = relationship("Plan_saas", back_populates="vendedor", lazy="selectin", uselist=False)
-    publicacion: Mapped[List["Publicacion"]] = relationship("Publicacion", back_populates="vendedor_ref", lazy="selectin")
-    reportes_diagnostico: Mapped[List["Reportes_diagnostico"]] = relationship("Reportes_diagnostico", back_populates="vendedor_ref", lazy="selectin")
+    publicacion: Mapped[list["Publicacion"]] = relationship("Publicacion", back_populates="vendedor_ref", lazy="selectin")
+    reportes_diagnostico: Mapped[list["Reportes_diagnostico"]] = relationship("Reportes_diagnostico", back_populates="vendedor_ref", lazy="selectin")
     metricas_reputacion: Mapped[Optional["Metricas_reputacion"]] = relationship("Metricas_reputacion", back_populates="vendedor_ref", uselist=False, lazy="selectin")
     metricas_negocio: Mapped[Optional["Metricas_negocio"]] = relationship("Metricas_negocio", back_populates="vendedor_ref", uselist=False, lazy="selectin")
     metricas_costo: Mapped[Optional["Metricas_costo"]] = relationship("Metricas_costo", back_populates="vendedor_ref", uselist=False, lazy="selectin")

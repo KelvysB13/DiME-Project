@@ -4,7 +4,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 from pydantic import BaseModel, field_validator
-from typing import Optional, Union
 from datetime import datetime, timezone
 import hashlib
 from resources.db import get_async_db
@@ -14,6 +13,7 @@ from infrastructure.security.jwt import (
     get_current_user, login_rate_limit,
 )
 from config.settings import KEY_TOKEN_PASSWORD, KEY_REFRESH_TOKEN
+from config.metabase_charts import METABASE_CHARTS
 from infrastructure.persistence.repositories.vendedor import VendedorRepository
 from infrastructure.persistence.models.vendedor import Vendedor
 from infrastructure.persistence.models.token_blacklist import TokenBlacklist
@@ -27,7 +27,7 @@ class LoginResponse(BaseModel):
     refresh_token: str
     token_type: str = "bearer"
     user_id: int
-    role: Union[int, str]
+    role: int | str
     email: str
     name: str
 
@@ -45,8 +45,8 @@ class RefreshResponse(BaseModel):
 class RegisterRequest(BaseModel):
     email: str
     password: str
-    user_name: Optional[str] = None
-    nombre_tienda: Optional[str] = None
+    user_name: str | None = None
+    nombre_tienda: str | None = None
 
     @field_validator("password")
     @classmethod
@@ -58,8 +58,8 @@ class RegisterRequest(BaseModel):
 class RegisterResponse(BaseModel):
     id: int
     email: str
-    user_name: Optional[str]
-    role: Union[int, str]
+    user_name: str | None
+    role: int | str
 
 
 class ChangePasswordRequest(BaseModel):
@@ -197,6 +197,7 @@ async def get_dashboard(
         data['calidad'] = model_to_dict(pub.metricas_calidad_publicacion)
         return data
 
+    metabase_config = METABASE_CHARTS.get(user_id, None)
     response = {
         "vendedor": model_to_dict(vendedor, exclude={'password_hash', 'access_token', 'refresh_token', 'tiempo_token'}),
         "reputacion": model_to_dict(vendedor.metricas_reputacion),
@@ -206,6 +207,7 @@ async def get_dashboard(
         "mi_pagina": model_to_dict(vendedor.metricas_mi_pagina),
         "publicaciones": [pub_to_dict(p) for p in (vendedor.publicacion or [])],
         "reportes": [model_to_dict(r) for r in (vendedor.reportes_diagnostico or [])],
+        "metabase": metabase_config,
     }
     return response
 

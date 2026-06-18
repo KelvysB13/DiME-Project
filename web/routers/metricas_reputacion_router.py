@@ -1,6 +1,5 @@
 from fastapi import APIRouter, Depends, Query, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from typing import Optional
 from resources.db import get_async_db
 from infrastructure.persistence.repositories.metricas_reputacion import Metricas_reputacionRepository
 from application.services.metricas_reputacion import Metricas_reputacionService
@@ -20,8 +19,8 @@ async def get_metricas_reputacion_service(db: AsyncSession = Depends(get_async_d
 async def list_metricas_reputacions(
     skip: int = Query(0, ge=0, description="Registros a saltar"),
     limit: int = Query(100, ge=1, le=1000, description="Máximo de registros"),
-    search: Optional[str] = Query(None, description="Buscar en: nivel_reputacion, insignia"),
-    sort_by: Optional[str] = Query(None, description="Ordenar por: id_metricas_reputacion, id_vendedor, fecha_captura, ventas_totales_periodo, total_reclamos, total_mediaciones, total_canceladas, total_envios_incorrectos, nivel_reputacion, insignia"),
+    search: str | None = Query(None, description="Buscar en: nivel_reputacion, insignia"),
+    sort_by: str | None = Query(None, description="Ordenar por: id_metricas_reputacion, id_vendedor, fecha_captura, ventas_totales_periodo, total_reclamos, total_mediaciones, total_canceladas, total_envios_incorrectos, nivel_reputacion, insignia"),
     sort_desc: bool = Query(False, description="Orden descendente"),
     service: Metricas_reputacionService = Depends(get_metricas_reputacion_service),
 ):

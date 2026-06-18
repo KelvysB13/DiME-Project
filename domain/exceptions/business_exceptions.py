@@ -1,9 +1,8 @@
-from typing import Optional
 from domain.exceptions.base import AppException
 
 
 class BusinessException(AppException):
-    def __init__(self, message: str, code: Optional[str] = None):
+    def __init__(self, message: str, code: str | None = None):
         super().__init__(
             message=message,
             code=code or "BUSINESS_ERROR",
@@ -12,7 +11,7 @@ class BusinessException(AppException):
 
 
 class ValidationException(AppException):
-    def __init__(self, message: str, details: Optional[dict] = None):
+    def __init__(self, message: str, details: dict | None = None):
         super().__init__(
             message=message,
             code="VALIDATION_ERROR",
