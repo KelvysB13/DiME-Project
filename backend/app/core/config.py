@@ -18,6 +18,6 @@ class Settings(BaseSettings):
     metabase_user: str = "admin@dime.local"
     metabase_password: str = "admin123"
 
-    model_config = {"env_file": ".env", "env_file_encoding": "utf-8", "extra": "ignore"}
+    model_config = {"env_file": "../.env", "env_file_encoding": "utf-8", "extra": "ignore"}
 
 settings = Settings()

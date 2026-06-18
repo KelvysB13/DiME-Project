@@ -12,8 +12,9 @@ pydantic-settings==2.13.1
 psycopg2-binary==2.9.12
 sqlalchemy==2.0.40
 
-# --- Autenticación OAuth 2.0 (Mercado Libre) ---
-PyJWT[cryptography]==2.13.0
+# --- Autenticación ---
+PyJWT==2.13.0
+bcrypt==4.3.0
 
 # --- ETL y procesamiento de datos ---
 pandas==2.3.3
