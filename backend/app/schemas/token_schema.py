@@ -1,12 +1,11 @@
 from typing import Literal
 from pydantic import BaseModel, Field
 
-#Schema para el pedido de renovación de token.
+# Schema para solicitud de token.
 class TokenRequest(BaseModel):
-    
     refresh_token: str = Field(..., description="Token de actualización para renovar el token de acceso")
 
-#Schema para la respuesta de token renovado.
+# Schema para respuesta de token renovado.
 class TokenResponse(BaseModel):
 
     access_token: str = Field(..., description="Token de acceso renovado")
