@@ -106,7 +106,7 @@ CREATE TABLE IF NOT EXISTS publicacion (
     estado_publicacion VARCHAR(20) NOT NULL CHECK (estado_publicacion IN ('active', 'paused', 'closed')), -- Estado: active (activa), paused (pausada), closed (cerrada)
     
     CONSTRAINT fk_publicacion_vendedor FOREIGN KEY (id_vendedor) 
-        REFERENCES vendedor(id) ON DELETE CASCADE -- Si se elimina el vendedor, se eliminan sus publicaciones
+        REFERENCES vendedor(id_vendedor) ON DELETE CASCADE -- Si se elimina el vendedor, se eliminan sus publicaciones
 );
 
 
@@ -129,7 +129,7 @@ CREATE TABLE IF NOT EXISTS reporte_diagnostico (
     resumen_ejecutivo TEXT,                          -- Texto libre con análisis general del desempeño
     plan_accion JSONB NOT NULL DEFAULT '{}'::jsonb,  -- Lista de tareas recomendadas en formato JSON
     
-    CONSTRAINT fk_reportes_vendedor FOREIGN KEY (id_vendedor) REFERENCES vendedor(id),
+    CONSTRAINT fk_reportes_vendedor FOREIGN KEY (id_vendedor) REFERENCES vendedor(id_vendedor),
     CONSTRAINT chk_fechas_reporte CHECK (fecha_fin_periodo >= fecha_inicio_periodo) -- La fecha fin no puede ser anterior a la fecha inicio
 );
 
@@ -157,7 +157,7 @@ CREATE TABLE IF NOT EXISTS metrica_reputacion (
   total_envios_incorrectos INTEGER NOT NULL DEFAULT 0 CHECK (total_envios_incorrectos >= 0), -- Envíos entregados incorrectamente
   nivel_reputacion VARCHAR(20) NOT NULL, -- Nivel: 'green', 'yellow', 'red'
   insignia VARCHAR(20), -- Insignia: 'platinum', 'gold', 'leader' o NULL
-  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id)
+  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id_vendedor)
 );
 
 
@@ -185,7 +185,7 @@ CREATE TABLE IF NOT EXISTS metrica_negocio (
   ventas_concretadas INTEGER NOT NULL DEFAULT 0 CHECK (ventas_concretadas >= 0), -- Ventas efectivamente concretadas
   precio_promedio_unidad NUMERIC(15,2) NOT NULL DEFAULT 0.00 CHECK (precio_promedio_unidad >= 0), -- Precio promedio por unidad (ventas_brutas / unidades_vendidas)
   precio_promedio_venta NUMERIC(15,2) NOT NULL DEFAULT 0.00 CHECK (precio_promedio_venta >= 0), -- Precio promedio por venta (ventas_brutas / ventas_concretadas)
-  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id)
+  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id_vendedor)
 );
 
 
@@ -212,7 +212,7 @@ CREATE TABLE IF NOT EXISTS metrica_costo (
   otros_cargos NUMERIC(15,2) NOT NULL DEFAULT 0.00 CHECK (otros_cargos >= 0), -- Otros cargos adicionales de ML
   cargos_envio_full NUMERIC(15,2) NOT NULL DEFAULT 0.00 CHECK (cargos_envio_full >= 0), -- Cargos de logística Full
   descuento_reputacion NUMERIC(15,2) NOT NULL DEFAULT 0.00, -- Penalización por reputación baja (yellow/red)
-  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id)
+  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id_vendedor)
 );
 
 
@@ -238,7 +238,7 @@ CREATE TABLE IF NOT EXISTS metrica_stock_full (
   productos_sin_rotacion INTEGER NOT NULL DEFAULT 0 CHECK (productos_sin_rotacion >= 0), -- Productos sin rotación (baja demanda)
   productos_antiguedad INTEGER NOT NULL DEFAULT 0 CHECK (productos_antiguedad >= 0), -- Productos con antigüedad excesiva en CD
   productos_exceso_proyeccion INTEGER NOT NULL DEFAULT 0 CHECK (productos_exceso_proyeccion >= 0), -- Productos en exceso vs proyección de ventas
-  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id)
+  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id_vendedor)
 );
 
 
@@ -259,7 +259,7 @@ CREATE TABLE IF NOT EXISTS metrica_mi_pagina (
   tiene_logo BOOLEAN NOT NULL DEFAULT FALSE, -- Indica si la página tiene logo personalizado
   tiene_carruseles BOOLEAN NOT NULL DEFAULT FALSE, -- Indica si tiene carruseles de productos
   categorias_organizadas BOOLEAN NOT NULL DEFAULT FALSE, -- Indica si las categorías están organizadas
-  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id)
+  FOREIGN KEY (id_vendedor) REFERENCES vendedor(id_vendedor)
 );
 
 
@@ -283,7 +283,7 @@ CREATE TABLE IF NOT EXISTS rendimiento_publicacion (
     ventas INTEGER NOT NULL DEFAULT 0 CHECK (ventas >= 0), -- Ventas generadas por esta publicación
     
     CONSTRAINT fk_rendimiento_publicacion FOREIGN KEY (id_publicacion) 
-        REFERENCES publicacion(id) ON DELETE CASCADE, -- Si se elimina la publicación, se elimina su rendimiento
+        REFERENCES publicacion(id_publicacion) ON DELETE CASCADE, -- Si se elimina la publicación, se elimina su rendimiento
     CONSTRAINT chk_fechas_rendimiento CHECK (fecha_fin_periodo >= fecha_inicio_periodo)
 );
 
@@ -305,7 +305,7 @@ CREATE TABLE IF NOT EXISTS metrica_calidad_publicacion (
   tiene_video BOOLEAN NOT NULL DEFAULT FALSE, -- Indica si la publicación tiene video
   caracteristicas_completas BOOLEAN NOT NULL DEFAULT FALSE, -- Indica si todas las características están completas
   puntaje_calidad INTEGER NOT NULL CHECK (puntaje_calidad BETWEEN 0 AND 100), -- Puntaje de calidad de ML (0-100)
-  FOREIGN KEY (id_publicacion) REFERENCES publicacion(id)
+  FOREIGN KEY (id_publicacion) REFERENCES publicacion(id_publicacion)
 );
 
 -- ==============================================================================
@@ -357,49 +357,51 @@ ON CONFLICT (id) DO NOTHING;
 -- Venezuela usa USD porque su moneda local no es práctica para e-commerce.
 -- Los tokens son ficticios para pruebas.
 INSERT INTO vendedor (
-    user_name, 
-    nombre_tienda, 
-    codigo_pais, 
-    moneda_local, 
-    tipo_plan, 
-    email, 
-    access_token, 
-    refresh_token, 
-    tiempo_token, 
+    user_name,
+    nombre_tienda,
+    codigo_pais,
+    moneda_local,
+    tipo_plan,
+    email,
+    password,
+    access_token,
+    refresh_token,
+    tiempo_token,
     esta_activo
-) VALUES 
+) VALUES
 -- Vendedores de Argentina (AR / ARS)
 -- 3 vendedores: uno Enterprise (tech), uno Pro (deco), uno Free (gaming)
-('tech_guru_ar', 'Tech Guru Argentina', 'AR', 'ARS', 3, 'contacto@techguru.com.ar', 'acc_tk_01', 'ref_tk_01', CURRENT_TIMESTAMP, true),
-('home_deco_ar', 'Home & Deco Baires', 'AR', 'ARS', 2, 'hola@homedecoar.com', 'acc_tk_02', 'ref_tk_02', CURRENT_TIMESTAMP, true),
-('gaming_ar', 'Gaming Store AR', 'AR', 'ARS', 1, 'soporte@gamingar.com.ar', 'acc_tk_03', 'ref_tk_03', CURRENT_TIMESTAMP, true),
+-- Password para todos los vendedores de prueba: Test12345678
+('tech_guru_ar', 'Tech Guru Argentina', 'AR', 'ARS', 3, 'contacto@techguru.com.ar', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_01', 'ref_tk_01', CURRENT_TIMESTAMP, true),
+('home_deco_ar', 'Home & Deco Baires', 'AR', 'ARS', 2, 'hola@homedecoar.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_02', 'ref_tk_02', CURRENT_TIMESTAMP, true),
+('gaming_ar', 'Gaming Store AR', 'AR', 'ARS', 1, 'soporte@gamingar.com.ar', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_03', 'ref_tk_03', CURRENT_TIMESTAMP, true),
 
 -- Vendedores de México (MX / MXN)
 -- El vendedor 6 (ferreteria) está inactivo para probar el comportamiento del sistema con cuentas deshabilitadas
-('moda_mx_oficial', 'Moda MX Oficial', 'MX', 'MXN', 2, 'ventas@modamx.com.mx', 'acc_tk_04', 'ref_tk_04', CURRENT_TIMESTAMP, true),
-('autos_repuestos_mx', 'Repuestos Automotrices MX', 'MX', 'MXN', 3, 'contacto@repuestosmx.com', 'acc_tk_05', 'ref_tk_05', CURRENT_TIMESTAMP, true),
-('ferreteria_mx', 'La Gran Ferretería', 'MX', 'MXN', 2, 'ventas@ferreteriamx.com', 'acc_tk_06', 'ref_tk_06', CURRENT_TIMESTAMP, false), -- Vendedor inactivo (prueba)
+('moda_mx_oficial', 'Moda MX Oficial', 'MX', 'MXN', 2, 'ventas@modamx.com.mx', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_04', 'ref_tk_04', CURRENT_TIMESTAMP, true),
+('autos_repuestos_mx', 'Repuestos Automotrices MX', 'MX', 'MXN', 3, 'contacto@repuestosmx.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_05', 'ref_tk_05', CURRENT_TIMESTAMP, true),
+('ferreteria_mx', 'La Gran Ferretería', 'MX', 'MXN', 2, 'ventas@ferreteriamx.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_06', 'ref_tk_06', CURRENT_TIMESTAMP, false),
 
 -- Vendedores de Brasil (BR / BRL)
-('brasil_sports', 'Brasil Sports SA', 'BR', 'BRL', 1, 'contato@brasilsports.com.br', 'acc_tk_07', 'ref_tk_07', CURRENT_TIMESTAMP, true),
-('beleza_br', 'Beleza Store Brasil', 'BR', 'BRL', 2, 'sac@belezabr.com', 'acc_tk_08', 'ref_tk_08', CURRENT_TIMESTAMP, true),
-('calcados_br', 'Sapatos e Cia', 'BR', 'BRL', 3, 'atendimento@calcados.br', 'acc_tk_09', 'ref_tk_09', CURRENT_TIMESTAMP, true),
+('brasil_sports', 'Brasil Sports SA', 'BR', 'BRL', 1, 'contato@brasilsports.com.br', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_07', 'ref_tk_07', CURRENT_TIMESTAMP, true),
+('beleza_br', 'Beleza Store Brasil', 'BR', 'BRL', 2, 'sac@belezabr.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_08', 'ref_tk_08', CURRENT_TIMESTAMP, true),
+('calcados_br', 'Sapatos e Cia', 'BR', 'BRL', 3, 'atendimento@calcados.br', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_09', 'ref_tk_09', CURRENT_TIMESTAMP, true),
 
 -- Vendedores de Colombia (CO / COP)
-('colombia_coffee', 'Café de Colombia Shop', 'CO', 'COP', 2, 'info@cafecolombia.co', 'acc_tk_10', 'ref_tk_10', CURRENT_TIMESTAMP, true),
-('juguetes_co', 'Juguetería Bogotá', 'CO', 'COP', 1, 'pedidos@juguetesco.com', 'acc_tk_11', 'ref_tk_11', CURRENT_TIMESTAMP, true),
-('mascotas_co', 'Mascotas Felices CO', 'CO', 'COP', 1, 'hola@mascotasco.com', 'acc_tk_12', 'ref_tk_12', CURRENT_TIMESTAMP, true),
+('colombia_coffee', 'Café de Colombia Shop', 'CO', 'COP', 2, 'info@cafecolombia.co', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_10', 'ref_tk_10', CURRENT_TIMESTAMP, true),
+('juguetes_co', 'Juguetería Bogotá', 'CO', 'COP', 1, 'pedidos@juguetesco.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_11', 'ref_tk_11', CURRENT_TIMESTAMP, true),
+('mascotas_co', 'Mascotas Felices CO', 'CO', 'COP', 1, 'hola@mascotasco.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_12', 'ref_tk_12', CURRENT_TIMESTAMP, true),
 
 -- Vendedores de Chile (CL / CLP)
-('chile_wines', 'Vinos Chilenos Premium', 'CL', 'CLP', 3, 'ventas@chilewines.cl', 'acc_tk_13', 'ref_tk_13', CURRENT_TIMESTAMP, true),
-('libros_cl', 'Librería Santiago', 'CL', 'CLP', 2, 'contacto@libroscl.com', 'acc_tk_14', 'ref_tk_14', CURRENT_TIMESTAMP, true),
-('deportes_cl', 'Deportes Extremos CL', 'CL', 'CLP', 2, 'ventas@deportescl.com', 'acc_tk_15', 'ref_tk_15', CURRENT_TIMESTAMP, true),
+('chile_wines', 'Vinos Chilenos Premium', 'CL', 'CLP', 3, 'ventas@chilewines.cl', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_13', 'ref_tk_13', CURRENT_TIMESTAMP, true),
+('libros_cl', 'Librería Santiago', 'CL', 'CLP', 2, 'contacto@libroscl.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_14', 'ref_tk_14', CURRENT_TIMESTAMP, true),
+('deportes_cl', 'Deportes Extremos CL', 'CL', 'CLP', 2, 'ventas@deportescl.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_15', 'ref_tk_15', CURRENT_TIMESTAMP, true),
 
 -- Vendedores de Venezuela (VE / USD)
 -- Venezuela usa USD porque el Bolívar (VES) no es práctico para transacciones digitales
-('ve_electronics', 'Venezuela Electronics', 'VE', 'USD', 1, 'sales@ve-electronics.com', 'acc_tk_16', 'ref_tk_16', CURRENT_TIMESTAMP, true),
-('ropa_ve', 'Boutique Caracas', 'VE', 'USD', 1, 'info@ropave.com', 'acc_tk_17', 'ref_tk_17', CURRENT_TIMESTAMP, true),
-('tecnologia_global_ve', 'Tecno Global VE', 'VE', 'USD', 3, 'admin@tecnoglobal.ve', 'acc_tk_18', 'ref_tk_18', CURRENT_TIMESTAMP, true);
+('ve_electronics', 'Venezuela Electronics', 'VE', 'USD', 1, 'sales@ve-electronics.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_16', 'ref_tk_16', CURRENT_TIMESTAMP, true),
+('ropa_ve', 'Boutique Caracas', 'VE', 'USD', 1, 'info@ropave.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_17', 'ref_tk_17', CURRENT_TIMESTAMP, true),
+('tecnologia_global_ve', 'Tecno Global VE', 'VE', 'USD', 3, 'admin@tecnoglobal.ve', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_18', 'ref_tk_18', CURRENT_TIMESTAMP, true);
 
 
 -- ==============================================================================
@@ -736,7 +738,7 @@ INSERT INTO metrica_calidad_publicacion (id_publicacion, cantidad_fotos, tiene_v
 -- ==============================================================================
 CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_reputacion AS
 SELECT
-    v.id,
+    v.id_vendedor AS id,
     
     -- Fórmula: (Total de reclamos / Ventas totales del periodo) * 100
     COALESCE(
@@ -766,7 +768,7 @@ SELECT
     mr.insignia,
     mr.fecha_captura
 FROM vendedor v
-LEFT JOIN metrica_reputacion mr ON v.id = mr.id_vendedor
+LEFT JOIN metrica_reputacion mr ON v.id_vendedor = mr.id_vendedor
 WHERE v.esta_activo = TRUE;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_reputacion_vendedor
@@ -782,7 +784,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_reputacion_vendedor
 -- ==============================================================================
 CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_finanzas AS
 SELECT
-    v.id,
+    v.id_vendedor AS id,
     
     -- Fórmula: (Ventas concretadas / Visitas totales) * 100
     COALESCE(
@@ -836,8 +838,8 @@ SELECT
     mn.fecha_inicio_periodo,
     mn.fecha_fin_periodo
 FROM vendedor v
-LEFT JOIN metrica_negocio mn ON v.id = mn.id_vendedor
-LEFT JOIN metrica_costo mc ON v.id = mc.id_vendedor
+LEFT JOIN metrica_negocio mn ON v.id_vendedor = mn.id_vendedor
+LEFT JOIN metrica_costo mc ON v.id_vendedor = mc.id_vendedor
 WHERE v.esta_activo = TRUE;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_finanzas_vendedor
@@ -849,8 +851,8 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_finanzas_vendedor
 -- ==============================================================================
 CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_publicaciones AS
 SELECT
-    v.id,
-    COUNT(DISTINCT p.id) AS total_publicaciones,
+    v.id_vendedor AS id,
+    COUNT(DISTINCT p.id_publicacion) AS total_publicaciones,
     
     -- Fórmula: (Sumatoria de ventas / Sumatoria de visitas) * 100
     COALESCE(
@@ -860,23 +862,23 @@ SELECT
     
     -- Fórmula: (Cantidad de publicaciones con características completas / Total de publicaciones) * 100
     COALESCE(
-        (COUNT(DISTINCT CASE WHEN mcp.caracteristicas_completas = TRUE THEN p.id END)::NUMERIC
-        / NULLIF(COUNT(DISTINCT p.id), 0)) * 100,
+        (COUNT(DISTINCT CASE WHEN mcp.caracteristicas_completas = TRUE THEN p.id_publicacion END)::NUMERIC
+        / NULLIF(COUNT(DISTINCT p.id_publicacion), 0)) * 100,
         0
     ) AS pct_catalogo_completo,
     
     -- Fórmula: (Cantidad de publicaciones con video / Total de publicaciones) * 100
     COALESCE(
-        (COUNT(DISTINCT CASE WHEN mcp.tiene_video = TRUE THEN p.id END)::NUMERIC
-        / NULLIF(COUNT(DISTINCT p.id), 0)) * 100,
+        (COUNT(DISTINCT CASE WHEN mcp.tiene_video = TRUE THEN p.id_publicacion END)::NUMERIC
+        / NULLIF(COUNT(DISTINCT p.id_publicacion), 0)) * 100,
         0
     ) AS pct_publicaciones_con_video
 FROM vendedor v
-LEFT JOIN publicacion p ON v.id = p.id_vendedor
-LEFT JOIN rendimiento_publicacion rp ON p.id = rp.id
-LEFT JOIN metrica_calidad_publicacion mcp ON p.id = mcp.id
+LEFT JOIN publicacion p ON v.id_vendedor = p.id_vendedor
+LEFT JOIN rendimiento_publicacion rp ON p.id_publicacion = rp.id_publicacion
+LEFT JOIN metrica_calidad_publicacion mcp ON p.id_publicacion = mcp.id_publicacion
 WHERE v.esta_activo = TRUE
-GROUP BY v.id;
+GROUP BY v.id_vendedor;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_publicaciones_vendedor
     ON mv_diagnostico_publicaciones (id);
@@ -891,7 +893,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_publicaciones_vendedor
 -- ==============================================================================
 CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_ads AS
 SELECT
-    v.id,
+    v.id_vendedor AS id,
     
     -- Fórmula ROAS (Return On Ad Spend): Ventas concretadas / Inversión en Ads
     CASE
@@ -915,8 +917,8 @@ SELECT
     
     mc.inversion_ads
 FROM vendedor v
-LEFT JOIN metrica_costo mc ON v.id = mc.id_vendedor
-LEFT JOIN metrica_negocio mn ON v.id = mn.id_vendedor
+LEFT JOIN metrica_costo mc ON v.id_vendedor = mc.id_vendedor
+LEFT JOIN metrica_negocio mn ON v.id_vendedor = mn.id_vendedor
 WHERE v.esta_activo = TRUE;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_ads_vendedor
@@ -935,7 +937,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_ads_vendedor
 -- ==============================================================================
 CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_stock AS
 SELECT
-    v.id,
+    v.id_vendedor AS id,
     
     -- Fórmula: [Productos sin rotación / (Espacios P + Espacios G)] * 100
     COALESCE(
@@ -978,7 +980,7 @@ SELECT
     
     msf.puntaje_calidad
 FROM vendedor v
-LEFT JOIN metrica_stock_full msf ON v.id = msf.id_vendedor
+LEFT JOIN metrica_stock_full msf ON v.id_vendedor = msf.id_vendedor
 WHERE v.esta_activo = TRUE;
 
 CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_stock_vendedor
