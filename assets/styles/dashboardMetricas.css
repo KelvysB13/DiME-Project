@@ -1028,3 +1028,73 @@ a { text-decoration: none; color: inherit; }
 ::-webkit-scrollbar-track { background: var(--bg); }
 ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 999px; }
 ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ============================================================
+   NUEVOS ESTILOS PARA LA NAVEGACIÓN SPA Y SUB-VISTAS DE DIAGNÓSTICO
+   ============================================================ */
+
+/* Contenedores de vista principal */
+.content-view {
+  display: none;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.content-view.active {
+  display: block;
+}
+
+/* Barra de pestañas horizontales para Diagnóstico */
+.diag-tabs {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--border-light);
+  overflow-x: auto;
+}
+
+.diag-tab-btn {
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  white-space: nowrap;
+}
+
+.diag-tab-btn:hover {
+  color: var(--primary);
+  background-color: rgba(3, 28, 60, 0.02);
+}
+
+.diag-tab-btn.active {
+  color: var(--primary);
+  border-bottom-color: var(--accent);
+}
+
+/* Bloques de sub-vistas internas de Diagnóstico */
+.diag-sub-view {
+  display: none;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.diag-sub-view.active {
+  display: block;
+}
+
+/* Espacio reservado para los futuros Dashboards embebidos */
+.metabase-placeholder {
+  margin-top: 16px;
+  padding: 40px 20px;
+  background: #fff;
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  color: var(--text-muted);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px;
+}
