@@ -1,8 +1,8 @@
 from typing import List, Optional
 from pydantic import BaseModel
 
-
 class ReputacionInfo(BaseModel):
+    
     nivel: str
     insignia: Optional[str] = None
     ventas_totales: int
@@ -13,8 +13,8 @@ class ReputacionInfo(BaseModel):
     tasa_reclamos: float
     tasa_cancelaciones: float
 
-
 class NegocioInfo(BaseModel):
+
     ventas_brutas_moneda_local: float
     ventas_brutas_usd: float
     unidades_vendidas: int
@@ -26,8 +26,8 @@ class NegocioInfo(BaseModel):
     cvr_global: float
     ticket_promedio: float
 
-
 class CostoInfo(BaseModel):
+
     ventas_cobradas_total: float
     neto_recibido: float
     cargos_por_venta: float
@@ -38,8 +38,8 @@ class CostoInfo(BaseModel):
     descuento_reputacion: float
     margen_neto: float
 
-
 class StockInfo(BaseModel):
+
     espacios_p_asignados: int
     espacios_g_asignados: int
     puntaje_calidad: int
@@ -48,15 +48,15 @@ class StockInfo(BaseModel):
     productos_antiguedad: int
     productos_exceso_proyeccion: int
 
-
 class PaginaInfo(BaseModel):
+
     tiene_banner: bool
     tiene_logo: bool
     tiene_carruseles: bool
     categorias_organizadas: bool
 
-
 class PublicacionResumen(BaseModel):
+
     id_publicacion: int
     ml_item_id: str
     titulo: str
@@ -67,8 +67,8 @@ class PublicacionResumen(BaseModel):
     puntaje_calidad: int
     cvr: float
 
-
 class DashboardResponse(BaseModel):
+
     id_vendedor: int
     user_name: str
     nombre_tienda: str
