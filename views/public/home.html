@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creatorpreneur - Landing Page</title>
+    <style>
+        /* ================= Reset y Variables ================= */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: #f8f9fa;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* ================= Header y Animaciones ================= */
+        .hero-section {
+            position: relative;
+            background: linear-gradient(-45deg, #0b192c, #1e3a8a, #0f172a, #1a365d);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            color: white;
+            text-align: center;
+            padding: 2rem 2rem 14rem 2rem;
+            overflow: hidden;
+        }
+
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Gráfico de Líneas Animado */
+        .chart-container {
+            position: absolute;
+            bottom: 80px;
+            left: 0;
+            width: 100%;
+            height: 40%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.6;
+        }
+
+        .chart-container svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .animated-line {
+            fill: none;
+            stroke-width: 4;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            stroke-dasharray: 3000;
+            stroke-dashoffset: 3000;
+        }
+
+        .line-1 {
+            stroke: rgba(255, 255, 255, 0.9);
+            animation: drawLine 8s ease-in-out infinite;
+        }
+
+        .line-2 {
+            stroke: rgba(255, 255, 255, 0.3);
+            stroke-width: 3;
+            animation: drawLine 8s ease-in-out infinite;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes drawLine {
+            0% { stroke-dashoffset: 3000; opacity: 0; }
+            10% { opacity: 1; }
+            70% { stroke-dashoffset: 0; opacity: 1; }
+            90% { stroke-dashoffset: 0; opacity: 0; }
+            100% { stroke-dashoffset: 3000; opacity: 0; }
+        }
+
+        /* Curva Inferior Corregida (Arco hacia arriba) */
+        .hero-curve-bottom {
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+            z-index: 2;
+        }
+
+        .hero-curve-bottom svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 140px; /* Altura del arco */
+        }
+
+        .hero-curve-bottom .shape-fill {
+            fill: #f8f9fa; /* Mismo color del fondo de la página */
+        }
+
+        /* ================= Navegación ================= */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto 5rem auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        nav .logo { font-weight: 700; font-size: 1.25rem; }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        nav a { color: white; text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: opacity 0.3s;}
+        nav a:hover { opacity: 0.8; }
+
+        /* ================= Contenido Principal Hero ================= */
+        .hero-content {
+            position: relative;
+            z-index: 10;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+            font-weight: 700;
+        }
+
+        .hero-content p {
+            font-size: 1.1rem;
+            color: #cbd5e1;
+            margin-bottom: 2.5rem;
+            line-height: 1.6;
+            max-width: 650px;
+            margin-inline: auto;
+        }
+
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+            padding: 0.8rem 2.5rem;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            transition: background 0.3s;
+        }
+
+        .btn-primary:hover { background-color: #1d4ed8; }
+
+        /* ================= Sección de Video ================= */
+        .video-section {
+            max-width: 700px; 
+            margin: -8rem auto 0 auto; 
+            position: relative;
+            z-index: 20;
+            padding: 0 1rem;
+        }
+
+        .video-wrapper {
+            background: white;
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+            position: relative;
+        }
+
+        .video-thumbnail {
+            width: 100%;
+            height: 350px; 
+            background: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover;
+            border-radius: 8px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .play-button {
+            width: 60px;
+            height: 45px;
+            background: #ff0000;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            transition: transform 0.2s;
+        }
+
+        .play-button:hover { transform: scale(1.05); }
+        .play-button::after {
+            content: '';
+            border-left: 16px solid white;
+            border-top: 10px solid transparent;
+            border-bottom: 10px solid transparent;
+            margin-left: 5px;
+        }
+
+        /* ================= Barra de Patrocinantes ================= */
+        .sponsor-section {
+            overflow: hidden;
+            background: transparent;
+            padding: 1rem 0 2rem 0;
+            margin-top: 5rem;
+            text-align: center;
+        }
+
+        .sponsor-section h3 {
+            font-size: 1rem;
+            color: #64748b;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 2rem;
+            font-weight: 600;
+        }
+
+        .marquee-wrapper { 
+            display: flex; 
+            width: max-content; 
+            animation: scroll 15s linear infinite; 
+        }
+        
+        .sponsor-item {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: #1e1e1e;
+            margin: 0 4rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-transform: uppercase;
+        }
+
+        .sponsor-item span { color: #fff159; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
+
+        @keyframes scroll {
+            to { transform: translateX(-50%); }
+        }
+
+        /* ================= Sección de Precios ================= */
+        .pricing-section {
+            padding: 5rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        .pricing-section h2 { font-size: 2.5rem; margin-bottom: 3rem; color: #0f172a; }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .pricing-card {
+            background: white;
+            padding: 3rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            border: 1px solid #e2e8f0;
+            transition: transform 0.3s;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .pricing-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
+        .pricing-card h3 { font-size: 1.5rem; margin-bottom: 1rem; color: #0f172a; }
+        .pricing-card .price { font-size: 3rem; font-weight: bold; margin-bottom: 1.5rem; color: #2563eb; }
+        .pricing-card .price span { font-size: 1rem; color: #64748b; font-weight: normal; }
+        
+        .pricing-card ul { list-style: none; margin-bottom: 2.5rem; text-align: left; flex-grow: 1; }
+        .pricing-card ul li { margin-bottom: 1rem; color: #475569; position: relative; padding-left: 1.8rem; line-height: 1.4; }
+        .pricing-card ul li::before { content: '✓'; position: absolute; left: 0; color: #10b981; font-weight: bold; }
+        
+        .pricing-card .btn {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            text-align: center;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 2px solid #2563eb;
+            color: #2563eb;
+            transition: all 0.3s;
+        }
+
+        .pricing-card .btn:hover { background: #eff6ff; }
+
+        .pricing-card.highlight {
+            border: 2px solid #2563eb;
+            position: relative;
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.15);
+        }
+        
+        .pricing-card.highlight:hover { transform: scale(1.05) translateY(-5px); }
+        .pricing-card.highlight .btn { background: #2563eb; color: white; }
+        .pricing-card.highlight .btn:hover { background: #1d4ed8; }
+
+        /* ================= Visión de la Empresa ================= */
+        .vision-section {
+            padding: 3rem 2rem 6rem 2rem;
+            background: white;
+            text-align: left; 
+        }
+
+        .vision-container { max-width: 900px; margin: 0 auto; }
+        .vision-container h2 { font-size: 2.5rem; margin-bottom: 1.5rem; color: #0f172a; }
+        .vision-container p { font-size: 1.1rem; color: #475569; line-height: 1.8; margin-bottom: 1rem;}
+
+        /* ================= Footer ================= */
+        footer {
+            background: #0b192c;
+            color: white;
+            padding: 4rem 2rem 2rem 2rem;
+            text-align: center;
+        }
+
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .footer-links a { color: #cbd5e1; text-decoration: none; transition: color 0.3s; font-weight: 500; }
+        .footer-links a:hover { color: white; }
+        .footer-copy { color: #64748b; font-size: 0.9rem; border-top: 1px solid #1e293b; padding-top: 2rem; margin-top: 2rem; }
+
+        /* ================= Responsive ================= */
+        @media (max-width: 768px) {
+            .hero-content h1 { font-size: 2.5rem; }
+            .video-section { margin-top: -6rem; }
+            .video-thumbnail { height: 220px; }
+            .pricing-card.highlight { transform: scale(1); }
+            .pricing-card.highlight:hover { transform: translateY(-5px); }
+            .sponsor-item { margin: 0 2rem; font-size: 1.2rem; }
+            .nav-links { gap: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero-section" id="home">
+        
+        <div class="chart-container">
+            <svg viewBox="0 0 1000 300" preserveAspectRatio="none">
+                <path class="animated-line line-1" d="M0,250 L50,230 L100,240 L150,180 L200,190 L250,230 L300,160 L350,180 L400,100 L450,140 L500,60 L550,180 L600,50 L650,80 L700,20 L750,40 L800,130 L850,90 L900,140 L950,50 L1000,80" />
+                <path class="animated-line line-2" d="M0,290 L50,285 L100,285 L150,295 L200,290 L250,280 L300,290 L350,270 L400,275 L450,250 L500,260 L550,220 L600,240 L650,220 L700,260 L750,255 L800,250 L850,255 L900,180 L950,190 L1000,120" />
+            </svg>
+        </div>
+
+        <nav>
+            <div class="logo">Creatorpreneur</div>
+            <div class="nav-links">
+                <a href="#vision">¿Quiénes somos?</a>
+                <a href="#login">Login</a>
+            </div>
+        </nav>
+
+        <div class="hero-content">
+            <h1>Scale up your <strong>creative</strong> side-hustle to the next level.</h1>
+            <p>Learn how to reliably scale up your <strong>creative side-hustle</strong> and <strong>build systems</strong> for sustainable growth, without burning out and while enjoying the journey.</p>
+            <a href="#pricing" class="btn-primary">Enrol &rarr;</a>
+        </div>
+
+        <div class="hero-curve-bottom">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M0,120 Q600,0 1200,120 Z" class="shape-fill"></path>
+            </svg>
+        </div>
+    </header>
+
+    <section class="video-section">
+        <div class="video-wrapper">
+            <div class="video-thumbnail">
+                <div class="play-button"></div>
+            </div>
+        </div>
+    </section>
+
+    <section class="sponsor-section" id="sponsors">
+        <h3>SPONSORS</h3>
+        <div class="marquee-wrapper">
+            <div class="sponsor-item"><span>🤝</span> Mercado Libre</div>
+            <div class="sponsor-item"><span>🤝</span> Mercado Libre</div>
+            <div class="sponsor-item"><span>🤝</span> Mercado Libre</div>
+            <div class="sponsor-item"><span>🤝</span> Mercado Libre</div>
+            <div class="sponsor-item"><span>🤝</span> Mercado Libre</div>
+            <div class="sponsor-item"><span>🤝</span> Mercado Libre</div>
+            <div class="sponsor-item"><span>🤝</span> Mercado Libre</div>
+            <div class="sponsor-item"><span>🤝</span> Mercado Libre</div>
+        </div>
+    </section>
+
+    <section class="pricing-section" id="pricing">
+        <h2>Elige el plan ideal para ti</h2>
+        <div class="pricing-grid">
+            
+            <div class="pricing-card">
+                <h3>Free</h3>
+                <div class="price">$0<span>/mes</span></div>
+                <ul>
+                    <li>Auditoría básica de métricas</li>
+                    <li>Generación de reportes manuales</li>
+                    <li>Acceso a la comunidad</li>
+                    <li>Soporte estándar</li>
+                </ul>
+                <a href="#" class="btn">Adquirir</a>
+            </div>
+
+            <div class="pricing-card highlight">
+                <h3>Basic</h3>
+                <div class="price">$29<span>/mes</span></div>
+                <ul>
+                    <li>Todo lo del plan Free</li>
+                    <li>Auditoría automatizada de tiendas</li>
+                    <li>Mocks de métricas e integración API</li>
+                    <li>Soporte por correo electrónico</li>
+                </ul>
+                <a href="#" class="btn">Adquirir Basic</a>
+            </div>
+
+            <div class="pricing-card">
+                <h3>Premium</h3>
+                <div class="price">$99<span>/mes</span></div>
+                <ul>
+                    <li>Todo lo del plan Basic</li>
+                    <li>Integración nativa con Metabase</li>
+                    <li>Análisis y gráficos en tiempo real</li>
+                    <li>Soporte técnico prioritario 24/7</li>
+                </ul>
+                <a href="#" class="btn">Adquirir Premium</a>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="vision-section" id="vision">
+        <div class="vision-container">
+            <h2>Visión de la Empresa</h2>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam at erat in purus aliquam vehicula. Curabitur vel egestas sapien, ut vulputate arcu. Quisque et justo lacus. Donec sit amet accumsan est. Duis tincidunt, magna vitae pulvinar sollicitudin, magna tortor tempor elit, ac faucibus arcu sem eu quam.</p>
+            <p>Suspendisse potenti. Phasellus in libero quis purus congue fringilla. Integer vestibulum tellus id ligula vehicula, ut efficitur nisl convallis. Proin ac convallis mauris, id iaculis ante. Mauris eu lacus ex. Nunc eget erat non magna feugiat rhoncus a id odio.</p>
+        </div>
+    </section>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#vision">¿Quiénes somos?</a>
+            <a href="#sponsors">Patrocinadores</a>
+            <a href="#pricing">Planes</a>
+        </div>
+        <div class="footer-copy">
+            &copy; 2026 Creatorpreneur. Todos los derechos reservados.
+        </div>
+    </footer>
+
+</body>
+</html>
