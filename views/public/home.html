@@ -3,366 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Creatorpreneur - Landing Page</title>
-    <style>
-        /* ================= Reset y Variables ================= */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            scroll-behavior: smooth;
-        }
-
-        body {
-            background-color: #f8f9fa;
-            color: #333;
-            overflow-x: hidden;
-        }
-
-        /* ================= Header y Animaciones ================= */
-        .hero-section {
-            position: relative;
-            background: linear-gradient(-45deg, #0b192c, #1e3a8a, #0f172a, #1a365d);
-            background-size: 400% 400%;
-            animation: gradientBG 15s ease infinite;
-            color: white;
-            text-align: center;
-            padding: 2rem 2rem 14rem 2rem;
-            overflow: hidden;
-        }
-
-        @keyframes gradientBG {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Gráfico de Líneas Animado */
-        .chart-container {
-            position: absolute;
-            bottom: 80px;
-            left: 0;
-            width: 100%;
-            height: 40%;
-            pointer-events: none;
-            z-index: 1;
-            opacity: 0.6;
-        }
-
-        .chart-container svg {
-            width: 100%;
-            height: 100%;
-        }
-
-        .animated-line {
-            fill: none;
-            stroke-width: 4;
-            stroke-linecap: round;
-            stroke-linejoin: round;
-            stroke-dasharray: 3000;
-            stroke-dashoffset: 3000;
-        }
-
-        .line-1 {
-            stroke: rgba(255, 255, 255, 0.9);
-            animation: drawLine 8s ease-in-out infinite;
-        }
-
-        .line-2 {
-            stroke: rgba(255, 255, 255, 0.3);
-            stroke-width: 3;
-            animation: drawLine 8s ease-in-out infinite;
-            animation-delay: 0.5s;
-        }
-
-        @keyframes drawLine {
-            0% { stroke-dashoffset: 3000; opacity: 0; }
-            10% { opacity: 1; }
-            70% { stroke-dashoffset: 0; opacity: 1; }
-            90% { stroke-dashoffset: 0; opacity: 0; }
-            100% { stroke-dashoffset: 3000; opacity: 0; }
-        }
-
-        /* Curva Inferior Corregida (Arco hacia arriba) */
-        .hero-curve-bottom {
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            width: 100%;
-            overflow: hidden;
-            line-height: 0;
-            z-index: 2;
-        }
-
-        .hero-curve-bottom svg {
-            position: relative;
-            display: block;
-            width: calc(100% + 1.3px);
-            height: 140px; /* Altura del arco */
-        }
-
-        .hero-curve-bottom .shape-fill {
-            fill: #f8f9fa; /* Mismo color del fondo de la página */
-        }
-
-        /* ================= Navegación ================= */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto 5rem auto;
-            position: relative;
-            z-index: 10;
-        }
-
-        nav .logo { font-weight: 700; font-size: 1.25rem; }
-        
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            align-items: center;
-        }
-
-        nav a { color: white; text-decoration: none; font-weight: 500; font-size: 0.95rem; transition: opacity 0.3s;}
-        nav a:hover { opacity: 0.8; }
-
-        /* ================= Contenido Principal Hero ================= */
-        .hero-content {
-            position: relative;
-            z-index: 10;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-
-        .hero-content h1 {
-            font-size: 3.5rem;
-            line-height: 1.2;
-            margin-bottom: 1.5rem;
-            letter-spacing: -1px;
-            font-weight: 700;
-        }
-
-        .hero-content p {
-            font-size: 1.1rem;
-            color: #cbd5e1;
-            margin-bottom: 2.5rem;
-            line-height: 1.6;
-            max-width: 650px;
-            margin-inline: auto;
-        }
-
-        .btn-primary {
-            background-color: #2563eb;
-            color: white;
-            padding: 0.8rem 2.5rem;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            display: inline-block;
-            transition: background 0.3s;
-        }
-
-        .btn-primary:hover { background-color: #1d4ed8; }
-
-        /* ================= Sección de Video ================= */
-        .video-section {
-            max-width: 700px; 
-            margin: -8rem auto 0 auto; 
-            position: relative;
-            z-index: 20;
-            padding: 0 1rem;
-        }
-
-        .video-wrapper {
-            background: white;
-            padding: 1rem;
-            border-radius: 12px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15);
-            position: relative;
-        }
-
-        .video-thumbnail {
-            width: 100%;
-            height: 350px; 
-            background: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80') center/cover;
-            border-radius: 8px;
-            position: relative;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .play-button {
-            width: 60px;
-            height: 45px;
-            background: #ff0000;
-            border-radius: 12px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-            transition: transform 0.2s;
-        }
-
-        .play-button:hover { transform: scale(1.05); }
-        .play-button::after {
-            content: '';
-            border-left: 16px solid white;
-            border-top: 10px solid transparent;
-            border-bottom: 10px solid transparent;
-            margin-left: 5px;
-        }
-
-        /* ================= Barra de Patrocinantes ================= */
-        .sponsor-section {
-            overflow: hidden;
-            background: transparent;
-            padding: 1rem 0 2rem 0;
-            margin-top: 5rem;
-            text-align: center;
-        }
-
-        .sponsor-section h3 {
-            font-size: 1rem;
-            color: #64748b;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            margin-bottom: 2rem;
-            font-weight: 600;
-        }
-
-        .marquee-wrapper { 
-            display: flex; 
-            width: max-content; 
-            animation: scroll 15s linear infinite; 
-        }
-        
-        .sponsor-item {
-            font-size: 1.5rem;
-            font-weight: 800;
-            color: #1e1e1e;
-            margin: 0 4rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            text-transform: uppercase;
-        }
-
-        .sponsor-item span { color: #fff159; text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000; }
-
-        @keyframes scroll {
-            to { transform: translateX(-50%); }
-        }
-
-        /* ================= Sección de Precios ================= */
-        .pricing-section {
-            padding: 5rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-            text-align: center;
-        }
-
-        .pricing-section h2 { font-size: 2.5rem; margin-bottom: 3rem; color: #0f172a; }
-
-        .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            align-items: center;
-        }
-
-        .pricing-card {
-            background: white;
-            padding: 3rem 2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            border: 1px solid #e2e8f0;
-            transition: transform 0.3s;
-            display: flex;
-            flex-direction: column;
-            height: 100%;
-        }
-
-        .pricing-card:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1); }
-        .pricing-card h3 { font-size: 1.5rem; margin-bottom: 1rem; color: #0f172a; }
-        .pricing-card .price { font-size: 3rem; font-weight: bold; margin-bottom: 1.5rem; color: #2563eb; }
-        .pricing-card .price span { font-size: 1rem; color: #64748b; font-weight: normal; }
-        
-        .pricing-card ul { list-style: none; margin-bottom: 2.5rem; text-align: left; flex-grow: 1; }
-        .pricing-card ul li { margin-bottom: 1rem; color: #475569; position: relative; padding-left: 1.8rem; line-height: 1.4; }
-        .pricing-card ul li::before { content: '✓'; position: absolute; left: 0; color: #10b981; font-weight: bold; }
-        
-        .pricing-card .btn {
-            display: block;
-            width: 100%;
-            padding: 1rem;
-            text-align: center;
-            border-radius: 6px;
-            text-decoration: none;
-            font-weight: 600;
-            border: 2px solid #2563eb;
-            color: #2563eb;
-            transition: all 0.3s;
-        }
-
-        .pricing-card .btn:hover { background: #eff6ff; }
-
-        .pricing-card.highlight {
-            border: 2px solid #2563eb;
-            position: relative;
-            transform: scale(1.05);
-            box-shadow: 0 10px 25px rgba(37, 99, 235, 0.15);
-        }
-        
-        .pricing-card.highlight:hover { transform: scale(1.05) translateY(-5px); }
-        .pricing-card.highlight .btn { background: #2563eb; color: white; }
-        .pricing-card.highlight .btn:hover { background: #1d4ed8; }
-
-        /* ================= Visión de la Empresa ================= */
-        .vision-section {
-            padding: 3rem 2rem 6rem 2rem;
-            background: white;
-            text-align: left; 
-        }
-
-        .vision-container { max-width: 900px; margin: 0 auto; }
-        .vision-container h2 { font-size: 2.5rem; margin-bottom: 1.5rem; color: #0f172a; }
-        .vision-container p { font-size: 1.1rem; color: #475569; line-height: 1.8; margin-bottom: 1rem;}
-
-        /* ================= Footer ================= */
-        footer {
-            background: #0b192c;
-            color: white;
-            padding: 4rem 2rem 2rem 2rem;
-            text-align: center;
-        }
-
-        .footer-links {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-        }
-
-        .footer-links a { color: #cbd5e1; text-decoration: none; transition: color 0.3s; font-weight: 500; }
-        .footer-links a:hover { color: white; }
-        .footer-copy { color: #64748b; font-size: 0.9rem; border-top: 1px solid #1e293b; padding-top: 2rem; margin-top: 2rem; }
-
-        /* ================= Responsive ================= */
-        @media (max-width: 768px) {
-            .hero-content h1 { font-size: 2.5rem; }
-            .video-section { margin-top: -6rem; }
-            .video-thumbnail { height: 220px; }
-            .pricing-card.highlight { transform: scale(1); }
-            .pricing-card.highlight:hover { transform: translateY(-5px); }
-            .sponsor-item { margin: 0 2rem; font-size: 1.2rem; }
-            .nav-links { gap: 1rem; }
-        }
-    </style>
+    <title>DiME | Diagnóstico Integral de Metricas E-Commerce</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
+    <link rel="stylesheet" href="../../assets/styles/home_style.css">
 </head>
 <body>
 
@@ -370,13 +16,20 @@
         
         <div class="chart-container">
             <svg viewBox="0 0 1000 300" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="rgba(247, 246, 244, 0.15)" />
+                        <stop offset="100%" stop-color="rgba(247, 246, 244, 0)" />
+                    </linearGradient>
+                </defs>
+                <path class="chart-fill" d="M0,250 L50,230 L100,240 L150,180 L200,190 L250,230 L300,160 L350,180 L400,100 L450,140 L500,60 L550,180 L600,50 L650,80 L700,20 L750,40 L800,130 L850,90 L900,140 L950,50 L1000,80 L1000,300 L0,300 Z" fill="url(#areaGrad)" opacity="0" style="animation: fadeFill 6s ease-in-out infinite;" />
                 <path class="animated-line line-1" d="M0,250 L50,230 L100,240 L150,180 L200,190 L250,230 L300,160 L350,180 L400,100 L450,140 L500,60 L550,180 L600,50 L650,80 L700,20 L750,40 L800,130 L850,90 L900,140 L950,50 L1000,80" />
                 <path class="animated-line line-2" d="M0,290 L50,285 L100,285 L150,295 L200,290 L250,280 L300,290 L350,270 L400,275 L450,250 L500,260 L550,220 L600,240 L650,220 L700,260 L750,255 L800,250 L850,255 L900,180 L950,190 L1000,120" />
             </svg>
         </div>
 
         <nav>
-            <div class="logo">Creatorpreneur</div>
+            <div class="logo"><img src="../../assets/images/DiME_Logo_Inverso.png" alt="DiME" class="logo-img"></div>
             <div class="nav-links">
                 <a href="#vision">¿Quiénes somos?</a>
                 <a href="#login">Login</a>
@@ -384,9 +37,9 @@
         </nav>
 
         <div class="hero-content">
-            <h1>Scale up your <strong>creative</strong> side-hustle to the next level.</h1>
-            <p>Learn how to reliably scale up your <strong>creative side-hustle</strong> and <strong>build systems</strong> for sustainable growth, without burning out and while enjoying the journey.</p>
-            <a href="#pricing" class="btn-primary">Enrol &rarr;</a>
+            <h1><span id="typewriter-text"></span><span id="typewriter-cursor">|</span></h1>
+            <p>Monitorea, analiza y escala tu negocio digital con información precisa en tiempo real que impulsa resultados.</p>
+            <a href="#pricing" class="btn-primary">¡Empieza Hoy!</a>
         </div>
 
         <div class="hero-curve-bottom">
@@ -398,23 +51,19 @@
 
     <section class="video-section">
         <div class="video-wrapper">
-            <div class="video-thumbnail">
-                <div class="play-button"></div>
-            </div>
+            <iframe class="video-embed" src="https://www.youtube.com/embed/TEW3ujNyGFw" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
         </div>
     </section>
 
     <section class="sponsor-section" id="sponsors">
-        <h3>SPONSORS</h3>
-        <div class="marquee-wrapper">
-            <div class="sponsor-item"><span>🤝</span> Mercado Libre</div>
-            <div class="sponsor-item"><span>🤝</span> Mercado Libre</div>
-            <div class="sponsor-item"><span>🤝</span> Mercado Libre</div>
-            <div class="sponsor-item"><span>🤝</span> Mercado Libre</div>
-            <div class="sponsor-item"><span>🤝</span> Mercado Libre</div>
-            <div class="sponsor-item"><span>🤝</span> Mercado Libre</div>
-            <div class="sponsor-item"><span>🤝</span> Mercado Libre</div>
-            <div class="sponsor-item"><span>🤝</span> Mercado Libre</div>
+        <h3>PATROCINADORES</h3>
+        <p class="subtitle">Empresas que confían en nosotros</p>
+        <div class="sponsor-rotator" id="sponsorRotator">
+            <div class="sponsor-track" id="sponsorTrack">
+                <div class="sponsor-card"><img src="https://customers.twilio.com/content/dam/twilio-com/core-assets/customer-logos/m-o/mercado-libre.svg" alt="Mercado Libre" class="sponsor-logo"></div>
+                <div class="sponsor-card sponsor-card--active"><img src="https://evolpe.com/wp-content/uploads/2020/07/metabase-small.png" alt="Metabase" class="sponsor-logo sponsor-logo--xl"></div>
+                <div class="sponsor-card"><img src="https://api.octoperf.com/doc/monitoring/create-connection/postgres/img/postgresql-logo.png" alt="PostgreSQL" class="sponsor-logo sponsor-logo--md"></div>
+            </div>
         </div>
     </section>
 
@@ -470,15 +119,84 @@
     </section>
 
     <footer>
-        <div class="footer-links">
-            <a href="#vision">¿Quiénes somos?</a>
-            <a href="#sponsors">Patrocinadores</a>
-            <a href="#pricing">Planes</a>
+        <div class="footer-content">
+            <div class="footer-left">
+                <div class="footer-contact">
+                    <span class="contact-label">Contáctanos</span>
+                    <a href="tel:+18005550199" class="contact-phone">+58 (0286) 927</a>
+                </div>
+            </div>
+            <div class="footer-right">
+                <form class="newsletter-form">
+                    <label for="newsletter-email" class="newsletter-label">Suscríbete a nuestro newsletter</label>
+                    <div class="newsletter-input-group">
+                        <input type="email" id="newsletter-email" placeholder="tu@email.com" required>
+                        <button type="submit">Suscribirse</button>
+                    </div>
+                </form>
+            </div>
         </div>
         <div class="footer-copy">
-            &copy; 2026 Creatorpreneur. Todos los derechos reservados.
+            <a href="https://github.com/KelvysB13/DiME-Project" target="_blank" rel="noopener noreferrer" class="github-link">
+                <svg fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+            </a>
+            &copy; 2026 DiME Team. All rights reserved.
         </div>
     </footer>
 
+<script>
+    const text = "Convierte informacion en inteligencia de negocio.";
+    const el = document.getElementById('typewriter-text');
+    let i = 0;
+    let deleting = false;
+
+    function typeWriter() {
+        if (!deleting) {
+            if (i < text.length) {
+                el.textContent += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 55 + Math.random() * 45);
+            } else {
+                deleting = true;
+                setTimeout(typeWriter, 2000);
+            }
+        } else {
+            if (i > 0) {
+                el.textContent = text.substring(0, i - 1);
+                i--;
+                setTimeout(typeWriter, 30 + Math.random() * 25);
+            } else {
+                deleting = false;
+                setTimeout(typeWriter, 500);
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => setTimeout(typeWriter, 600));
+
+    const track = document.getElementById('sponsorTrack');
+    if (track) {
+        setInterval(() => {
+            const cards = track.children;
+            if (cards.length < 2) return;
+            const first = cards[0];
+            const offset = first.offsetWidth + parseInt(getComputedStyle(track).gap);
+            track.style.transition = 'transform 0.5s ease';
+            track.style.transform = 'translateX(-' + offset + 'px)';
+            setTimeout(() => {
+                track.style.transition = 'none';
+                track.style.transform = '';
+                first.remove();
+                track.appendChild(first);
+                Array.from(cards).forEach(c => c.classList.remove('sponsor-card--active'));
+                cards[1].classList.add('sponsor-card--active');
+                track.offsetHeight;
+                track.style.transition = '';
+            }, 500);
+        }, 3000);
+    }
+</script>
 </body>
 </html>
