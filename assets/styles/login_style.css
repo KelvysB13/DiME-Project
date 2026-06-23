@@ -159,13 +159,12 @@ a { text-decoration: none; }
     line-height: 1.25;
     margin-bottom: 1.5rem;
     min-height: 7.5rem;
-    white-space: pre-line;
 }
 
 @media (max-width: 768px) {
     .title {
         font-size: 3.75rem;
-        min-height: 9.375rem;
+        min-height: 10rem;
     }
 }
 
