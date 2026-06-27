@@ -12,8 +12,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
 
     <!-- ICONO Y ESTILOS -->
-    <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
-    <link rel="stylesheet" href="../../assets/styles/login_style.css">
+    <link rel="icon" type="image/x-icon" href="/assets/icons/favicon.ico">
+    <link rel="stylesheet" href="/assets/styles/login_style.css">
 </head>
 <body>
 
@@ -38,10 +38,10 @@
 
     <!-- TEXTO DE BIENVENIDA -->
     <div class="content-wrap">
-        <h1 class="title animated-title">
+        <h1 class="title">
             <span id="typewriter-text" style="white-space: pre-line;"></span><span id="typewriter-cursor">|</span>
         </h1>
-        <p class="desc animated-desc">
+        <p class="desc">
             Administra tus Métricas y obtén Diagnósticos Automáticos para tu E-Commerce.
         </p>
     </div>
@@ -66,23 +66,24 @@
 
             <!-- LOGO -->
             <div class="logo-wrap">
-                <a href="home.html"><img src="../../assets/images/DiME_Logo.png" alt="DiME Logo"></a>
+                <a href="/"><img src="/assets/images/DiME_Logo.png" alt="DiME Logo"></a>
             </div>
             
             <!-- FORMULARIO -->
-            <form class="login-form">
+            <form class="login-form" id="loginForm">
                 <h2 class="welcome-title">INGRESE SUS CREDENCIALES</h2>
 
                 <!-- CAMPO EMAIL -->
-                <div class="form-group email">
+                <div class="form-group email" id="email-group">
                     <svg class="input-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
                     </svg>
                     <input type="email" id="email" placeholder="Correo Electrónico">
+                    <span class="field-error" id="email-error"></span>
                 </div>
 
                 <!-- CAMPO CONTRASEÑA + BOTON VISIBILIDAD -->
-                <div class="form-group password">
+                <div class="form-group password" id="password-group">
                     <svg class="input-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
                     </svg>
@@ -93,6 +94,7 @@
                             <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
                         </svg>
                     </button>
+                    <span class="field-error" id="password-error"></span>
                 </div>
 
                 <!-- CHECKBOX RECORDAR -->
@@ -101,13 +103,13 @@
                     <label for="remember">Recordar Sesión</label>
                 </div>
 
-                <!-- BOTONES: INICIAR SESION + GOOGLE -->
                 <div class="buttons-wrap">
                     <button type="submit" class="btn-primary">
                         Iniciar Sesión
                     </button>
-
                 </div>
+
+                <div id="mensaje" class="mensaje"></div>
 
             </form>
 
@@ -120,7 +122,10 @@
         </div>
     </div>
 
-<!-- SCRIPT: MOSTRAR/OCULTAR CONTRASEÑA -->
+<!-- SCRIPT: LOGIN FORM HANDLER -->
+    <script src="/forms/loginForm.js"></script>
+
+    <!-- SCRIPT: MOSTRAR/OCULTAR CONTRASEÑA -->
     <script>
         document.getElementById('togglePassword').addEventListener('click', function () 
         {
