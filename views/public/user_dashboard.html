@@ -1,10 +1,4 @@
 <!DOCTYPE html>
-<!-- ==========================================
-     DiME - Dashboard de Métricas
-     Dashboard principal con KPIs, widgets,
-     tabla de publicaciones y gráficos Metabase.
-     Basado en diseño: azul (#031c3c) + amarillo (#fcd703)
-     ========================================== -->
 <html lang="es">
 <head>
   <meta charset="UTF-8">
@@ -12,14 +6,12 @@
   <title>DiME | Dashboard de Métricas</title>
   <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
 
-  <!-- Montserrat + JetBrains Mono -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="../../assets/styles/user_dashboard_style.css">
 
-  <!-- SDK Metabase -->
   <script defer src="http://localhost:3000/app/embed.js"></script>
   <script>
     function defineMetabaseConfig(config) {
@@ -34,14 +26,8 @@
 </head>
 <body>
 
-  <!-- ==========================================
-       CONTENEDOR PRINCIPAL
-       ========================================== -->
   <div class="flex min-h-screen">
 
-    <!-- ==========================================
-         SIDEBAR — Fondo azul oscuro con gradiente
-         ========================================== -->
     <aside class="sidebar">
 
       <div class="logo-area">
@@ -60,38 +46,21 @@
       </div>
 
       <nav>
-        <button class="active">
+        <button class="nav-btn active" data-view="view-inicio">
           <span class="icon-placeholder">⌂</span>
           <span>Inicio</span>
         </button>
-        <button>
+        <button class="nav-btn" data-view="view-diagnostico">
           <span class="icon-placeholder">◉</span>
           <span>Diagnóstico</span>
-          <span class="live-badge">LIVE</span>
         </button>
-        <button>
-          <span class="icon-placeholder">⊙</span>
-          <span>Países</span>
+        <button class="nav-btn" data-view="view-plan">
+          <span class="icon-placeholder">↗</span>
+          <span>Plan de acción</span>
         </button>
-        <button>
-          <span class="icon-placeholder">$</span>
-          <span>Monedas</span>
-        </button>
-        <button class="active">
-          <span class="icon-placeholder">♦</span>
-          <span>Vendedores</span>
-        </button>
-        <button>
-          <span class="icon-placeholder">☰</span>
-          <span>Publicaciones</span>
-        </button>
-        <button>
-          <span class="icon-placeholder">★</span>
-          <span>Reputación</span>
-        </button>
-        <button style="color:rgba(252,215,3,0.80)">
-          <span class="icon-placeholder">◎</span>
-          <span class="font-semibold">Guías Oficiales</span>
+        <button class="nav-btn" data-view="view-dudas">
+          <span class="icon-placeholder">✉</span>
+          <span>Dudas frecuentes</span>
         </button>
       </nav>
 
@@ -104,30 +73,15 @@
       </div>
     </aside>
 
-    <!-- ==========================================
-         MAIN
-         ========================================== -->
     <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
 
-      <!-- TOPBAR -->
       <header class="topbar">
         <div>
-          <h1 class="topbar-title">Tablero de Diagnóstico</h1>
+          <h1 class="topbar-title" id="topbar-title">Tablero de Diagnóstico</h1>
           <p class="topbar-subtitle">Consola Estratégica Mercado Libre</p>
         </div>
         <div class="flex items-center gap-4">
 
-          <!-- Selector de vendedor -->
-          <div class="flex items-center gap-2">
-            <span class="text-xs md:inline" style="color:var(--text-secondary);font-weight:500">Auditar Cuenta:</span>
-            <div class="relative">
-              <select id="header-seller-select" class="seller-select">
-              </select>
-              <span class="select-arrow">▼</span>
-            </div>
-          </div>
-
-          <!-- Perfil -->
           <div class="profile-dropdown-wrapper">
             <button id="user-profile-button" class="profile-btn">
               <div class="profile-avatar" id="profile-avatar-letter">TH</div>
@@ -144,8 +98,9 @@
                 <p id="dropdown-email">ventas@tecnohogar.com.ar</p>
               </div>
               <div style="padding:4px 0">
-                <button class="dropdown-item"><span>⚙</span> Gestionar Cuentas de Vendedor</button>
-                <button class="dropdown-item"><span>✦</span> Ver Guías de Desarrollo</button>
+                <button class="dropdown-item" onclick="window.location.href='user_settings.html'">
+                  <span>⚙</span> User Settings
+                </button>
               </div>
               <div style="border-top:1px solid var(--border-light);padding-top:4px;margin-top:4px">
                 <button id="btn-signout" class="dropdown-item danger"><span>✕</span> Cerrar Sesión DiME</button>
@@ -155,130 +110,188 @@
         </div>
       </header>
 
-      <!-- CONTENIDO -->
       <div class="flex-1 p-5" style="max-width:1280px;margin:0 auto;width:100%">
 
-        <!-- Spinner -->
         <div id="loadingSpinner" class="loading-spinner">
           <div class="spinner-ring"></div>
           <p style="color:var(--text-muted);font-size:12px;font-family:'JetBrains Mono',monospace">Cargando métricas del vendedor...</p>
         </div>
 
-        <!-- Dashboard content -->
         <div id="dashboardContent" style="display:none">
 
-          <!-- Seller Ribbon -->
-          <div id="seller-ribbon" class="seller-ribbon" style="margin-bottom:20px"></div>
+          <div id="view-inicio" class="content-view active">
+            
+            <h2 id="view-inicio-greeting" style="font-size: 20px; font-weight: 700; color: var(--primary); margin-bottom: 20px;">
+              Hola, <span id="welcome-store-name" style="color: var(--accent);">Vendedor</span>. Estas son tus métricas de hoy.
+            </h2>
 
-          <!-- KPI Cards -->
-          <div id="kpi-cards" class="grid grid-cols-1 md:grid-cols-3 gap-4" style="margin-bottom:20px"></div>
+            <div id="seller-ribbon" class="seller-ribbon" style="margin-bottom:20px"></div>
 
-          <!-- Widgets: 3 columnas -->
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-4" style="margin-bottom:20px">
+            <div id="kpi-cards" class="grid grid-cols-1 md:grid-cols-3 gap-4" style="margin-bottom:20px"></div>
 
-            <!-- Widget 1: Reputación -->
-            <div class="widget-card">
-              <div>
-                <div class="flex items-center justify-between mb-1">
-                  <h3 class="widget-title">Salud de Reputación</h3>
-                  <span class="text-10 font-mono" style="color:var(--text-muted)" id="rep-badge-title">MercadoLíder</span>
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4" style="margin-bottom:20px">
+
+              <div class="widget-card">
+                <div>
+                  <div class="flex items-center justify-between mb-1">
+                    <h3 class="widget-title">Salud de Reputación</h3>
+                    <span class="text-10 font-mono" style="color:var(--text-muted)" id="rep-badge-title">MercadoLíder</span>
+                  </div>
+                  <p class="widget-desc">Nivel de cumplimiento según disputas, tiempos de despacho y demoras.</p>
                 </div>
-                <p class="widget-desc">Nivel de cumplimiento según disputas, tiempos de despacho y demoras.</p>
+                <div id="dial-container" class="dial-container"></div>
+                <div id="dial-details" style="border-top:1px solid var(--border-light);padding-top:10px;margin-top:10px" class="space-y-1"></div>
               </div>
-              <div id="dial-container" class="dial-container"></div>
-              <div id="dial-details" style="border-top:1px solid var(--border-light);padding-top:10px;margin-top:10px" class="space-y-1"></div>
+
+              <div class="widget-card">
+                <div>
+                  <div class="flex items-center justify-between mb-1">
+                    <h3 class="widget-title">Vendedores con Alertas</h3>
+                    <div style="width:8px;height:8px;border-radius:50%;background-color:var(--accent);animation:ping 1s infinite"></div>
+                  </div>
+                  <p class="widget-desc">Factores de riesgo que amenazan el estatus de tus marcas registradas.</p>
+                </div>
+                <div id="alerts-container" style="max-height:140px" class="overflow-y-auto space-y-2"></div>
+                <div style="border-top:1px solid var(--border-light);padding-top:10px;margin-top:10px">
+                  <button class="w-full text-center" style="font-size:11px;color:var(--primary);font-weight:600;background:none;border:none;cursor:pointer;padding:2px 0">
+                    Ir a Panel de Gestión CRUD <span>↗</span>
+                  </button>
+                </div>
+              </div>
+
+              <div class="widget-card">
+                <div>
+                  <div class="flex items-center justify-between mb-1">
+                    <h3 class="widget-title">Rendimiento por Categoría</h3>
+                    <span class="text-10 font-mono" style="color:var(--success)">Mensual</span>
+                  </div>
+                  <p class="widget-desc">Distribución de mix de ventas y márgenes de ganancia.</p>
+                </div>
+                <div id="category-performance" class="space-y-2"></div>
+                <div style="border-top:1px solid var(--border-light);padding-top:10px;margin-top:10px;text-align:center;font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace">
+                  <span id="update-timestamp">Actualizado recientemente</span> • Mock Data
+                </div>
+              </div>
             </div>
 
-            <!-- Widget 2: Alertas -->
-            <div class="widget-card">
-              <div>
-                <div class="flex items-center justify-between mb-1">
-                  <h3 class="widget-title">Vendedores con Alertas</h3>
-                  <div style="width:8px;height:8px;border-radius:50%;background-color:var(--accent);animation:ping 1s infinite"></div>
+            <div class="section-card" style="margin-bottom:20px">
+              <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between pb-3 gap-3" style="border-bottom:1px solid var(--border-light)">
+                <div>
+                  <h3 style="font-size:14px;font-weight:700;color:var(--primary)">Publicaciones en Monitoreo</h3>
+                  <p style="font-size:11px;color:var(--text-secondary);margin-top:2px">Controles de stock, precios y relevancia algorítmica.</p>
                 </div>
-                <p class="widget-desc">Factores de riesgo que amenazan el estatus de tus marcas registradas.</p>
+                <div class="flex flex-wrap items-center gap-2">
+                  <div class="relative">
+                    <span class="absolute inset-y-0 left-0" style="display:flex;align-items:center;padding-left:10px;color:var(--text-muted);font-size:14px">⌕</span>
+                    <input id="pub-search" type="text" placeholder="Buscar título o ID..." class="input-dime" style="padding-left:32px;padding-top:6px;padding-bottom:6px;width:160px">
+                  </div>
+                  <div class="relative select-wrapper">
+                    <select id="pub-category-filter" class="select-dime" style="padding-top:6px;padding-bottom:6px">
+                      <option value="Todas">Todas las categorías</option>
+                    </select>
+                  </div>
+                </div>
               </div>
-              <div id="alerts-container" style="max-height:140px" class="overflow-y-auto space-y-2"></div>
-              <div style="border-top:1px solid var(--border-light);padding-top:10px;margin-top:10px">
-                <button class="w-full text-center" style="font-size:11px;color:var(--primary);font-weight:600;background:none;border:none;cursor:pointer;padding:2px 0">
-                  Ir a Panel de Gestión CRUD <span>↗</span>
-                </button>
+              <div class="overflow-x-auto">
+                <table class="dime-table">
+                  <thead>
+                    <tr>
+                      <th style="padding:10px 12px">Título</th>
+                      <th style="padding:10px 12px">ML ID</th>
+                      <th style="padding:10px 12px">Tipo</th>
+                      <th style="padding:10px 12px;text-align:center">Estado</th>
+                      <th style="padding:10px 12px;text-align:right">Visitas</th>
+                      <th style="padding:10px 12px;text-align:right">Ventas</th>
+                      <th style="padding:10px 12px;text-align:center">Calidad</th>
+                    </tr>
+                  </thead>
+                  <tbody id="publications-tbody"></tbody>
+                </table>
               </div>
             </div>
 
-            <!-- Widget 3: Categorías -->
-            <div class="widget-card">
-              <div>
-                <div class="flex items-center justify-between mb-1">
-                  <h3 class="widget-title">Rendimiento por Categoría</h3>
-                  <span class="text-10 font-mono" style="color:var(--success)">Mensual</span>
-                </div>
-                <p class="widget-desc">Distribución de mix de ventas y márgenes de ganancia.</p>
+            <div class="metabase-section" id="metabaseSection">
+              <div class="metabase-header">
+                <h3>📊 Gráficos Metabase</h3>
+                <span class="badge badge-purple" id="metabase-chart-count">0 gráficos</span>
               </div>
-              <div id="category-performance" class="space-y-2"></div>
-              <div style="border-top:1px solid var(--border-light);padding-top:10px;margin-top:10px;text-align:center;font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace">
-                <span id="update-timestamp">Actualizado recientemente</span> • Mock Data
+              <div class="metabase-filter" id="metabase-filter"></div>
+              <div class="metabase-charts-grid" id="metabase-charts">
+                <p class="metabase-empty">Selecciona un vendedor para ver sus gráficos.</p>
               </div>
             </div>
           </div>
 
-          <!-- Tabla de Publicaciones -->
-          <div class="section-card" style="margin-bottom:20px">
-            <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between pb-3 gap-3" style="border-bottom:1px solid var(--border-light)">
-              <div>
-                <h3 style="font-size:14px;font-weight:700;color:var(--primary)">Publicaciones en Monitoreo</h3>
-                <p style="font-size:11px;color:var(--text-secondary);margin-top:2px">Controles de stock, precios y relevancia algorítmica.</p>
-              </div>
-              <div class="flex flex-wrap items-center gap-2">
-                <div class="relative">
-                  <span class="absolute inset-y-0 left-0" style="display:flex;align-items:center;padding-left:10px;color:var(--text-muted);font-size:14px">⌕</span>
-                  <input id="pub-search" type="text" placeholder="Buscar título o ID..." class="input-dime" style="padding-left:32px;padding-top:6px;padding-bottom:6px;width:160px">
-                </div>
-                <div class="relative select-wrapper">
-                  <select id="pub-category-filter" class="select-dime" style="padding-top:6px;padding-bottom:6px">
-                    <option value="Todas">Todas las categorías</option>
-                  </select>
-                </div>
+          <div id="view-diagnostico" class="content-view">
+            <h2 style="font-size: 20px; font-weight: 700; color: var(--primary); margin-bottom: 20px;">Módulo de Diagnóstico</h2>
+            
+            <div class="diag-tabs">
+              <button class="diag-tab-btn active" data-tab="tab-ventas">Ventas y rentabilidad</button>
+              <button class="diag-tab-btn" data-tab="tab-calidad">Calidad y rendimiento de publicaciones</button>
+              <button class="diag-tab-btn" data-tab="tab-inventario">Eficiencia de inventario</button>
+              <button class="diag-tab-btn" data-tab="tab-tienda">Presencia de tienda</button>
+            </div>
+
+            <div id="tab-ventas" class="diag-sub-view active">
+              <div class="section-card">
+                <h3 style="font-size:14px; font-weight:700; color:var(--primary); margin-bottom:6px;">Análisis de Ventas y Rentabilidad</h3>
+                <p style="font-size:12px; color:var(--text-secondary); line-height: 1.5;">Evaluación de márgenes brutos, netos y balance financiero del canal.</p>
+                <div class="metabase-placeholder">[Dashboards embebidos de Metabase / Textos analíticos en desarrollo]</div>
               </div>
             </div>
-            <div class="overflow-x-auto">
-              <table class="dime-table">
-                <thead>
-                  <tr>
-                    <th style="padding:10px 12px">Título</th>
-                    <th style="padding:10px 12px">ML ID</th>
-                    <th style="padding:10px 12px">Tipo</th>
-                    <th style="padding:10px 12px;text-align:center">Estado</th>
-                    <th style="padding:10px 12px;text-align:right">Visitas</th>
-                    <th style="padding:10px 12px;text-align:right">Ventas</th>
-                    <th style="padding:10px 12px;text-align:center">Calidad</th>
-                  </tr>
-                </thead>
-                <tbody id="publications-tbody"></tbody>
-              </table>
+
+            <div id="tab-calidad" class="diag-sub-view">
+              <div class="section-card">
+                <h3 style="font-size:14px; font-weight:700; color:var(--primary); margin-bottom:6px;">Calidad y Rendimiento de Publicaciones</h3>
+                <p style="font-size:12px; color:var(--text-secondary); line-height: 1.5;">Auditoría de optimización de listados, conversión técnica e imágenes.</p>
+                <div class="metabase-placeholder">[Dashboards embebidos de Metabase / Textos analíticos en desarrollo]</div>
+              </div>
+            </div>
+
+            <div id="tab-inventario" class="diag-sub-view">
+              <div class="section-card">
+                <h3 style="font-size:14px; font-weight:700; color:var(--primary); margin-bottom:6px;">Eficiencia de Inventario</h3>
+                <p style="font-size:12px; color:var(--text-secondary); line-height: 1.5;">Monitoreo de almacenamiento Full, rotación de SKU y prevención de penalizaciones.</p>
+                <div class="metabase-placeholder">[Dashboards embebidos de Metabase / Textos analíticos en desarrollo]</div>
+              </div>
+            </div>
+
+            <div id="tab-tienda" class="diag-sub-view">
+              <div class="section-card">
+                <h3 style="font-size:14px; font-weight:700; color:var(--primary); margin-bottom:6px;">Presencia de Tienda</h3>
+                <p style="font-size:12px; color:var(--text-secondary); line-height: 1.5;">Métricas relativas a reputación, experiencia del usuario y solidez institucional de la marca.</p>
+                <div class="metabase-placeholder">[Dashboards embebidos de Metabase / Textos analíticos en desarrollo]</div>
+              </div>
             </div>
           </div>
 
-          <!-- SECCIÓN METABASE -->
-          <div class="metabase-section" id="metabaseSection">
-            <div class="metabase-header">
-              <h3>📊 Gráficos Metabase</h3>
-              <span class="badge badge-purple" id="metabase-chart-count">0 gráficos</span>
-            </div>
-            <div class="metabase-filter" id="metabase-filter"></div>
-            <div class="metabase-charts-grid" id="metabase-charts">
-              <p class="metabase-empty">Selecciona un vendedor para ver sus gráficos.</p>
+          <div id="view-plan" class="content-view">
+            <div class="section-card">
+              <h2 style="font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">Plan de Acción Estratégico</h2>
+              <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
+                Próximamente se desplegará aquí la hoja de ruta automatizada basada en las debilidades críticas detectadas por el sistema.
+              </p>
             </div>
           </div>
 
-        </div><!-- /dashboardContent -->
-      </div><!-- /main-scroll -->
-    </main>
+          <div id="view-dudas" class="content-view">
+            <div class="section-card">
+              <h2 style="font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">Dudas Frecuentes</h2>
+              <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px;">
+                ¿Tienes problemas técnicos o necesitas soporte para interpretar tus diagnósticos avanzados? Revisa nuestro portal de ayuda.
+              </p>
+    
+              <button class="btn-retry" 
+                style="background-color: var(--primary); color: #fff;" 
+                onclick="window.location.href='dudas_frecuentes.html'">
+                  Ver Dudas Frecuentes
+              </button>
+            </div>
+          </div>
+
+        </div></div></main>
   </div>
 
-  <!-- ==========================================
-       JAVASCRIPT
-       ========================================== -->
   <script>
     // ====================================================================
     // 1. CONFIG
@@ -290,7 +303,6 @@
       yellow: { color: '#F59E0B', label: 'En observación' },
       red: { color: '#EF4444', label: 'Crítico' }
     };
-
     let state = {
       selectedSellerId: null,
       sellers: {},
@@ -358,7 +370,8 @@
     // ====================================================================
     // 3. FORMAT UTILITIES
     // ====================================================================
-    function formatCurrency(val, d) { d = d || 2;
+    function formatCurrency(val, d) { 
+      d = d || 2;
       if (val == null || isNaN(val)) return '-';
       return parseFloat(val).toLocaleString('es', { minimumFractionDigits: d, maximumFractionDigits: d });
     }
@@ -376,7 +389,7 @@
     }
 
     // ====================================================================
-    // 4. MOCK DATA
+    // 4. MOCK DATA INTERNA COMPLETA
     // ====================================================================
     const MOCK_SELLERS = {
       1: {
@@ -386,7 +399,7 @@
         negocio: { ventas_brutas_moneda_local: 2847500.50, ventas_brutas_usd: 2850.00, unidades_vendidas: 342, visitas_totales: 28500, ventas_concretadas: 342, precio_promedio_venta: 8326.00 },
         costos: { ventas_cobradas_total: 2562750.45, neto_recibido: 2178337.88, cargos_por_venta: 384412.57, costos_envio: 125000.00, inversion_ads: 45000.00, descuento_reputacion: 0 },
         stock_full: { puntaje_calidad: 87, espacios_p_asignados: 45, espacios_g_asignados: 12, productos_no_aptos_venta: 3, productos_sin_rotacion: 8, productos_antiguedad: 5 },
-        mi_pagina: { tiene_banner: true, tiene_logo: true, tiene_carruseles: true, categorias_organizadas: true },
+        mi_pagina: { tiene_banner: true, tiene_logo: true, tiene_carruseles: true, categories_organizadas: true },
         alertas: [
           { nivel: 'high', mensaje: '3 productos sin rotación > 90 días' },
           { nivel: 'medium', mensaje: 'Tasa de reclamos aumentó 15% este mes' },
@@ -421,7 +434,7 @@
         negocio: { ventas_brutas_moneda_local: 12500.00, ventas_brutas_usd: 12500.00, unidades_vendidas: 180, visitas_totales: 12400, ventas_concretadas: 180, precio_promedio_venta: 69.44 },
         costos: { ventas_cobradas_total: 11250.00, neto_recibido: 9562.50, cargos_por_venta: 1687.50, costos_envio: 3200.00, inversion_ads: 12000.00, descuento_reputacion: 250.00 },
         stock_full: { puntaje_calidad: 68, espacios_p_asignados: 22, espacios_g_asignados: 8, productos_no_aptos_venta: 7, productos_sin_rotacion: 14, productos_antiguedad: 9 },
-        mi_pagina: { tiene_banner: true, tiene_logo: true, tiene_carruseles: false, categorias_organizadas: true },
+        mi_pagina: { tiene_banner: true, tiene_logo: true, tiene_carruseles: false, categories_organizadas: true },
         alertas: [
           { nivel: 'high', mensaje: 'Puntaje de calidad por debajo del mínimo (68/100)' },
           { nivel: 'high', mensaje: '14 productos sin rotación en inventario' },
@@ -453,7 +466,7 @@
         negocio: { ventas_brutas_moneda_local: 18750000, ventas_brutas_usd: 20500.00, unidades_vendidas: 520, visitas_totales: 42000, ventas_concretadas: 520, precio_promedio_venta: 36057.69 },
         costos: { ventas_cobradas_total: 16875000, neto_recibido: 14343750, cargos_por_venta: 2531250, costos_envio: 890000, inversion_ads: 350000, descuento_reputacion: 0 },
         stock_full: { puntaje_calidad: 94, espacios_p_asignados: 68, espacios_g_asignados: 20, productos_no_aptos_venta: 1, productos_sin_rotacion: 3, productos_antiguedad: 2 },
-        mi_pagina: { tiene_banner: true, tiene_logo: true, tiene_carruseles: true, categorias_organizadas: true },
+        mi_pagina: { tiene_banner: true, tiene_logo: true, tiene_carruseles: true, categories_organizadas: true },
         alertas: [
           { nivel: 'low', mensaje: '3 espacios P con ocupación > 85%' },
           { nivel: 'low', mensaje: 'Actualizar fotos de 2 publicaciones antiguas' }
@@ -486,21 +499,9 @@
     };
 
     // ====================================================================
-    // 5. RENDER FUNCTIONS
+    // 5. RENDER FUNCTIONS EXÁCTAS ORIGINALES
     // ====================================================================
-
-    function renderSellerSelect() {
-      const sel = document.getElementById('header-seller-select');
-      sel.innerHTML = '';
-      const flags = { AR: '🇦🇷', VE: '🇻🇪', CL: '🇨🇱', MX: '🇲🇽', BR: '🇧🇷', CO: '🇨🇴' };
-      Object.values(MOCK_SELLERS).forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s.id;
-        opt.textContent = (flags[s.codigo_pais] || '🌐') + ' ' + s.user_name;
-        sel.appendChild(opt);
-      });
-      sel.value = state.selectedSellerId;
-    }
+    
 
     function renderSellerRibbon(seller) {
       const el = document.getElementById('seller-ribbon');
@@ -532,7 +533,7 @@
         { label: 'Negocio', icon: '📈', iconClass: 'primary', value: formatCurrency(n.ventas_brutas_moneda_local), trend: formatNumber(n.unidades_vendidas) + ' uds vendidas', trendClass: 'positive', detail: formatNumber(n.visitas_totales) + ' visitas · ' + formatNumber(n.ventas_concretadas) + ' ventas' },
         { label: 'Costos', icon: '📉', iconClass: 'accent', value: formatCurrency(c.neto_recibido), trend: 'Comisiones: ' + formatCurrency(c.cargos_por_venta), trendClass: 'neutral', detail: 'Envíos: ' + formatCurrency(c.costos_envio) + ' · Ads: ' + formatCurrency(c.inversion_ads) },
         { label: 'Stock Full', icon: '📦', iconClass: 'primary', value: s.puntaje_calidad + '/100', trend: formatNumber(s.espacios_p_asignados) + ' espacios P', trendClass: s.puntaje_calidad >= 80 ? 'positive' : 'warning', detail: formatNumber(s.productos_no_aptos_venta) + ' no aptos · ' + formatNumber(s.productos_sin_rotacion) + ' sin rotación' },
-        { label: 'Mi Página', icon: '🛒', iconClass: 'accent', value: formatBool(p.tiene_banner), trend: formatBool(p.tiene_logo), trendClass: 'positive', detail: 'Carruseles: ' + formatBool(p.tiene_carruseles) + ' · Cats: ' + formatBool(p.categorias_organizadas) },
+        { label: 'Mi Página', icon: '🛒', iconClass: 'accent', value: formatBool(p.tiene_banner), trend: formatBool(p.tiene_logo), trendClass: 'positive', detail: 'Carruseles: ' + formatBool(p.tiene_carruseles) + ' · Cats: ' + formatBool(p.categories_organizadas) },
         { label: 'Cuenta', icon: '👤', iconClass: 'primary', value: seller.user_name || '-', trend: seller.email || '-', trendClass: 'neutral', detail: seller.codigo_pais + ' · ' + (PLAN_MAP[seller.tipo_plan] || 'Gratuito') }
       ];
       grid.innerHTML = cards.map(k => `
@@ -616,7 +617,8 @@
       const tbody = document.getElementById('publications-tbody');
       const catFilter = document.getElementById('pub-category-filter');
       if (!seller || !seller.publicaciones || !seller.publicaciones.length) {
-        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;font-size:12px">Sin publicaciones disponibles</td></tr>'; return;
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;color:var(--text-muted);padding:24px;font-size:12px">Sin publicaciones disponibles</td></tr>';
+        return;
       }
       state.publications = seller.publicaciones;
       state.filteredPublications = [...seller.publicaciones];
@@ -654,9 +656,6 @@
       `).join('');
     }
 
-    // ====================================================================
-    // 6. METABASE
-    // ====================================================================
     function renderMetabaseFilter() {
       const container = document.getElementById('metabase-filter');
       container.innerHTML = '';
@@ -692,12 +691,18 @@
     }
 
     // ====================================================================
-    // 7. UPDATE DASHBOARD
+    // 6. UPDATE DASHBOARD MODIFICADA (INCLUYE SALUDO COMPLETO DINÁMICO)
     // ====================================================================
     function updateDashboard(sellerId) {
       state.selectedSellerId = sellerId;
       const seller = MOCK_SELLERS[sellerId];
       if (seller) {
+        // Actualización del mensaje de bienvenida dinámico solicitado
+        const welcomeNameNode = document.getElementById('welcome-store-name');
+        if (welcomeNameNode) {
+          welcomeNameNode.textContent = seller.nombre_tienda || seller.user_name;
+        }
+
         document.getElementById('profile-name').textContent = seller.user_name;
         document.getElementById('profile-plan').textContent = PLAN_MAP[seller.tipo_plan] || 'Gratuito';
         document.getElementById('dropdown-name').textContent = seller.nombre_tienda;
@@ -706,9 +711,11 @@
         document.getElementById('dash-user-email').textContent = seller.email;
         document.getElementById('dash-user-avatar').textContent = seller.user_name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || 'DM';
         document.getElementById('profile-avatar-letter').textContent = seller.user_name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || 'DM';
+        
+        // BUG SOLUCIONADO EXÁCTAMENTE AQUÍ (Ya encuentra el elemento por ID sin fallar)
         document.getElementById('topbar-title').textContent = 'Dashboard: ' + seller.user_name;
       }
-      renderSellerSelect();
+
       renderSellerRibbon(seller);
       renderKpiCards(seller);
       renderReputationDial(seller);
@@ -722,9 +729,6 @@
       document.getElementById('dashboardContent').style.display = 'block';
     }
 
-    // ====================================================================
-    // 8. LOAD DASHBOARD
-    // ====================================================================
     async function loadDashboard() {
       try {
         try { throw new Error('API no disponible — mock data'); } catch (e) { console.warn('[DiME]', e.message); }
@@ -740,19 +744,15 @@
     }
 
     // ====================================================================
-    // 9. EVENT LISTENERS
+    // 7. LISTENERS DE NAVEGACIÓN SPA & CLICKS GENERALES
     // ====================================================================
-    document.getElementById('header-seller-select').addEventListener('change', function() {
-      document.getElementById('dashboardContent').style.display = 'none';
-      document.getElementById('loadingSpinner').style.display = 'flex';
-      setTimeout(() => updateDashboard(Number(this.value)), 300);
-    });
-
+    
     document.getElementById('user-profile-button').addEventListener('click', function(e) {
       e.stopPropagation();
       const m = document.getElementById('profile-dropdown-menu');
       m.style.display = m.style.display === 'none' ? 'block' : 'none';
     });
+
     document.addEventListener('click', () => {
       const m = document.getElementById('profile-dropdown-menu');
       if (m.style.display !== 'none') m.style.display = 'none';
@@ -764,16 +764,31 @@
     document.getElementById('pub-search').addEventListener('input', applyFilters);
     document.getElementById('pub-category-filter').addEventListener('change', applyFilters);
 
-    document.querySelectorAll('.sidebar nav button').forEach(btn => {
+    // CONTROLADORES DE RUTA DE LA SIDEBAR (SPA)
+    document.querySelectorAll('.sidebar nav .nav-btn').forEach(btn => {
       btn.addEventListener('click', function() {
-        document.querySelectorAll('.sidebar nav button').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.sidebar nav .nav-btn').forEach(b => b.classList.remove('active'));
         this.classList.add('active');
+
+        const viewTarget = this.getAttribute('data-view');
+        document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active'));
+        document.getElementById(viewTarget).classList.add('active');
       });
     });
 
-    // ====================================================================
-    // 10. INIT
-    // ====================================================================
+    // CONTROLADORES DE SUB-PESTAÑAS DE DIAGNÓSTICO
+    document.querySelectorAll('.diag-tab-btn').forEach(tabBtn => {
+      tabBtn.addEventListener('click', function() {
+        document.querySelectorAll('.diag-tab-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+
+        const tabTarget = this.getAttribute('data-tab');
+        document.querySelectorAll('.diag-sub-view').forEach(content => content.classList.remove('active'));
+        document.getElementById(tabTarget).classList.add('active');
+      });
+    });
+
+    // INIT
     document.addEventListener('DOMContentLoaded', () => {
       const token = getToken();
       if (!token) console.warn('[DiME] Sin token — mostrando datos mock');
