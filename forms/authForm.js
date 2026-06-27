@@ -1,5 +1,3 @@
-// assets/js/auth.js
-
 const API_URL = "http://127.0.0.1:8000/api";
 
 async function renovarAccessToken() 
@@ -23,7 +21,7 @@ async function renovarAccessToken()
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                refresh_token: refreshTokenActual // Cumple con tu Pydantic Schema
+                refresh_token: refreshTokenActual
             })
         });
 
@@ -32,7 +30,7 @@ async function renovarAccessToken()
         if (response.ok) 
         {
             // 3. Procesar TokenResponse
-            // data contendrá: access_token, token_type ("bearer"), expires_in
+            // access_token, token_type ("bearer"), expires_in
             localStorage.setItem('token', data.access_token);
             console.log(`Token renovado. Expira en: ${data.expires_in} segundos.`);
             
@@ -43,7 +41,7 @@ async function renovarAccessToken()
         {
             // Si el refresh_token también expiró o es inválido
             console.error("El refresh token no es válido:", data.detail);
-            localStorage.clear(); // Limpiamos sesión antigua
+            localStorage.clear(); // Limpia sesión antigua
             window.location.href = 'index.html';
             return null;
         }
