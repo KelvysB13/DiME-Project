@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DiME | Diagnóstico Integral de Metricas E-Commerce</title>
+
+    <!-- FUENTES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&display=swap" rel="stylesheet">
+
+    <!-- ICONO Y ESTILOS -->
+    <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
+    <link rel="stylesheet" href="../../assets/styles/home_style.css">
+</head>
+
+<body>
+
+    <!-- ===== HERO ===== -->
+    <header class="hero-section" id="home">
+        <!-- Grafico animado de lineas -->
+        <div class="chart-container">
+            <svg viewBox="0 0 1000 300" preserveAspectRatio="none">
+                <defs>
+                    <linearGradient id="areaGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="0%" stop-color="rgba(247, 246, 244, 0.15)" />
+                        <stop offset="100%" stop-color="rgba(247, 246, 244, 0)" />
+                    </linearGradient>
+                </defs>
+                <path class="chart-fill" d="M0,250 L50,230 L100,240 L150,180 L200,190 L250,230 L300,160 L350,180 L400,100 L450,140 L500,60 L550,180 L600,50 L650,80 L700,20 L750,40 L800,130 L850,90 L900,140 L950,50 L1000,80 L1000,300 L0,300 Z" fill="url(#areaGrad)" opacity="0" style="animation: fadeFill 6s ease-in-out infinite;" />
+                <path class="animated-line line-1" d="M0,250 L50,230 L100,240 L150,180 L200,190 L250,230 L300,160 L350,180 L400,100 L450,140 L500,60 L550,180 L600,50 L650,80 L700,20 L750,40 L800,130 L850,90 L900,140 L950,50 L1000,80" />
+                <path class="animated-line line-2" d="M0,290 L50,285 L100,285 L150,295 L200,290 L250,280 L300,290 L350,270 L400,275 L450,250 L500,260 L550,220 L600,240 L650,220 L700,260 L750,255 L800,250 L850,255 L900,180 L950,190 L1000,120" />
+
+            </svg>
+        </div>
+
+        <!-- Navegacion -->
+        <nav>
+            <div class="logo">
+                <a href="home.html">
+                    <img src="../../assets/images/DiME_Logo_Inverso.png" alt="Logo DiME Inverso" class="logo-img">
+                </a>
+            </div>
+            <div class="nav-links">
+                <a href="#about">¿Quiénes somos?</a>
+                <a href="#pricing">Planes</a>
+                <a href="login.html" class="nav-btn">Login</a>
+            </div>
+        </nav>
+
+        <!-- Contenido principal: typewriter + CTA -->
+        <div class="hero-content">
+            <h1><span id="typewriter-text"></span><span id="typewriter-cursor">|</span></h1>
+            <p>Monitorea, analiza y escala tu negocio digital con información precisa en tiempo real que impulsa resultados.</p>
+            <a href="#pricing" class="btn-primary">¡Empieza Hoy!</a>
+        </div>
+
+        <!-- Curva decorativa inferior -->
+        <div class="hero-curve-bottom">
+            <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+                <path d="M0,120 Q600,0 1200,120 Z" class="shape-fill"></path>
+            </svg>
+        </div>
+    </header>
+
+    <!-- ===== VIDEO ===== -->
+    <section class="video-section">
+        <div class="video-wrapper">
+            <iframe class="video-embed" src="https://www.youtube.com/embed/TEW3ujNyGFw" title="YouTube video player" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+        </div>
+    </section>
+
+    <!-- ===== SPONSORS ===== -->
+    <section class="sponsor-section" id="sponsors">
+        <h3>SPONSORS</h3>
+        <div class="sponsor-rotator" id="sponsorRotator">
+            <div class="sponsor-track" id="sponsorTrack">
+                <div class="sponsor-card">
+                    <a href="https://www.mercadolibre.com" target="_blank" rel="noopener noreferrer">
+                        <img src="https://customers.twilio.com/content/dam/twilio-com/core-assets/customer-logos/m-o/mercado-libre.svg" alt="Mercado Libre" class="sponsor-logo">
+                    </a>
+                </div>
+                <div class="sponsor-card sponsor-card--active">
+                    <a href="https://www.metabase.com" target="_blank" rel="noopener noreferrer">
+                        <img src="https://evolpe.com/wp-content/uploads/2020/07/metabase-small.png" alt="Metabase" class="sponsor-logo sponsor-logo--xl">
+                    </a>
+                </div>
+                <div class="sponsor-card">
+                    <a href="https://www.postgresql.org" target="_blank" rel="noopener noreferrer">
+                        <img src="https://api.octoperf.com/doc/monitoring/create-connection/postgres/img/postgresql-logo.png" alt="PostgreSQL" class="sponsor-logo sponsor-logo--md">
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== PLANES DE PRECIO ===== -->
+    <section class="pricing-section" id="pricing">
+        <h2>Elige el plan ideal para ti</h2>
+        <div class="pricing-grid">
+            <div class="pricing-card">
+                <div class="pricing-card-header">
+                    <h3>Free</h3>
+                    <p class="pricing-desc">Perfecto para empezar</p>
+                </div>
+                <div class="price">$0<span>/mes</span></div>
+                <ul>
+                    <li>Auditoría básica de métricas</li>
+                    <li>Reportes manuales</li>
+                    <li>Acceso a la comunidad</li>
+                    <li>Soporte estándar</li>
+                    <li>1 tienda</li>
+                </ul>
+                <a href="login.html" class="btn">Comenzar gratis</a>
+            </div>
+            <div class="pricing-card pricing-card--featured">
+                <div class="pricing-badge">Más popular</div>
+                <div class="pricing-card-header">
+                    <h3>Basic</h3>
+                    <p class="pricing-desc">Para negocios en crecimiento</p>
+                </div>
+                <div class="price">$29<span>/mes</span></div>
+                <ul>
+                    <li>Todo lo del plan Free</li>
+                    <li>Auditoría automatizada</li>
+                    <li>Integración API</li>
+                    <li>Soporte por correo prioritario</li>
+                    <li>Hasta 5 tiendas</li>
+                    <li>Reportes programados</li>
+                </ul>
+                <a href="login.html" class="btn">Adquirir Basic</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== TESTIMONIOS ===== -->
+    <section class="testimonials-section">
+        <div class="testimonials-container">
+            <h2>Lo que dicen nuestros clientes</h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"DiME transformó la forma en que analizamos nuestras métricas. Ahora tomamos decisiones basadas en datos en tiempo real."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">CM</div>
+                        <div>
+                            <span class="testimonial-name">Carlos Mendoza</span>
+                            <span class="testimonial-role">CEO, TechStore</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"La integración fue sencilla y los reportes automatizados nos ahorran horas de trabajo cada semana. Altamente recomendado."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">AL</div>
+                        <div>
+                            <span class="testimonial-name">Ana Lucía</span>
+                            <span class="testimonial-role">Directora de Marketing, EcoShop</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">★★★★★</div>
+                    <p class="testimonial-text">"Pasamos de depender de corazonadas a tener insights claros. Nuestras ventas crecieron un 40% en tres meses."</p>
+                    <div class="testimonial-author">
+                        <div class="testimonial-avatar">RP</div>
+                        <div>
+                            <span class="testimonial-name">Roberto Peña</span>
+                            <span class="testimonial-role">Fundador, MODA Online</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== QUIENES SOMOS ===== -->
+    <section class="about-section" id="about">
+        <div class="about-container">
+            <h2>¿Quiénes Somos?</h2>
+            <div class="about-text">
+                <p>Somos un equipo apasionado por transformar datos complejos en decisiones claras. Nuestra plataforma automatiza el diagnóstico, la visualización y el análisis
+                   predictivo para que cualquier negocio digital pueda escalar con confianza, además de ofrecer soporte técnico excepcional.</p>
+            </div>
+            <div class="team-row">
+                <div class="team-item">
+                    <img src="https://picsum.photos/seed/mariam/200/200" alt="Mariam Quintero" class="team-photo">
+                    <span class="team-name">Mariam Quintero</span>
+                    <span class="team-role">CEO & Fundadora</span>
+                </div>
+                <div class="team-item">
+                    <img src="https://picsum.photos/seed/patricia/200/200" alt="Patricia Avendaño" class="team-photo">
+                    <span class="team-name">Patricia Avendaño</span>
+                    <span class="team-role">CTO & Co-Fundadora</span>
+                </div>
+                <div class="team-item">
+                    <img src="https://picsum.photos/seed/alejandro/200/200" alt="Alejandro Briceño" class="team-photo">
+                    <span class="team-name">Alejandro Briceño</span>
+                    <span class="team-role">Lead Designer</span>
+                </div>
+                <div class="team-item">
+                    <img src="https://picsum.photos/seed/gabriela/200/200" alt="Gabriela Caraballo" class="team-photo">
+                    <span class="team-name">Gabriela Caraballo</span>
+                    <span class="team-role">Full Stack Developer</span>
+                </div>
+                <div class="team-item">
+                    <img src="https://picsum.photos/seed/rolannys/200/200" alt="Rolannys Sanchez" class="team-photo">
+                    <span class="team-name">Rolannys Sanchez</span>
+                    <span class="team-role">Data Scientist</span>
+                </div>
+                <div class="team-item">
+                    <img src="https://picsum.photos/seed/kelvys/200/200" alt="Kelvys Concepcion" class="team-photo">
+                    <span class="team-name">Kelvys Concepcion</span>
+                    <span class="team-role">Marketing Lead</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ===== FOOTER ===== -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-left">
+                <div class="footer-contact">
+                    <span class="contact-label">Contáctanos</span>
+                    <a href="tel:+5802869711450" class="contact-phone">+58 (0286) 971-1450</a>
+                </div>
+            </div>
+            <div class="footer-right">
+                <form class="newsletter-form">
+                    <label for="newsletter-email" class="newsletter-label">Suscríbete a nuestro newsletter</label>
+                    <div class="newsletter-input-group">
+                        <input type="email" id="newsletter-email" placeholder="tu@email.com" required>
+                        <button type="submit">Suscribirse</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <div class="footer-copy">
+            <a href="https://github.com/KelvysB13/DiME-Project" target="_blank" rel="noopener noreferrer" class="github-link">
+                <svg fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
+                </svg>
+            </a>
+            &copy; 2026 DiME Team. All rights reserved.
+        </div>
+    </footer>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script>
+    // --- Typewriter con highlight amarillo ---
+    const text = "Convierte información en \ninteligencia de negocio.";
+    const el = document.getElementById('typewriter-text');
+    let i = 0;
+    let deleting = false;
+
+    function getDisplayHTML(len) {
+        let result = '';
+        let inSpan = false;
+        for (let j = 0; j < len; j++) {
+            const inHL = (j >= 26 && j < 38) || (j >= 42 && j < 49);
+            if (inHL && !inSpan) { result += '<span class="highlight-yellow">'; inSpan = true; }
+            else if (!inHL && inSpan) { result += '</span>'; inSpan = false; }
+            result += text[j];
+        }
+        if (inSpan) result += '</span>';
+        return result;
+    }
+
+    function typeWriter() {
+        if (!deleting) {
+            if (i < text.length) {
+                el.innerHTML = getDisplayHTML(i + 1);
+                i++;
+                setTimeout(typeWriter, 55 + Math.random() * 45);
+            } else {
+                deleting = true;
+                setTimeout(typeWriter, 2000);
+            }
+        } else {
+            if (i > 0) {
+                el.innerHTML = getDisplayHTML(i - 1);
+                i--;
+                setTimeout(typeWriter, 30 + Math.random() * 25);
+            } else {
+                deleting = false;
+                setTimeout(typeWriter, 500);
+            }
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => setTimeout(typeWriter, 600));
+
+    // --- Carrusel de sponsors ---
+    const track = document.getElementById('sponsorTrack');
+    if (track) {
+        setInterval(() => {
+            const cards = track.children;
+            if (cards.length < 2) return;
+            const first = cards[0];
+            const gap = parseInt(getComputedStyle(track).gap) || 32;
+            const offset = first.offsetWidth + gap;
+
+            track.style.marginRight = `-${offset}px`;
+
+            const clone = first.cloneNode(true);
+            clone.classList.remove('sponsor-card--active');
+            track.appendChild(clone);
+            track.offsetHeight;
+
+            Array.from(cards).forEach(c => c.classList.remove('sponsor-card--active'));
+            cards[2].classList.add('sponsor-card--active');
+
+            track.style.transition = 'transform 0.5s ease';
+            track.style.transform = `translateX(-${offset}px)`;
+
+            setTimeout(() => {
+                track.style.transition = 'none';
+                track.style.transform = 'translateX(0)';
+                first.remove();
+                track.style.marginRight = '0px';
+                track.offsetHeight;
+                track.style.transition = '';
+            }, 500);
+        }, 3000);
+    }
+    </script>
+
+</body>
+</html>

@@ -8,7 +8,7 @@
 
 body {
 
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Inter', sans-serif;
     background-color: #f0eff5;
     min-height: 100vh;
     display: flex;
@@ -158,11 +158,13 @@ a { text-decoration: none; }
     letter-spacing: -0.025em;
     line-height: 1.25;
     margin-bottom: 1.5rem;
+    min-height: 7.5rem;
 }
 
-@media (min-width: 768px) {
+@media (max-width: 768px) {
     .title {
         font-size: 3.75rem;
+        min-height: 10rem;
     }
 }
 
@@ -173,7 +175,7 @@ a { text-decoration: none; }
 }
 
 .desc {
-    color: rgba(233, 213, 255, 0.8);
+    color: rgba(247, 246, 244, 0.75);
     font-size: 1rem;
     font-weight: 400;
     line-height: 1.625;
@@ -256,8 +258,8 @@ a { text-decoration: none; }
 .logo-wrap {
     display: flex;
     align-items: center;
-    justify-content: flex-start;
-    margin-top: -1rem;
+    justify-content: center;
+    margin-top: -1.25rem;
 }
 
 .logo-wrap img {
@@ -269,16 +271,23 @@ a { text-decoration: none; }
 /* TITULOS DEL FORMULARIO */
 .welcome-title {
     color: #031c3c;
-    font-size: 1.875rem;
-    font-weight: 700;
-    letter-spacing: -0.025em;
-    margin-bottom: 0.5rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.25rem;
+    text-align: center;
+    text-transform: uppercase;
+}
+
+.welcome-title + .form-group {
+    margin-top: 0.84375rem;
 }
 
 .welcome-sub {
     font-size: 0.75rem;
     color: #525252;
     font-weight: 500;
+    text-align: center;
 }
 
 .welcome-sub a {
@@ -442,4 +451,15 @@ a { text-decoration: none; }
 
 .forgot-row a:hover {
     color: rgb(30, 14, 78);
+}
+
+#typewriter-cursor {
+    animation: cursorBlink 0.7s step-end infinite;
+    font-weight: 100;
+    color: #fcd703;
+}
+
+@keyframes cursorBlink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
 }
