@@ -21,5 +21,4 @@ def login(db: Session, payload: LoginRequest) -> TokenResponse:
         raise InactiveAccountError()
 
     access_token = create_access_token(data={"sub": str(vendedor.id_vendedor)})
-
     return TokenResponse(access_token=access_token, token_type="bearer", expires_in=3600)

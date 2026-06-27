@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from api import api_router
-from api.frontend import router as frontend_router
+from api.frontend_router import router as frontend_router
 
 app = FastAPI(title="DiME - Diagnóstico Integral de Métricas E-commerce", version="1.0.0")
 

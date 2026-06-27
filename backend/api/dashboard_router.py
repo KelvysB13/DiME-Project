@@ -9,14 +9,15 @@ from schemas import DashboardResponse
 router = APIRouter()
 
 @router.get("", response_model=DashboardResponse)
-def dashboard(
-    db: Session = Depends(get_db),
-    current_user: Vendedor = Depends(get_current_user),
-):
+def dashboard(db: Session = Depends(get_db), current_user: Vendedor = Depends(get_current_user)):
+
     try:
         return get_dashboard(db, current_user.id_vendedor)
+    
     except Exception:
+
         raise HTTPException(
+            
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Error al obtener datos del dashboard",
         )

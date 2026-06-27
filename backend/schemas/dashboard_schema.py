@@ -75,7 +75,6 @@ class DashboardResponse(BaseModel):
     codigo_pais: str = Field(..., min_length=2, max_length=2, to_upper=True) # Códigos ISO estándar (ej. AR, MX, CO)
     moneda_local: str = Field(..., min_length=3, max_length=3, to_upper=True) # Códigos ISO de moneda (ej. ARS, MXN, COP)
     tipo_plan: int = Field(..., ge=0)
-
     reputacion: Optional[ReputacionInfo] = None
     negocio: Optional[NegocioInfo] = None
     costos: Optional[CostoInfo] = None
