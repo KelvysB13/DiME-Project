@@ -4,13 +4,13 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DiME | Dashboard de Métricas</title>
-  <link rel="icon" href="../../assets/icons/favicon.ico">
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
-  <link rel="stylesheet" href="../../assets/styles/dashboardMetricas.css">
+  <link rel="stylesheet" href="../../assets/styles/user_dashboard_style.css">
 
   <script defer src="http://localhost:3000/app/embed.js"></script>
   <script>
@@ -60,7 +60,7 @@
         </button>
         <button class="nav-btn" data-view="view-dudas">
           <span class="icon-placeholder">✉</span>
-          <span>¿Dudas? Contáctanos</span>
+          <span>Dudas frecuentes</span>
         </button>
       </nav>
 
@@ -82,14 +82,6 @@
         </div>
         <div class="flex items-center gap-4">
 
-          <div class="flex items-center gap-2">
-            <span class="text-xs md:inline" style="color:var(--text-secondary);font-weight:500">Auditar Cuenta:</span>
-            <div class="relative">
-              <select id="header-seller-select" class="seller-select"></select>
-              <span class="select-arrow">▼</span>
-            </div>
-          </div>
-
           <div class="profile-dropdown-wrapper">
             <button id="user-profile-button" class="profile-btn">
               <div class="profile-avatar" id="profile-avatar-letter">TH</div>
@@ -106,8 +98,9 @@
                 <p id="dropdown-email">ventas@tecnohogar.com.ar</p>
               </div>
               <div style="padding:4px 0">
-                <button class="dropdown-item"><span>⚙</span> Gestionar Cuentas de Vendedor</button>
-                <button class="dropdown-item"><span>✦</span> Ver Guías de Desarrollo</button>
+                <button class="dropdown-item" onclick="window.location.href='user_settings.html'">
+                  <span>⚙</span> User Settings
+                </button>
               </div>
               <div style="border-top:1px solid var(--border-light);padding-top:4px;margin-top:4px">
                 <button id="btn-signout" class="dropdown-item danger"><span>✕</span> Cerrar Sesión DiME</button>
@@ -283,11 +276,16 @@
 
           <div id="view-dudas" class="content-view">
             <div class="section-card">
-              <h2 style="font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">¿Dudas? Contáctanos</h2>
+              <h2 style="font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">Dudas Frecuentes</h2>
               <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px;">
-                ¿Tienes problemas técnicos o necesitas soporte personalizado para interpretar tus diagnósticos avanzados?
+                ¿Tienes problemas técnicos o necesitas soporte para interpretar tus diagnósticos avanzados? Revisa nuestro portal de ayuda.
               </p>
-              <button class="btn-retry" style="background-color: var(--primary); color: #fff;">Enviar consulta a Soporte</button>
+    
+              <button class="btn-retry" 
+                style="background-color: var(--primary); color: #fff;" 
+                onclick="window.location.href='dudas_frecuentes.html'">
+                  Ver Dudas Frecuentes
+              </button>
             </div>
           </div>
 
@@ -503,18 +501,7 @@
     // ====================================================================
     // 5. RENDER FUNCTIONS EXÁCTAS ORIGINALES
     // ====================================================================
-    function renderSellerSelect() {
-      const sel = document.getElementById('header-seller-select');
-      sel.innerHTML = '';
-      const flags = { AR: '🇦🇷', VE: '🇻🇪', CL: '🇨🇱', MX: '🇲🇽', BR: '🇧🇷', CO: '🇨🇴' };
-      Object.values(MOCK_SELLERS).forEach(s => {
-        const opt = document.createElement('option');
-        opt.value = s.id;
-        opt.textContent = (flags[s.codigo_pais] || '🌐') + ' ' + s.user_name;
-        sel.appendChild(opt);
-      });
-      sel.value = state.selectedSellerId;
-    }
+    
 
     function renderSellerRibbon(seller) {
       const el = document.getElementById('seller-ribbon');
@@ -728,7 +715,7 @@
         // BUG SOLUCIONADO EXÁCTAMENTE AQUÍ (Ya encuentra el elemento por ID sin fallar)
         document.getElementById('topbar-title').textContent = 'Dashboard: ' + seller.user_name;
       }
-      renderSellerSelect();
+
       renderSellerRibbon(seller);
       renderKpiCards(seller);
       renderReputationDial(seller);
@@ -759,12 +746,7 @@
     // ====================================================================
     // 7. LISTENERS DE NAVEGACIÓN SPA & CLICKS GENERALES
     // ====================================================================
-    document.getElementById('header-seller-select').addEventListener('change', function() {
-      document.getElementById('dashboardContent').style.display = 'none';
-      document.getElementById('loadingSpinner').style.display = 'flex';
-      setTimeout(() => updateDashboard(Number(this.value)), 300);
-    });
-
+    
     document.getElementById('user-profile-button').addEventListener('click', function(e) {
       e.stopPropagation();
       const m = document.getElementById('profile-dropdown-menu');

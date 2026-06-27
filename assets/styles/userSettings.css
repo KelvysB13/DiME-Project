@@ -1,0 +1,293 @@
+/* ============================================================
+   DiME Dashboard - Módulo de Configuración de Usuario
+   Paleta: Azul oscuro (#031c3c) + Amarillo (#fcd703) + Modo Oscuro
+   ============================================================ */
+
+:root {
+  /* Se heredan y refuerzan las variables maestras */
+  --bg-dark: #0B1120;
+  --bg-panel: #1E293B;
+  --bg-card: #0F172A;
+  --primary: #031c3c; /* Azul corporativo */
+  --primary-light: #0a356e;
+  --accent: #10B981;
+  --warning: #F59E0B;
+  --danger: #EF4444;
+  --danger-bg: rgba(239, 68, 68, 0.1);
+  --text-main: #F8FAFC;
+  --text-secondary: #94A3B8;
+  --border-light: #334155;
+  --topbar-yellow: #fcd703;
+}
+
+/* ==========================================
+   Contenedores Generales de Configuración
+   ========================================== */
+.settings-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px 0;
+}
+
+.settings-section {
+  background-color: var(--bg-card);
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  padding: 24px;
+  margin-bottom: 24px;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.settings-section-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.settings-section-desc {
+  font-size: 13px;
+  color: var(--text-secondary);
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* ==========================================
+   Formularios y Entradas de Datos (Perfil)
+   ========================================== */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+
+@media (max-width: 640px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group.full-width {
+  grid-column: 1 / -1;
+}
+
+.form-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-input {
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-light);
+  color: var(--text-main);
+  padding: 12px 14px;
+  border-radius: 6px;
+  font-family: 'Montserrat', sans-serif;
+  font-size: 14px;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  width: 100%;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--topbar-yellow);
+  box-shadow: 0 0 0 3px rgba(252, 215, 3, 0.15);
+}
+
+.form-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  background-color: rgba(30, 41, 59, 0.5);
+}
+
+/* ==========================================
+   Botones de Acción
+   ========================================== */
+.btn-save {
+  background-color: var(--topbar-yellow);
+  color: var(--primary);
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: transform 0.1s, filter 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-save:hover {
+  filter: brightness(1.1);
+}
+
+.btn-save:active {
+  transform: scale(0.98);
+}
+
+.settings-footer {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 20px;
+  border-top: 1px solid var(--border-light);
+  margin-top: 20px;
+}
+
+/* ==========================================
+   Suscripción y Facturación (Billing)
+   ========================================== */
+.plan-card {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+  border-radius: 8px;
+  padding: 24px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+
+.plan-info h3 {
+  color: var(--topbar-yellow);
+  font-size: 20px;
+  font-weight: 800;
+  margin-bottom: 4px;
+}
+
+.plan-info p {
+  color: rgba(255,255,255,0.8);
+  font-size: 13px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.plan-price {
+  text-align: right;
+}
+
+.plan-price .amount {
+  font-size: 24px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.plan-price .period {
+  font-size: 12px;
+  color: rgba(255,255,255,0.6);
+}
+
+/* Métodos de Pago */
+.payment-method-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.payment-method-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: var(--bg-panel);
+  border: 1px solid var(--border-light);
+  padding: 16px;
+  border-radius: 6px;
+}
+
+.payment-card-details {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.card-icon {
+  background-color: var(--bg-card);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-weight: 800;
+  font-size: 12px;
+  color: var(--text-main);
+  border: 1px solid var(--border-light);
+}
+
+.card-number {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 14px;
+  color: var(--text-main);
+}
+
+.card-expiry {
+  font-size: 12px;
+  color: var(--text-secondary);
+}
+
+.btn-text-danger {
+  background: none;
+  border: none;
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn-text-danger:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================
+   Seguridad y Zona de Peligro (Danger Zone)
+   ========================================== */
+.danger-zone {
+  border: 1px solid var(--danger);
+  background-color: var(--danger-bg);
+  border-radius: 8px;
+  padding: 24px;
+  margin-top: 32px;
+}
+
+.danger-zone-title {
+  color: var(--danger);
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+.danger-zone-desc {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 13px;
+  margin-bottom: 20px;
+}
+
+.btn-danger {
+  background-color: var(--danger);
+  color: #fff;
+  border: none;
+  padding: 12px 20px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-danger:hover {
+  background-color: #dc2626;
+}
+

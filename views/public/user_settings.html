@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DiME | Configuración de Usuario</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="../../assets/styles/dashboardMetricas.css">
+
+  <style>
+    /* Estilos mínimos de apoyo para el funcionamiento de las vistas y formularios */
+    .content-view { display: none; animation: fadeIn 0.3s ease; }
+    .content-view.active { display: block; }
+    
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.05em; }
+    
+    .danger-zone { border: 1px solid var(--danger); background-color: rgba(239, 68, 68, 0.05); border-radius: var(--radius-md); padding: 20px; margin-top: 24px; }
+    .danger-zone h4 { color: var(--danger); font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+    .btn-danger { background-color: var(--danger); color: #fff; border: none; padding: 10px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; font-size: 12px; transition: background-color 0.2s; }
+    .btn-danger:hover { background-color: #dc2626; }
+  </style>
+</head>
+<body>
+
+  <div class="flex min-h-screen">
+
+    <aside class="sidebar">
+      <div class="logo-area">
+        <div class="relative dime-logo" style="width:32px;height:32px">
+          <div class="dime-logo-dot"></div>
+          <div class="dime-logo-bars" style="width:16px;height:12px">
+            <div style="width:3px;height:4px"></div>
+            <div style="width:3px;height:8px"></div>
+            <div style="width:3px;height:6px"></div>
+          </div>
+        </div>
+        <div>
+          <h2>DiME</h2>
+          <p>Configuración</p>
+        </div>
+      </div>
+
+      <nav>
+        <button class="nav-btn active" data-view="view-perfil">
+          <span class="icon-placeholder">✎</span>
+          <span>Perfil de negocio</span>
+        </button>
+        <button class="nav-btn" data-view="view-billing">
+          <span class="icon-placeholder">⎙</span>
+          <span>Facturación y plan</span>
+        </button>
+        <button class="nav-btn" data-view="view-security">
+          <span class="icon-placeholder">🔒︎</span>
+          <span>Seguridad</span>
+        </button>
+      </nav>
+    </aside>
+
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+
+      <header class="topbar">
+        <div>
+          <h1 class="topbar-title">Ajustes de la Cuenta</h1>
+          <p class="topbar-subtitle">Actualiza tu información, métodos de pago y contraseñas</p>
+        </div>
+        
+        <div class="flex items-center gap-4">
+          <button class="btn-retry" onclick="window.location.href='dashboardMetricas.html'">
+            ← Volver al inicio
+          </button>
+        </div>
+      </header>
+
+      <div class="flex-1 p-5" style="max-width:900px; margin:0 auto; width:100%">
+
+        <div id="view-perfil" class="content-view active">
+          <div class="section-card">
+            <h3 class="widget-title" style="font-size: 16px; margin-bottom: 6px;">Información General</h3>
+            <p class="widget-desc" style="margin-bottom: 24px;">Actualiza los datos básicos de tu cuenta y la información visible de tu e-commerce.</p>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="form-group">
+                <label class="form-label">Nombre del Responsable</label>
+                <input type="text" class="input-dime" value="Mariam Quintero">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Nombre de la Tienda (E-commerce)</label>
+                <input type="text" class="input-dime" value="GK Fullcommerce">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Correo Electrónico</label>
+                <input type="email" class="input-dime" value="admin@gkfullcommerce.com" disabled style="background-color: var(--bg); opacity: 0.7;">
+              </div>
+              <div class="form-group">
+                <label class="form-label">País de Operación</label>
+                <div class="relative select-wrapper">
+                  <select class="select-dime">
+                    <option value="CL" selected>Chile</option>
+                    <option value="VE">Venezuela</option>
+                    <option value="AR">Argentina</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-light); text-align: right;">
+              <button class="btn-retry">Guardar Cambios</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="view-billing" class="content-view">
+          <div class="section-card" style="margin-bottom: 20px;">
+            <h3 class="widget-title" style="font-size: 16px; margin-bottom: 6px;">Tu Plan Actual</h3>
+            <p class="widget-desc" style="margin-bottom: 20px;">Gestiona tu suscripción a DiME y revisa tus próximas fechas de cobro.</p>
+            
+            <div class="widget-card" style="background-color: var(--primary); color: #fff; border: none; display: flex; flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+              <div>
+                <h4 style="font-size: 18px; color: var(--accent); font-weight: 800;">Plan Premium</h4>
+                <p style="font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 4px;">Métricas avanzadas e inteligencia de negocio</p>
+              </div>
+              <div class="text-right">
+                <span style="font-size: 24px; font-weight: 800;">$80 USD</span><br>
+                <span style="font-size: 11px; color: rgba(255,255,255,0.7);">/ mes</span>
+              </div>
+            </div>
+            <p class="text-xs text-secondary">Tu plan se renovará automáticamente el <strong>24 de Julio de 2026</strong>.</p>
+          </div>
+
+          <div class="section-card">
+            <h3 class="widget-title" style="font-size: 14px; margin-bottom: 16px;">💳 Métodos de Pago</h3>
+            <div style="border: 1px solid var(--border-light); border-radius: var(--radius-sm); padding: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+              <div class="flex items-center gap-3">
+                <div style="background-color: var(--bg); padding: 4px 8px; border-radius: 4px; font-weight: 700; font-size: 12px; border: 1px solid var(--border);">VISA</div>
+                <div>
+                  <p class="font-mono text-sm">**** **** **** 4242</p>
+                  <p class="text-11 text-muted">Vence 12/28</p>
+                </div>
+              </div>
+              <button class="btn-ghost" style="color: var(--danger); border-color: var(--danger);">Eliminar</button>
+            </div>
+            <button class="btn-ghost">+ Añadir nuevo método</button>
+          </div>
+        </div>
+
+        <div id="view-security" class="content-view">
+          <div class="section-card">
+            <h3 class="widget-title" style="font-size: 16px; margin-bottom: 6px;">Cambio de Contraseña</h3>
+            <p class="widget-desc" style="margin-bottom: 24px;">Asegúrate de usar una contraseña larga y difícil de adivinar.</p>
+            
+            <div class="grid grid-cols-1 gap-4" style="max-width: 400px;">
+              <div class="form-group">
+                <label class="form-label">Contraseña Actual</label>
+                <input type="password" class="input-dime" placeholder="••••••••">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Nueva Contraseña</label>
+                <input type="password" class="input-dime" placeholder="••••••••">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Confirmar Nueva Contraseña</label>
+                <input type="password" class="input-dime" placeholder="••••••••">
+              </div>
+              <button class="btn-retry" style="width: 100%;">Actualizar Contraseña</button>
+            </div>
+
+            <div class="danger-zone">
+              <h4>Zona de Peligro</h4>
+              <p class="widget-desc" style="color: var(--text-secondary); margin-bottom: 16px;">Al eliminar tu cuenta perderás permanentemente todo el historial de métricas y acceso a los tableros. Esta acción no se puede deshacer.</p>
+              <button class="btn-danger">Eliminar mi cuenta de DiME</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const navButtons = document.querySelectorAll('.sidebar nav .nav-btn');
+      const views = document.querySelectorAll('.content-view');
+
+      navButtons.forEach(btn => {
+        btn.addEventListener('click', function() {
+          // Remover clase 'active' de todos los botones
+          navButtons.forEach(b => b.classList.remove('active'));
+          // Añadir clase 'active' al botón clickeado
+          this.classList.add('active');
+
+          // Ocultar todas las vistas
+          views.forEach(v => v.classList.remove('active'));
+          // Mostrar la vista que corresponde
+          const targetView = this.getAttribute('data-view');
+          document.getElementById(targetView).classList.add('active');
+        });
+      });
+    });
+  </script>
+</body>
+</html>
