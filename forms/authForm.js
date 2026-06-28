@@ -8,7 +8,7 @@ async function renovarAccessToken()
     if (!refreshTokenActual) 
     {
         // No hay forma de renovar, hay que mandarlo al login
-        window.location.href = 'index.html';
+        window.location.href = 'login.html';
         return null;
     }
 
@@ -42,7 +42,7 @@ async function renovarAccessToken()
             // Si el refresh_token también expiró o es inválido
             console.error("El refresh token no es válido:", data.detail);
             localStorage.clear(); // Limpia sesión antigua
-            window.location.href = 'index.html';
+            window.location.href = 'login.html';
             return null;
         }
 
