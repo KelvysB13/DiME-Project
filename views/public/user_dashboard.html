@@ -129,35 +129,8 @@
 
             <div id="kpi-cards" class="grid grid-cols-1 md:grid-cols-3 gap-4" style="margin-bottom:20px"></div>
 
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4" style="margin-bottom:20px">
+            <div class="grid grid-cols-1 gap-4" style="margin-bottom:20px">
 
-              <div class="widget-card">
-                <div>
-                  <div class="flex items-center justify-between mb-1">
-                    <h3 class="widget-title">Salud de Reputación</h3>
-                    <span class="text-10 font-mono" style="color:var(--text-muted)" id="rep-badge-title">MercadoLíder</span>
-                  </div>
-                  <p class="widget-desc">Nivel de cumplimiento según disputas, tiempos de despacho y demoras.</p>
-                </div>
-                <div id="dial-container" class="dial-container"></div>
-                <div id="dial-details" style="border-top:1px solid var(--border-light);padding-top:10px;margin-top:10px" class="space-y-1"></div>
-              </div>
-
-              <div class="widget-card">
-                <div>
-                  <div class="flex items-center justify-between mb-1">
-                    <h3 class="widget-title">Vendedores con Alertas</h3>
-                    <div style="width:8px;height:8px;border-radius:50%;background-color:var(--accent);animation:ping 1s infinite"></div>
-                  </div>
-                  <p class="widget-desc">Factores de riesgo que amenazan el estatus de tus marcas registradas.</p>
-                </div>
-                <div id="alerts-container" style="max-height:140px" class="overflow-y-auto space-y-2"></div>
-                <div style="border-top:1px solid var(--border-light);padding-top:10px;margin-top:10px">
-                  <button class="w-full text-center" style="font-size:11px;color:var(--primary);font-weight:600;background:none;border:none;cursor:pointer;padding:2px 0">
-                    Ir a Panel de Gestión CRUD <span>↗</span>
-                  </button>
-                </div>
-              </div>
 
               <div class="widget-card">
                 <div>
@@ -298,11 +271,6 @@
     // ====================================================================
     const apiBase = '';
     const PLAN_MAP = { 1: 'Gratuito', 2: 'Pro', 3: 'Enterprise' };
-    const REPUTATION_COLORS = {
-      green: { color: '#10B981', label: 'Excelente' },
-      yellow: { color: '#F59E0B', label: 'En observación' },
-      red: { color: '#EF4444', label: 'Crítico' }
-    };
     let state = {
       selectedSellerId: null,
       sellers: {},
@@ -395,11 +363,11 @@
       1: {
         id: 1, user_name: 'Tecno Hogar AR', nombre_tienda: 'TecnoHogar S.A.',
         email: 'ventas@tecnohogar.com.ar', codigo_pais: 'AR', moneda_local: 'ARS', tipo_plan: 2,
-        reputacion: { nivel_reputacion: 'green', insignia: 'MercadoLíder Platino', total_reclamos: 12, total_canceladas: 5, total_mediaciones: 3, total_envios_incorrectos: 8 },
+        reputacion: { nivel: 'green', insignia: 'MercadoLíder Platino', total_reclamos: 12, total_canceladas: 5, total_mediaciones: 3, total_envios_incorrectos: 8 },
         negocio: { ventas_brutas_moneda_local: 2847500.50, ventas_brutas_usd: 2850.00, unidades_vendidas: 342, visitas_totales: 28500, ventas_concretadas: 342, precio_promedio_venta: 8326.00 },
         costos: { ventas_cobradas_total: 2562750.45, neto_recibido: 2178337.88, cargos_por_venta: 384412.57, costos_envio: 125000.00, inversion_ads: 45000.00, descuento_reputacion: 0 },
-        stock_full: { puntaje_calidad: 87, espacios_p_asignados: 45, espacios_g_asignados: 12, productos_no_aptos_venta: 3, productos_sin_rotacion: 8, productos_antiguedad: 5 },
-        mi_pagina: { tiene_banner: true, tiene_logo: true, tiene_carruseles: true, categories_organizadas: true },
+        stock: { puntaje_calidad: 87, espacios_p_asignados: 45, espacios_g_asignados: 12, productos_no_aptos_venta: 3, productos_sin_rotacion: 8, productos_antiguedad: 5 },
+        pagina: { tiene_banner: true, tiene_logo: true, tiene_carruseles: true, categorias_organizadas: true },
         alertas: [
           { nivel: 'high', mensaje: '3 productos sin rotación > 90 días' },
           { nivel: 'medium', mensaje: 'Tasa de reclamos aumentó 15% este mes' },
@@ -412,12 +380,12 @@
           { nombre: 'Audio', ventas: 9, margen: 22, color: 'rose' }
         ],
         publicaciones: [
-          { titulo: 'Auriculares Bluetooth Pro', ml_item_id: 'MLA-1234567890', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 2840, ventas: 125, calidad: 92 },
-          { titulo: 'Cargador Rápido USB-C 65W', ml_item_id: 'MLA-1234567891', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 1520, ventas: 89, calidad: 88 },
-          { titulo: 'Funda Silicona iPhone 15', ml_item_id: 'MLA-1234567892', tipo_publicacion: 'bronze', estado_publicacion: 'active', visitas: 3200, ventas: 210, calidad: 75 },
-          { titulo: 'Smartwatch Deportivo X200', ml_item_id: 'MLA-1234567893', tipo_publicacion: 'gold_premium', estado_publicacion: 'active', visitas: 980, ventas: 42, calidad: 95 },
-          { titulo: 'Parlante Portátil Resistente', ml_item_id: 'MLA-1234567894', tipo_publicacion: 'bronze', estado_publicacion: 'paused', visitas: 450, ventas: 18, calidad: 70 },
-          { titulo: 'Hub USB-C 7 en 1', ml_item_id: 'MLA-1234567895', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 1850, ventas: 95, calidad: 85 }
+          { titulo: 'Auriculares Bluetooth Pro', ml_item_id: 'MLA-1234567890', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 2840, ventas: 125, puntaje_calidad: 92 },
+          { titulo: 'Cargador Rápido USB-C 65W', ml_item_id: 'MLA-1234567891', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 1520, ventas: 89, puntaje_calidad: 88 },
+          { titulo: 'Funda Silicona iPhone 15', ml_item_id: 'MLA-1234567892', tipo_publicacion: 'bronze', estado_publicacion: 'active', visitas: 3200, ventas: 210, puntaje_calidad: 75 },
+          { titulo: 'Smartwatch Deportivo X200', ml_item_id: 'MLA-1234567893', tipo_publicacion: 'gold_premium', estado_publicacion: 'active', visitas: 980, ventas: 42, puntaje_calidad: 95 },
+          { titulo: 'Parlante Portátil Resistente', ml_item_id: 'MLA-1234567894', tipo_publicacion: 'bronze', estado_publicacion: 'paused', visitas: 450, ventas: 18, puntaje_calidad: 70 },
+          { titulo: 'Hub USB-C 7 en 1', ml_item_id: 'MLA-1234567895', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 1850, ventas: 95, puntaje_calidad: 85 }
         ],
         metabaseCharts: [
           { title: 'Panel de Ventas', url: 'http://localhost:3000/public/question/3aa4fffb-05e9-4635-bf0f-3bf2d8c32b18' },
@@ -430,11 +398,11 @@
       2: {
         id: 2, user_name: 'Moda Infantil VE', nombre_tienda: 'Moda Infantil Caracas C.A.',
         email: 'contacto@modainfantil.com', codigo_pais: 'VE', moneda_local: 'USD', tipo_plan: 1,
-        reputacion: { nivel_reputacion: 'yellow', insignia: 'MercadoLíder', total_reclamos: 28, total_canceladas: 12, total_mediaciones: 7, total_envios_incorrectos: 15 },
+        reputacion: { nivel: 'yellow', insignia: 'MercadoLíder', total_reclamos: 28, total_canceladas: 12, total_mediaciones: 7, total_envios_incorrectos: 15 },
         negocio: { ventas_brutas_moneda_local: 12500.00, ventas_brutas_usd: 12500.00, unidades_vendidas: 180, visitas_totales: 12400, ventas_concretadas: 180, precio_promedio_venta: 69.44 },
         costos: { ventas_cobradas_total: 11250.00, neto_recibido: 9562.50, cargos_por_venta: 1687.50, costos_envio: 3200.00, inversion_ads: 12000.00, descuento_reputacion: 250.00 },
-        stock_full: { puntaje_calidad: 68, espacios_p_asignados: 22, espacios_g_asignados: 8, productos_no_aptos_venta: 7, productos_sin_rotacion: 14, productos_antiguedad: 9 },
-        mi_pagina: { tiene_banner: true, tiene_logo: true, tiene_carruseles: false, categories_organizadas: true },
+        stock: { puntaje_calidad: 68, espacios_p_asignados: 22, espacios_g_asignados: 8, productos_no_aptos_venta: 7, productos_sin_rotacion: 14, productos_antiguedad: 9 },
+        pagina: { tiene_banner: true, tiene_logo: true, tiene_carruseles: false, categorias_organizadas: true },
         alertas: [
           { nivel: 'high', mensaje: 'Puntaje de calidad por debajo del mínimo (68/100)' },
           { nivel: 'high', mensaje: '14 productos sin rotación en inventario' },
@@ -447,11 +415,11 @@
           { nombre: 'Accesorios', ventas: 6, margen: 35, color: 'rose' }
         ],
         publicaciones: [
-          { titulo: 'Set de Ropa Bebé 6 Piezas', ml_item_id: 'MLV-9876543210', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 1890, ventas: 78, calidad: 72 },
-          { titulo: 'Juguete Educativo Bloques 100pz', ml_item_id: 'MLV-9876543211', tipo_publicacion: 'bronze', estado_publicacion: 'active', visitas: 2450, ventas: 112, calidad: 65 },
-          { titulo: 'Zapatos Escolares Talla 28', ml_item_id: 'MLV-9876543212', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 780, ventas: 34, calidad: 80 },
-          { titulo: 'Cuna Plegable Viajera', ml_item_id: 'MLV-9876543213', tipo_publicacion: 'gold_premium', estado_publicacion: 'paused', visitas: 320, ventas: 8, calidad: 90 },
-          { titulo: 'Mochila Infantil Dinosaurio', ml_item_id: 'MLV-9876543214', tipo_publicacion: 'bronze', estado_publicacion: 'active', visitas: 1100, ventas: 55, calidad: 60 }
+          { titulo: 'Set de Ropa Bebé 6 Piezas', ml_item_id: 'MLV-9876543210', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 1890, ventas: 78, puntaje_calidad: 72 },
+          { titulo: 'Juguete Educativo Bloques 100pz', ml_item_id: 'MLV-9876543211', tipo_publicacion: 'bronze', estado_publicacion: 'active', visitas: 2450, ventas: 112, puntaje_calidad: 65 },
+          { titulo: 'Zapatos Escolares Talla 28', ml_item_id: 'MLV-9876543212', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 780, ventas: 34, puntaje_calidad: 80 },
+          { titulo: 'Cuna Plegable Viajera', ml_item_id: 'MLV-9876543213', tipo_publicacion: 'gold_premium', estado_publicacion: 'paused', visitas: 320, ventas: 8, puntaje_calidad: 90 },
+          { titulo: 'Mochila Infantil Dinosaurio', ml_item_id: 'MLV-9876543214', tipo_publicacion: 'bronze', estado_publicacion: 'active', visitas: 1100, ventas: 55, puntaje_calidad: 60 }
         ],
         metabaseCharts: [
           { title: 'Panel de Ventas', url: 'http://localhost:3000/embed/dashboard/6' },
@@ -462,11 +430,11 @@
       3: {
         id: 3, user_name: 'Tecno Chile', nombre_tienda: 'Tecno Chile SpA',
         email: 'ventas@tecnochile.cl', codigo_pais: 'CL', moneda_local: 'CLP', tipo_plan: 2,
-        reputacion: { nivel_reputacion: 'green', insignia: 'MercadoLíder Platino', total_reclamos: 5, total_canceladas: 2, total_mediaciones: 1, total_envios_incorrectos: 3 },
+        reputacion: { nivel: 'green', insignia: 'MercadoLíder Platino', total_reclamos: 5, total_canceladas: 2, total_mediaciones: 1, total_envios_incorrectos: 3 },
         negocio: { ventas_brutas_moneda_local: 18750000, ventas_brutas_usd: 20500.00, unidades_vendidas: 520, visitas_totales: 42000, ventas_concretadas: 520, precio_promedio_venta: 36057.69 },
         costos: { ventas_cobradas_total: 16875000, neto_recibido: 14343750, cargos_por_venta: 2531250, costos_envio: 890000, inversion_ads: 350000, descuento_reputacion: 0 },
-        stock_full: { puntaje_calidad: 94, espacios_p_asignados: 68, espacios_g_asignados: 20, productos_no_aptos_venta: 1, productos_sin_rotacion: 3, productos_antiguedad: 2 },
-        mi_pagina: { tiene_banner: true, tiene_logo: true, tiene_carruseles: true, categories_organizadas: true },
+        stock: { puntaje_calidad: 94, espacios_p_asignados: 68, espacios_g_asignados: 20, productos_no_aptos_venta: 1, productos_sin_rotacion: 3, productos_antiguedad: 2 },
+        pagina: { tiene_banner: true, tiene_logo: true, tiene_carruseles: true, categorias_organizadas: true },
         alertas: [
           { nivel: 'low', mensaje: '3 espacios P con ocupación > 85%' },
           { nivel: 'low', mensaje: 'Actualizar fotos de 2 publicaciones antiguas' }
@@ -478,13 +446,13 @@
           { nombre: 'Redes', ventas: 10, margen: 38, color: 'rose' }
         ],
         publicaciones: [
-          { titulo: 'Notebook Gamer RTX 4060', ml_item_id: 'MLC-5551112220', tipo_publicacion: 'gold_premium', estado_publicacion: 'active', visitas: 4200, ventas: 85, calidad: 98 },
-          { titulo: 'Monitor 27" 4K IPS', ml_item_id: 'MLC-5551112221', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 3500, ventas: 120, calidad: 95 },
-          { titulo: 'Teclado Mecánico RGB', ml_item_id: 'MLC-5551112222', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 5600, ventas: 230, calidad: 88 },
-          { titulo: 'SSD NVMe 1TB', ml_item_id: 'MLC-5551112223', tipo_publicacion: 'bronze', estado_publicacion: 'active', visitas: 2800, ventas: 145, calidad: 82 },
-          { titulo: 'Mouse Inalámbrico Pro', ml_item_id: 'MLC-5551112224', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 3100, ventas: 178, calidad: 90 },
-          { titulo: 'Webcam 4K Streaming', ml_item_id: 'MLC-5551112225', tipo_publicacion: 'bronze', estado_publicacion: 'active', visitas: 1200, ventas: 52, calidad: 75 },
-          { titulo: 'Hub Thunderbolt 4', ml_item_id: 'MLC-5551112226', tipo_publicacion: 'gold_premium', estado_publicacion: 'paused', visitas: 680, ventas: 22, calidad: 93 }
+          { titulo: 'Notebook Gamer RTX 4060', ml_item_id: 'MLC-5551112220', tipo_publicacion: 'gold_premium', estado_publicacion: 'active', visitas: 4200, ventas: 85, puntaje_calidad: 98 },
+          { titulo: 'Monitor 27" 4K IPS', ml_item_id: 'MLC-5551112221', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 3500, ventas: 120, puntaje_calidad: 95 },
+          { titulo: 'Teclado Mecánico RGB', ml_item_id: 'MLC-5551112222', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 5600, ventas: 230, puntaje_calidad: 88 },
+          { titulo: 'SSD NVMe 1TB', ml_item_id: 'MLC-5551112223', tipo_publicacion: 'bronze', estado_publicacion: 'active', visitas: 2800, ventas: 145, puntaje_calidad: 82 },
+          { titulo: 'Mouse Inalámbrico Pro', ml_item_id: 'MLC-5551112224', tipo_publicacion: 'gold_special', estado_publicacion: 'active', visitas: 3100, ventas: 178, puntaje_calidad: 90 },
+          { titulo: 'Webcam 4K Streaming', ml_item_id: 'MLC-5551112225', tipo_publicacion: 'bronze', estado_publicacion: 'active', visitas: 1200, ventas: 52, puntaje_calidad: 75 },
+          { titulo: 'Hub Thunderbolt 4', ml_item_id: 'MLC-5551112226', tipo_publicacion: 'gold_premium', estado_publicacion: 'paused', visitas: 680, ventas: 22, puntaje_calidad: 93 }
         ],
         metabaseCharts: [
           { title: 'Panel de Ventas', url: 'http://localhost:3000/embed/dashboard/9' },
@@ -510,30 +478,24 @@
         <span class="seller-ribbon-label">Tienda</span>
         <span class="seller-ribbon-value">${seller.nombre_tienda}</span>
         <div class="seller-ribbon-divider"></div>
-        <span class="seller-ribbon-label">País</span>
-        <span class="seller-ribbon-value">${seller.codigo_pais}</span>
-        <div class="seller-ribbon-divider"></div>
-        <span class="seller-ribbon-label">Moneda</span>
-        <span class="seller-ribbon-value">${seller.moneda_local}</span>
-        <div class="seller-ribbon-divider"></div>
         <span class="seller-ribbon-label">Plan</span>
         <span class="seller-ribbon-value">${PLAN_MAP[seller.tipo_plan] || 'Gratuito'}</span>
         <div class="seller-ribbon-divider"></div>
         <span class="seller-ribbon-label">Insignia</span>
-        <span class="seller-ribbon-value"><span class="badge ${badgeClass(seller.reputacion.nivel_reputacion)}">${seller.reputacion.insignia || 'Sin insignia'}</span></span>
+        <span class="seller-ribbon-value"><span class="badge ${badgeClass(seller.reputacion.nivel)}">${seller.reputacion.insignia || 'Sin insignia'}</span></span>
       `;
     }
 
     function renderKpiCards(seller) {
       const grid = document.getElementById('kpi-cards');
       if (!seller) { grid.innerHTML = ''; return; }
-      const r = seller.reputacion, n = seller.negocio, c = seller.costos, s = seller.stock_full, p = seller.mi_pagina;
+      const r = seller.reputacion, n = seller.negocio, c = seller.costos, s = seller.stock, p = seller.pagina;
       const cards = [
         { label: 'Reputación', icon: '★', iconClass: 'accent', value: r.insignia || 'Sin datos', trend: formatNumber(r.total_reclamos) + ' reclamos', trendClass: r.total_reclamos > 15 ? 'warning' : 'positive', detail: 'Canceladas: ' + formatNumber(r.total_canceladas) + ' · Mediaciones: ' + formatNumber(r.total_mediaciones) },
         { label: 'Negocio', icon: '📈', iconClass: 'primary', value: formatCurrency(n.ventas_brutas_moneda_local), trend: formatNumber(n.unidades_vendidas) + ' uds vendidas', trendClass: 'positive', detail: formatNumber(n.visitas_totales) + ' visitas · ' + formatNumber(n.ventas_concretadas) + ' ventas' },
         { label: 'Costos', icon: '📉', iconClass: 'accent', value: formatCurrency(c.neto_recibido), trend: 'Comisiones: ' + formatCurrency(c.cargos_por_venta), trendClass: 'neutral', detail: 'Envíos: ' + formatCurrency(c.costos_envio) + ' · Ads: ' + formatCurrency(c.inversion_ads) },
         { label: 'Stock Full', icon: '📦', iconClass: 'primary', value: s.puntaje_calidad + '/100', trend: formatNumber(s.espacios_p_asignados) + ' espacios P', trendClass: s.puntaje_calidad >= 80 ? 'positive' : 'warning', detail: formatNumber(s.productos_no_aptos_venta) + ' no aptos · ' + formatNumber(s.productos_sin_rotacion) + ' sin rotación' },
-        { label: 'Mi Página', icon: '🛒', iconClass: 'accent', value: formatBool(p.tiene_banner), trend: formatBool(p.tiene_logo), trendClass: 'positive', detail: 'Carruseles: ' + formatBool(p.tiene_carruseles) + ' · Cats: ' + formatBool(p.categories_organizadas) },
+        { label: 'Mi Página', icon: '🛒', iconClass: 'accent', value: formatBool(p.tiene_banner), trend: formatBool(p.tiene_logo), trendClass: 'positive', detail: 'Carruseles: ' + formatBool(p.tiene_carruseles) + ' · Cats: ' + formatBool(p.categorias_organizadas) },
         { label: 'Cuenta', icon: '👤', iconClass: 'primary', value: seller.user_name || '-', trend: seller.email || '-', trendClass: 'neutral', detail: seller.codigo_pais + ' · ' + (PLAN_MAP[seller.tipo_plan] || 'Gratuito') }
       ];
       grid.innerHTML = cards.map(k => `
@@ -550,52 +512,6 @@
           <div style="font-size:10px;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;margin-top:6px">${k.detail}</div>
         </div>
       `).join('');
-    }
-
-    function renderReputationDial(seller) {
-      const container = document.getElementById('dial-container');
-      const titleEl = document.getElementById('rep-badge-title');
-      const detailsEl = document.getElementById('dial-details');
-      if (!seller) { container.innerHTML = ''; titleEl.textContent = '-'; detailsEl.innerHTML = ''; return; }
-      const r = seller.reputacion;
-      const totalIssues = r.total_reclamos + r.total_canceladas + r.total_mediaciones + r.total_envios_incorrectos;
-      let score = Math.max(0, Math.min(100, 100 - totalIssues * 2));
-      const lc = REPUTATION_COLORS[r.nivel_reputacion] || REPUTATION_COLORS.yellow;
-      titleEl.textContent = r.insignia || 'Sin insignia';
-      titleEl.style.color = lc.color;
-      const circ = 2 * Math.PI * 36;
-      const offset = circ * (1 - score / 100);
-      container.innerHTML = `
-        <svg width="100" height="90" viewBox="0 0 100 90">
-          <path d="M 12 78 A 36 36 0 1 1 88 78" fill="none" stroke="var(--border-light)" stroke-width="6" stroke-linecap="round"/>
-          <path d="M 12 78 A 36 36 0 1 1 88 78" fill="none" stroke="${lc.color}" stroke-width="6" stroke-linecap="round" stroke-dasharray="${circ}" stroke-dashoffset="${offset}" style="transition:stroke-dashoffset 1s ease-out"/>
-        </svg>
-        <div class="dial-score">
-          <div class="dial-score-value" style="color:${lc.color}">${score}</div>
-          <div class="dial-score-label">Puntaje</div>
-        </div>`;
-      const maxV = Math.max(r.total_reclamos, r.total_canceladas, r.total_mediaciones, r.total_envios_incorrectos, 1);
-      const items = [
-        { label: 'Reclamos', value: r.total_reclamos },
-        { label: 'Cancelaciones', value: r.total_canceladas },
-        { label: 'Mediaciones', value: r.total_mediaciones },
-        { label: 'Envíos Incorrectos', value: r.total_envios_incorrectos }
-      ];
-      detailsEl.innerHTML = items.map(item => `
-        <div class="detail-row">
-          <span class="detail-label">${item.label}</span>
-          <div class="detail-bar-wrap">
-            <div class="detail-bar-bg"><div class="detail-bar-fill" style="width:${(item.value/maxV)*100}%;background:${lc.color}"></div></div>
-            <span class="detail-value">${item.value}</span>
-          </div>
-        </div>
-      `).join('');
-    }
-
-    function renderAlerts(seller) {
-      const el = document.getElementById('alerts-container');
-      if (!seller || !seller.alertas || !seller.alertas.length) { el.innerHTML = '<span style="font-size:11px;color:var(--text-muted)">Sin alertas activas ✓</span>'; return; }
-      el.innerHTML = seller.alertas.map(a => `<div class="alert-card alert-${a.nivel}"><span>${a.nivel==='high'?'🔴':a.nivel==='medium'?'🟡':'🟢'}</span><span>${a.mensaje}</span></div>`).join('');
     }
 
     function renderCategoryPerformance(seller) {
@@ -651,7 +567,7 @@
           <td style="text-align:center"><span class="status-badge ${statusClass(p.estado_publicacion)}">${p.estado_publicacion}</span></td>
           <td style="text-align:right;font-family:'JetBrains Mono',monospace">${formatNumber(p.visitas)}</td>
           <td style="text-align:right;font-family:'JetBrains Mono',monospace">${formatNumber(p.ventas)}</td>
-          <td style="text-align:center;font-family:'JetBrains Mono',monospace">${p.calidad}/100</td>
+          <td style="text-align:center;font-family:'JetBrains Mono',monospace">${p.puntaje_calidad}/100</td>
         </tr>
       `).join('');
     }
@@ -718,8 +634,6 @@
 
       renderSellerRibbon(seller);
       renderKpiCards(seller);
-      renderReputationDial(seller);
-      renderAlerts(seller);
       renderCategoryPerformance(seller);
       renderPublicationsTable(seller);
       renderMetabaseFilter();

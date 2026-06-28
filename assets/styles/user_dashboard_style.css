@@ -599,33 +599,6 @@ a { text-decoration: none; color: inherit; }
   margin: 6px 0 10px;
 }
 
-/* --- 11. REPUTATION DIAL --- */
-.dial-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  margin: 8px 0;
-  position: relative;
-}
-.dial-score {
-  position: absolute;
-  bottom: 8px;
-  text-align: center;
-}
-.dial-score-value {
-  font-size: 22px;
-  font-weight: 700;
-  font-family: 'JetBrains Mono', monospace;
-}
-.dial-score-label {
-  font-size: 8px;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--text-muted);
-  font-weight: 600;
-}
-
 /* --- 12. BADGES --- */
 .badge {
   display: inline-flex;
@@ -655,33 +628,6 @@ a { text-decoration: none; color: inherit; }
   background-color: rgba(139, 92, 246, 0.10);
   color: var(--purple);
   border: 1px solid rgba(139, 92, 246, 0.20);
-}
-
-/* --- 13. ALERT CARDS --- */
-.alert-card {
-  padding: 8px 10px;
-  border-radius: var(--radius-sm);
-  border: 1px solid;
-  font-size: 11px;
-  display: flex;
-  gap: 8px;
-  align-items: flex-start;
-  font-weight: 500;
-}
-.alert-high {
-  background-color: rgba(239, 68, 68, 0.06);
-  border-color: rgba(239, 68, 68, 0.18);
-  color: #b91c1c;
-}
-.alert-medium {
-  background-color: rgba(245, 158, 11, 0.08);
-  border-color: rgba(245, 158, 11, 0.20);
-  color: #92400e;
-}
-.alert-low {
-  background-color: rgba(3, 28, 60, 0.04);
-  border-color: rgba(3, 28, 60, 0.10);
-  color: var(--text-secondary);
 }
 
 /* --- 14. CATEGORY BARS --- */
@@ -961,44 +907,6 @@ a { text-decoration: none; color: inherit; }
 .btn-retry:hover {
   background-color: var(--accent-hover);
   box-shadow: 0 0 12px rgba(252, 215, 3, 0.3);
-}
-
-/* --- 22. DETAIL ROW (dial) --- */
-.detail-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-.detail-label {
-  font-size: 10px;
-  color: var(--text-secondary);
-}
-.detail-bar-wrap {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-  margin-left: 8px;
-}
-.detail-bar-bg {
-  flex: 1;
-  height: 4px;
-  background-color: var(--border-light);
-  border-radius: 2px;
-  overflow: hidden;
-}
-.detail-bar-fill {
-  height: 100%;
-  border-radius: 2px;
-  transition: width 0.5s ease;
-}
-.detail-value {
-  font-family: 'JetBrains Mono', monospace;
-  font-weight: 600;
-  color: var(--text);
-  min-width: 20px;
-  text-align: right;
-  font-size: 11px;
 }
 
 /* --- 23. SECTION CARD (genérico) --- */

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DiME | Panel de Administración</title>
+  <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../assets/styles/user_dashboard_style.css">
+  <style>
+    .admin-layout { display: flex; min-height: 100vh; }
+    .admin-content { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+    .admin-main { flex: 1; padding: 20px; max-width: 1280px; margin: 0 auto; width: 100%; overflow-y: auto; }
+    .crud-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
+    .crud-header h2 { font-size: 18px; font-weight: 700; color: var(--primary); }
+    .btn-create { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background-color: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: background 0.15s ease; }
+    .btn-create:hover { background-color: var(--primary-light); }
+    .btn-edit { padding: 4px 10px; background: none; border: 1px solid var(--border); border-radius: 4px; font-size: 11px; cursor: pointer; color: var(--primary); font-family: 'Montserrat', sans-serif; font-weight: 500; transition: all 0.1s ease; }
+    .btn-edit:hover { border-color: var(--primary); background-color: rgba(3,28,60,0.04); }
+    .btn-delete { padding: 4px 10px; background: none; border: 1px solid var(--border); border-radius: 4px; font-size: 11px; cursor: pointer; color: var(--danger); font-family: 'Montserrat', sans-serif; font-weight: 500; transition: all 0.1s ease; }
+    .btn-delete:hover { border-color: var(--danger); background-color: rgba(239,68,68,0.06); }
+    .table-actions { display: flex; gap: 4px; justify-content: center; }
+    .admin-table-wrap { overflow-x: auto; }
+    .search-bar { padding: 8px 12px; background-color: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 12px; color: var(--text); outline: none; font-family: 'Montserrat', sans-serif; transition: border-color 0.15s ease; width: 220px; }
+    .search-bar:focus { border-color: var(--primary); }
+    .crud-toolbar { display: flex; align-items: center; gap: 12px; }
+
+    .modal-overlay { position: fixed; inset: 0; background-color: rgba(0,0,0,0.4); display: flex; align-items: center; justify-content: center; z-index: 100; padding: 20px; }
+    .modal-box { background-color: #fff; border-radius: var(--radius-lg); width: 100%; max-width: 560px; max-height: 85vh; display: flex; flex-direction: column; box-shadow: var(--shadow-xl); animation: fadeIn 0.15s ease-out; }
+    .modal-box.wide { max-width: 720px; }
+    .modal-header { display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; border-bottom: 1px solid var(--border-light); }
+    .modal-header h3 { font-size: 15px; font-weight: 700; color: var(--primary); }
+    .modal-close { width: 28px; height: 28px; border-radius: 50%; border: none; background: none; cursor: pointer; font-size: 16px; color: var(--text-muted); display: flex; align-items: center; justify-content: center; transition: all 0.1s ease; }
+    .modal-close:hover { background-color: var(--bg); color: var(--text); }
+    .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
+    .modal-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 20px; border-top: 1px solid var(--border-light); }
+    .modal-footer .btn-cancel { padding: 8px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: none; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-secondary); font-family: 'Montserrat', sans-serif; transition: all 0.1s ease; }
+    .modal-footer .btn-cancel:hover { border-color: var(--text-muted); color: var(--text); }
+    .modal-footer .btn-save { padding: 8px 16px; border-radius: var(--radius-sm); border: none; background-color: var(--primary); color: #fff; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: background 0.15s ease; }
+    .modal-footer .btn-save:hover { background-color: var(--primary-light); }
+
+    .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .form-grid .full-width { grid-column: 1 / -1; }
+    .form-group { display: flex; flex-direction: column; gap: 4px; }
+    .form-group label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
+    .form-group input, .form-group select, .form-group textarea { padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 12px; color: var(--text); outline: none; font-family: 'Montserrat', sans-serif; transition: border-color 0.15s ease; background-color: #fff; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); }
+    .form-group textarea { resize: vertical; min-height: 60px; }
+    .form-group input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }
+    .form-group .checkbox-wrap { display: flex; align-items: center; gap: 8px; padding-top: 4px; }
+    .form-group select { cursor: pointer; }
+
+    .kpi-section { margin-bottom: 16px; }
+    .kpi-section h4 { font-size: 13px; font-weight: 700; color: var(--primary); margin-bottom: 8px; padding-bottom: 6px; border-bottom: 1px solid var(--border-light); }
+    .kpi-section .form-grid { margin-bottom: 4px; }
+
+    .empty-state { text-align: center; padding: 48px 16px; color: var(--text-muted); font-size: 13px; }
+
+    .rango-card { background-color: #fff; border: 1px solid var(--border-light); border-radius: var(--radius-md); padding: 16px; margin-bottom: 10px; transition: box-shadow 0.15s ease; }
+    .rango-card:hover { box-shadow: var(--shadow-sm); }
+    .rango-card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+    .rango-card-title { font-size: 13px; font-weight: 700; color: var(--primary); }
+    .rango-card-subtitle { font-size: 10px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+    .rango-levels { display: flex; gap: 8px; flex-wrap: wrap; }
+    .rango-level { display: flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: var(--radius-sm); font-size: 11px; font-weight: 600; font-family: 'JetBrains Mono', monospace; }
+    .rango-level-verde { background-color: rgba(16,185,129,0.08); color: #047857; border: 1px solid rgba(16,185,129,0.15); }
+    .rango-level-amarillo { background-color: rgba(245,158,11,0.08); color: #92400e; border: 1px solid rgba(245,158,11,0.15); }
+    .rango-level-rojo { background-color: rgba(239,68,68,0.08); color: #b91c1c; border: 1px solid rgba(239,68,68,0.15); }
+
+    .range-input-group { display: flex; align-items: center; gap: 8px; }
+    .range-input-group label { font-size: 11px; font-weight: 600; color: var(--text-secondary); min-width: 60px; text-transform: uppercase; }
+    .range-input-group input { width: 100px; padding: 6px 8px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 12px; font-family: 'JetBrains Mono', monospace; outline: none; }
+    .range-input-group input:focus { border-color: var(--primary); }
+    .range-input-group span { font-size: 12px; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; }
+
+    .badge-status { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 999px; font-size: 10px; font-family: 'JetBrains Mono', monospace; font-weight: 600; }
+    .badge-active { background-color: rgba(16,185,129,0.10); color: var(--success); border: 1px solid rgba(16,185,129,0.20); }
+    .badge-inactive { background-color: rgba(239,68,68,0.10); color: var(--danger); border: 1px solid rgba(239,68,68,0.20); }
+
+    .toast { position: fixed; bottom: 24px; right: 24px; padding: 12px 20px; border-radius: var(--radius-md); font-size: 12px; font-weight: 600; box-shadow: var(--shadow-lg); z-index: 200; animation: fadeIn 0.2s ease-out; }
+    .toast-success { background-color: var(--success); color: #fff; }
+    .toast-error { background-color: var(--danger); color: #fff; }
+
+    @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+<div class="admin-layout">
+  <aside class="sidebar">
+    <div class="logo-area">
+      <div class="relative dime-logo" style="width:32px;height:32px">
+        <div class="dime-logo-dot"></div>
+        <div class="dime-logo-bars" style="width:16px;height:12px">
+          <div style="width:3px;height:4px"></div>
+          <div style="width:3px;height:8px"></div>
+          <div style="width:3px;height:6px"></div>
+        </div>
+      </div>
+      <div>
+        <h2>DiME</h2>
+        <p>Cerebro Estratégico</p>
+      </div>
+    </div>
+    <nav>
+      <button class="nav-btn active" data-section="vendedores">
+        <span class="icon-placeholder">👤</span>
+        <span>Vendedores</span>
+      </button>
+      <button class="nav-btn" data-section="planes">
+        <span class="icon-placeholder">📋</span>
+        <span>Planes</span>
+      </button>
+      <button class="nav-btn" data-section="metricas">
+        <span class="icon-placeholder">📊</span>
+        <span>Rangos KPI</span>
+      </button>
+    </nav>
+    <div class="user-badge">
+      <div class="user-avatar" style="background-color:var(--danger);color:#fff">AD</div>
+      <div class="user-info">
+        <p class="user-name">Admin DiME</p>
+        <p class="user-email">admin@dime.com</p>
+      </div>
+    </div>
+  </aside>
+
+  <div class="admin-content">
+    <header class="topbar">
+      <div>
+        <h1 class="topbar-title" id="topbar-title">Administración - Vendedores</h1>
+        <p class="topbar-subtitle">Panel de Control Administrativo</p>
+      </div>
+      <div class="flex items-center gap-4">
+        <div class="profile-dropdown-wrapper">
+          <button id="user-profile-button" class="profile-btn">
+            <div class="profile-avatar" style="background-color:var(--danger);color:#fff">AD</div>
+            <div class="text-left md:block" style="display:none">
+              <p class="profile-name">Admin DiME</p>
+              <p class="profile-plan" style="color:var(--warning)">Administrador</p>
+            </div>
+            <span style="color:var(--text-muted);font-size:10px">▾</span>
+          </button>
+          <div id="profile-dropdown-menu" class="dropdown-menu" style="display:none">
+            <div class="dropdown-header">
+              <p>Administrador</p>
+              <p>admin@dime.com</p>
+            </div>
+            <div style="border-top:1px solid var(--border-light);padding-top:4px;margin-top:4px">
+              <button id="btn-signout" class="dropdown-item danger"><span>✕</span> Cerrar Sesión</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <div class="admin-main">
+      <div id="section-vendedores" class="content-section"></div>
+      <div id="section-planes" class="content-section" style="display:none"></div>
+      <div id="section-metricas" class="content-section" style="display:none"></div>
+    </div>
+  </div>
+</div>
+
+<div id="modal-overlay" class="modal-overlay" style="display:none">
+  <div class="modal-box" id="modal-box">
+    <div class="modal-header">
+      <h3 id="modal-title">Nuevo</h3>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal()">Cancelar</button>
+      <button class="btn-save" id="btn-save" onclick="saveEntity()">Guardar</button>
+    </div>
+  </div>
+</div>
+
+<div id="delete-modal" class="modal-overlay" style="display:none">
+  <div class="modal-box" style="max-width:400px">
+    <div class="modal-header">
+      <h3 style="color:var(--danger)">Confirmar Eliminación</h3>
+      <button class="modal-close" onclick="closeDeleteModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <p id="delete-msg" style="font-size:13px;color:var(--text-secondary);line-height:1.5"></p>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeDeleteModal()">Cancelar</button>
+      <button class="btn-save" style="background-color:var(--danger)" id="btn-confirm-delete" onclick="confirmDelete()">Eliminar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const PAISES = [
+    { codigo: 'AR', nombre: 'Argentina' }, { codigo: 'BO', nombre: 'Bolivia' },
+    { codigo: 'BR', nombre: 'Brasil' }, { codigo: 'CL', nombre: 'Chile' },
+    { codigo: 'CO', nombre: 'Colombia' }, { codigo: 'CR', nombre: 'Costa Rica' },
+    { codigo: 'DO', nombre: 'República Dominicana' }, { codigo: 'EC', nombre: 'Ecuador' },
+    { codigo: 'GT', nombre: 'Guatemala' }, { codigo: 'MX', nombre: 'México' },
+    { codigo: 'NI', nombre: 'Nicaragua' }, { codigo: 'PA', nombre: 'Panamá' },
+    { codigo: 'PE', nombre: 'Perú' }, { codigo: 'PY', nombre: 'Paraguay' },
+    { codigo: 'SV', nombre: 'El Salvador' }, { codigo: 'UY', nombre: 'Uruguay' },
+    { codigo: 'VE', nombre: 'Venezuela' }
+  ];
+  const MONEDAS = [
+    { codigo: 'ARS', nombre: 'Peso Argentino', simbolo: '$' },
+    { codigo: 'BOB', nombre: 'Boliviano', simbolo: 'Bs.' },
+    { codigo: 'BRL', nombre: 'Real Brasileño', simbolo: 'R$' },
+    { codigo: 'CLP', nombre: 'Peso Chileno', simbolo: '$' },
+    { codigo: 'COP', nombre: 'Peso Colombiano', simbolo: '$' },
+    { codigo: 'CRC', nombre: 'Colón Costarricense', simbolo: '₡' },
+    { codigo: 'DOP', nombre: 'Peso Dominicano', simbolo: 'RD$' },
+    { codigo: 'USD', nombre: 'Dólar Estadounidense', simbolo: 'US$' },
+    { codigo: 'GTQ', nombre: 'Quetzal Guatemalteco', simbolo: 'Q' },
+    { codigo: 'MXN', nombre: 'Peso Mexicano', simbolo: '$' },
+    { codigo: 'NIO', nombre: 'Córdoba Nicaragüense', simbolo: 'C$' },
+    { codigo: 'PAB', nombre: 'Balboa Panameño', simbolo: 'B/.' },
+    { codigo: 'PEN', nombre: 'Sol Peruano', simbolo: 'S/' },
+    { codigo: 'PYG', nombre: 'Guaraní Paraguayo', simbolo: '₲' },
+    { codigo: 'EUR', nombre: 'Euro', simbolo: '€' },
+    { codigo: 'UYU', nombre: 'Peso Uruguayo', simbolo: '$U' },
+    { codigo: 'VES', nombre: 'Bolívar Venezolano', simbolo: 'Bs.' }
+  ];
+
+  const PLAN_MAP = { 1: 'Gratuito', 2: 'Pro', 3: 'Enterprise' };
+
+  let MOCK_VENDEDORES = [
+    { id: 1, user_name: 'Tecno Hogar AR', nombre_tienda: 'TecnoHogar S.A.', email: 'ventas@tecnohogar.com.ar', codigo_pais: 'AR', moneda_local: 'ARS', tipo_plan: 2, esta_activo: true, fecha_creacion: '2024-01-15' },
+    { id: 2, user_name: 'Moda Infantil VE', nombre_tienda: 'Moda Infantil Caracas C.A.', email: 'contacto@modainfantil.com', codigo_pais: 'VE', moneda_local: 'USD', tipo_plan: 1, esta_activo: true, fecha_creacion: '2024-03-20' },
+    { id: 3, user_name: 'Tecno Chile', nombre_tienda: 'Tecno Chile SpA', email: 'ventas@tecnochile.cl', codigo_pais: 'CL', moneda_local: 'CLP', tipo_plan: 2, esta_activo: true, fecha_creacion: '2024-02-10' },
+    { id: 4, user_name: 'Electro Hogar MX', nombre_tienda: 'Electro Hogar México S.A. de C.V.', email: 'ventas@electrohogar.mx', codigo_pais: 'MX', moneda_local: 'MXN', tipo_plan: 3, esta_activo: true, fecha_creacion: '2023-11-05' },
+    { id: 5, user_name: 'Libros y Más CO', nombre_tienda: 'Libros y Más Colombia Ltda.', email: 'info@librosymas.co', codigo_pais: 'CO', moneda_local: 'COP', tipo_plan: 1, esta_activo: false, fecha_creacion: '2024-06-01' },
+    { id: 6, user_name: 'Gadgets Perú', nombre_tienda: 'Gadgets Perú SAC', email: 'ventas@gadgets.pe', codigo_pais: 'PE', moneda_local: 'PEN', tipo_plan: 2, esta_activo: true, fecha_creacion: '2024-04-10' }
+  ];
+
+  let MOCK_PLANES = [
+    { id: 1, nombre_plan: 'Gratuito', precio_mensual: 0, limite_publicaciones: 10, limite_metricas_dias: 30, descripcion: 'Plan gratuito para empezar a conocer la plataforma.' },
+    { id: 2, nombre_plan: 'Pro', precio_mensual: 29.99, limite_publicaciones: 100, limite_metricas_dias: 90, descripcion: 'Plan profesional para vendedores en crecimiento.' },
+    { id: 3, nombre_plan: 'Enterprise', precio_mensual: 99.99, limite_publicaciones: 9999, limite_metricas_dias: 365, descripcion: 'Plan empresarial con acceso completo y soporte prioritario.' }
+  ];
+
+  let MOCK_KPI_RANGES = [
+    { id: 1, categoria: 'reputacion', categoria_nombre: 'Reputación', indicador: 'tasa_reclamos', nombre: 'Tasa de Reclamos', unidad: '%', verde_min: 0, verde_max: 5, amarillo_min: 5, amarillo_max: 15, rojo_min: 15, rojo_max: null },
+    { id: 2, categoria: 'reputacion', categoria_nombre: 'Reputación', indicador: 'tasa_cancelaciones', nombre: 'Tasa de Cancelaciones', unidad: '%', verde_min: 0, verde_max: 3, amarillo_min: 3, amarillo_max: 10, rojo_min: 10, rojo_max: null },
+    { id: 3, categoria: 'reputacion', categoria_nombre: 'Reputación', indicador: 'tasa_mediaciones', nombre: 'Tasa de Mediaciones', unidad: '%', verde_min: 0, verde_max: 2, amarillo_min: 2, amarillo_max: 8, rojo_min: 8, rojo_max: null },
+    { id: 4, categoria: 'reputacion', categoria_nombre: 'Reputación', indicador: 'tasa_envios_incorrectos', nombre: 'Tasa de Envíos Incorrectos', unidad: '%', verde_min: 0, verde_max: 3, amarillo_min: 3, amarillo_max: 10, rojo_min: 10, rojo_max: null },
+    { id: 5, categoria: 'negocio', categoria_nombre: 'Negocio', indicador: 'cvr_global', nombre: 'CVR Global', unidad: '%', verde_min: 5, verde_max: null, amarillo_min: 2, amarillo_max: 5, rojo_min: 0, rojo_max: 2 },
+    { id: 6, categoria: 'negocio', categoria_nombre: 'Negocio', indicador: 'margen_neto', nombre: 'Margen Neto', unidad: '%', verde_min: 20, verde_max: null, amarillo_min: 10, amarillo_max: 20, rojo_min: 0, rojo_max: 10 },
+    { id: 7, categoria: 'negocio', categoria_nombre: 'Negocio', indicador: 'ticket_promedio', nombre: 'Ticket Promedio', unidad: 'USD', verde_min: 50, verde_max: null, amarillo_min: 20, amarillo_max: 50, rojo_min: 0, rojo_max: 20 },
+    { id: 8, categoria: 'negocio', categoria_nombre: 'Negocio', indicador: 'roas', nombre: 'ROAS', unidad: 'x', verde_min: 4, verde_max: null, amarillo_min: 2, amarillo_max: 4, rojo_min: 0, rojo_max: 2 },
+    { id: 9, categoria: 'stock', categoria_nombre: 'Stock Full', indicador: 'dead_stock_rate', nombre: 'Dead Stock Rate', unidad: '%', verde_min: 0, verde_max: 10, amarillo_min: 10, amarillo_max: 25, rojo_min: 25, rojo_max: null },
+    { id: 10, categoria: 'stock', categoria_nombre: 'Stock Full', indicador: 'puntaje_calidad', nombre: 'Puntaje de Calidad', unidad: 'pts', verde_min: 80, verde_max: 100, amarillo_min: 60, amarillo_max: 80, rojo_min: 0, rojo_max: 60 },
+    { id: 11, categoria: 'stock', categoria_nombre: 'Stock Full', indicador: 'overstock_rate', nombre: 'Overstock Rate', unidad: '%', verde_min: 0, verde_max: 15, amarillo_min: 15, amarillo_max: 30, rojo_min: 30, rojo_max: null },
+    { id: 12, categoria: 'publicaciones', categoria_nombre: 'Publicaciones', indicador: 'cvr_publicacion', nombre: 'CVR por Publicación', unidad: '%', verde_min: 5, verde_max: null, amarillo_min: 2, amarillo_max: 5, rojo_min: 0, rojo_max: 2 },
+    { id: 13, categoria: 'publicaciones', categoria_nombre: 'Publicaciones', indicador: 'puntaje_calidad_pub', nombre: 'Puntaje de Calidad', unidad: 'pts', verde_min: 80, verde_max: 100, amarillo_min: 60, amarillo_max: 80, rojo_min: 0, rojo_max: 60 },
+    { id: 14, categoria: 'publicaciones', categoria_nombre: 'Publicaciones', indicador: 'pct_catalogo_completo', nombre: '% Catálogo Completo', unidad: '%', verde_min: 80, verde_max: null, amarillo_min: 50, amarillo_max: 80, rojo_min: 0, rojo_max: 50 }
+  ];
+
+    let nextVendedorId = 7;
+  let nextPlanId = 4;
+  let nextKpiRangoId = 15;
+  let currentSection = 'vendedores';
+  let editingEntity = null;
+  let editingSection = null;
+  let deleteTarget = null;
+
+  function formatCurrency(val, d) { d = d || 2; if (val == null || isNaN(val)) return '-'; return parseFloat(val).toLocaleString('es', { minimumFractionDigits: d, maximumFractionDigits: d }); }
+  function formatNumber(val) { if (val == null || isNaN(val)) return '-'; return parseInt(val).toLocaleString('es'); }
+
+  function getPaisName(code) { const p = PAISES.find(x => x.codigo === code); return p ? p.nombre : code; }
+  function getMonedaName(code) { const m = MONEDAS.find(x => x.codigo === code); return m ? m.nombre : code; }
+
+  function badgeClass(nivel) { return { green: 'badge-green', yellow: 'badge-yellow', red: 'badge-red' }[nivel] || ''; }
+
+  function showToast(msg, type) {
+    const el = document.createElement('div');
+    el.className = 'toast toast-' + type;
+    el.textContent = msg;
+    document.body.appendChild(el);
+    setTimeout(() => { el.style.opacity = '0'; el.style.transition = 'opacity 0.3s'; setTimeout(() => el.remove(), 300); }, 2500);
+  }
+
+  function renderVendedores() {
+    const container = document.getElementById('section-vendedores');
+    const searchTerm = (document.getElementById('search-vendedores') || {}).value || '';
+    let filtered = MOCK_VENDEDORES;
+    if (searchTerm) { const t = searchTerm.toLowerCase(); filtered = MOCK_VENDEDORES.filter(v => v.user_name.toLowerCase().includes(t) || v.nombre_tienda.toLowerCase().includes(t) || v.email.toLowerCase().includes(t)); }
+    container.innerHTML = `
+      <div class="crud-header">
+        <h2>Gestión de Vendedores</h2>
+        <div class="crud-toolbar">
+          <input id="search-vendedores" class="search-bar" type="text" placeholder="Buscar vendedor..." value="${searchTerm}">
+          <button class="btn-create" onclick="openCreate('vendedores')">+ Nuevo Vendedor</button>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="admin-table-wrap">
+          <table class="dime-table">
+            <thead><tr>
+              <th style="padding:10px 12px;width:50px">ID</th>
+              <th style="padding:10px 12px">Usuario</th>
+              <th style="padding:10px 12px">Tienda</th>
+              <th style="padding:10px 12px">Email</th>
+              <th style="padding:10px 12px">País</th>
+              <th style="padding:10px 12px">Plan</th>
+              <th style="padding:10px 12px;text-align:center">Estado</th>
+              <th style="padding:10px 12px;text-align:center;width:100px">Acciones</th>
+            </tr></thead>
+            <tbody>${filtered.length ? filtered.map(v => `
+              <tr>
+                <td style="padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:11px">${v.id}</td>
+                <td style="padding:10px 12px;font-weight:600;color:var(--primary)">${v.user_name}</td>
+                <td style="padding:10px 12px">${v.nombre_tienda}</td>
+                <td style="padding:10px 12px;font-size:11px">${v.email}</td>
+                <td style="padding:10px 12px;font-size:11px">${getPaisName(v.codigo_pais)}</td>
+                <td style="padding:10px 12px"><span class="badge ${badgeClass(v.tipo_plan === 3 ? 'green' : v.tipo_plan === 2 ? 'yellow' : 'red')}" style="font-size:10px">${PLAN_MAP[v.tipo_plan] || '-'}</span></td>
+                <td style="padding:10px 12px;text-align:center"><span class="badge-status ${v.esta_activo ? 'badge-active' : 'badge-inactive'}">${v.esta_activo ? 'Activo' : 'Inactivo'}</span></td>
+                <td style="padding:10px 12px;text-align:center"><div class="table-actions"><button class="btn-edit" onclick="openEdit('vendedores',${v.id})">Editar</button><button class="btn-delete" onclick="openDelete('vendedores',${v.id})">Eliminar</button></div></td>
+              </tr>`).join('') : `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-muted)">Sin resultados</td></tr>`}</tbody>
+          </table>
+        </div>
+      </div>`;
+    document.getElementById('search-vendedores').addEventListener('input', renderVendedores);
+  }
+
+  function renderPlanes() {
+    const container = document.getElementById('section-planes');
+    container.innerHTML = `
+      <div class="crud-header">
+        <h2>Gestión de Planes</h2>
+        <div class="crud-toolbar">
+          <button class="btn-create" onclick="openCreate('planes')">+ Nuevo Plan</button>
+        </div>
+      </div>
+      <div class="section-card">
+        <div class="admin-table-wrap">
+          <table class="dime-table">
+            <thead><tr>
+              <th style="padding:10px 12px;width:50px">ID</th>
+              <th style="padding:10px 12px">Nombre</th>
+              <th style="padding:10px 12px;text-align:right">Precio</th>
+              <th style="padding:10px 12px;text-align:right">Pub. Límite</th>
+              <th style="padding:10px 12px;text-align:right">Días Métrica</th>
+              <th style="padding:10px 12px">Descripción</th>
+              <th style="padding:10px 12px;text-align:center;width:100px">Acciones</th>
+            </tr></thead>
+            <tbody>${MOCK_PLANES.map(p => `
+              <tr>
+                <td style="padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:11px">${p.id}</td>
+                <td style="padding:10px 12px;font-weight:600;color:var(--primary)">${p.nombre_plan}</td>
+                <td style="padding:10px 12px;text-align:right;font-family:'JetBrains Mono',monospace">${p.precio_mensual === 0 ? 'Gratis' : '$' + p.precio_mensual.toFixed(2)}</td>
+                <td style="padding:10px 12px;text-align:right;font-family:'JetBrains Mono',monospace">${p.limite_publicaciones === 9999 ? '∞' : p.limite_publicaciones}</td>
+                <td style="padding:10px 12px;text-align:right;font-family:'JetBrains Mono',monospace">${p.limite_metricas_dias}</td>
+                <td style="padding:10px 12px;font-size:11px;color:var(--text-secondary)">${p.descripcion}</td>
+                <td style="padding:10px 12px;text-align:center"><div class="table-actions"><button class="btn-edit" onclick="openEdit('planes',${p.id})">Editar</button><button class="btn-delete" onclick="openDelete('planes',${p.id})">Eliminar</button></div></td>
+              </tr>`).join('')}</tbody>
+          </table>
+        </div>
+      </div>`;
+  }
+
+  function renderKpiRangos() {
+    const container = document.getElementById('section-metricas');
+    const selectedCat = (document.getElementById('select-kpi-categoria') || {}).value || 'reputacion';
+    const filtered = selectedCat === 'todas' ? MOCK_KPI_RANGES : MOCK_KPI_RANGES.filter(k => k.categoria === selectedCat);
+    const categorias = [...new Set(MOCK_KPI_RANGES.map(k => k.categoria))];
+    const catNombres = { reputacion: 'Reputación', negocio: 'Negocio', stock: 'Stock Full', publicaciones: 'Publicaciones' };
+    container.innerHTML = `
+      <div class="crud-header">
+        <h2>Configuración de Rangos KPI</h2>
+        <div class="crud-toolbar">
+          <select id="select-kpi-categoria" class="search-bar" style="width:auto;min-width:180px;cursor:pointer">
+            ${categorias.map(c => `<option value="${c}" ${selectedCat === c ? 'selected' : ''}>${catNombres[c] || c}</option>`).join('')}
+          </select>
+        </div>
+      </div>
+      ${filtered.length ? filtered.map(k => {
+        const verdeLabel = k.verde_max !== null ? `${k.verde_min}${k.unidad} – ${k.verde_max}${k.unidad}` : `≥ ${k.verde_min}${k.unidad}`;
+        const amarilloLabel = k.amarillo_max !== null ? `${k.amarillo_min}${k.unidad} – ${k.amarillo_max}${k.unidad}` : `≥ ${k.amarillo_min}${k.unidad}`;
+        const rojoLabel = k.rojo_max !== null ? `${k.rojo_min}${k.unidad} – ${k.rojo_max}${k.unidad}` : `≥ ${k.rojo_min}${k.unidad}`;
+        return `<div class="rango-card">
+          <div class="rango-card-header">
+            <div>
+              <div class="rango-card-title">${k.nombre}</div>
+              <div class="rango-card-subtitle">${k.indicador}</div>
+            </div>
+            <button class="btn-edit" onclick="openEditRango(${k.id})">Editar rangos</button>
+          </div>
+          <div class="rango-levels">
+            <span class="rango-level rango-level-verde">● Verde: ${verdeLabel}</span>
+            <span class="rango-level rango-level-amarillo">● Amarillo: ${amarilloLabel}</span>
+            <span class="rango-level rango-level-rojo">● Rojo: ${rojoLabel}</span>
+          </div>
+        </div>`;
+      }).join('') : '<p class="empty-state">No hay KPIs configurados para esta categoría.</p>'}
+      <div style="margin-top:14px;text-align:right;font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace">${MOCK_KPI_RANGES.length} indicadores configurados</div>`;
+    const sel = document.getElementById('select-kpi-categoria');
+    if (sel) sel.addEventListener('change', renderKpiRangos);
+  }
+
+  function switchSection(section) {
+    currentSection = section;
+    document.querySelectorAll('.sidebar nav .nav-btn').forEach(b => b.classList.remove('active'));
+    document.querySelector(`.sidebar nav .nav-btn[data-section="${section}"]`).classList.add('active');
+    document.querySelectorAll('.content-section').forEach(el => el.style.display = 'none');
+    document.getElementById('section-' + section).style.display = 'block';
+    const titles = { vendedores: 'Administración - Vendedores', planes: 'Administración - Planes',     metricas: 'Administración - Rangos KPI' };
+    document.getElementById('topbar-title').textContent = titles[section] || 'Administración';
+    if (section === 'vendedores') renderVendedores();
+    else if (section === 'planes') renderPlanes();
+    else if (section === 'metricas') renderKpiRangos();
+  }
+
+  function openCreate(section) {
+    editingSection = section;
+    editingEntity = null;
+    if (section === 'vendedores') openVendedorForm(null);
+    else if (section === 'planes') openPlanForm(null);
+  }
+
+  function openEdit(section, id) {
+    editingSection = section;
+    if (section === 'vendedores') { editingEntity = MOCK_VENDEDORES.find(v => v.id === id); openVendedorForm(editingEntity); }
+    else if (section === 'planes') { editingEntity = MOCK_PLANES.find(p => p.id === id); openPlanForm(editingEntity); }
+  }
+
+  function openVendedorForm(entity) {
+    const isEdit = !!entity;
+    document.getElementById('modal-title').textContent = isEdit ? 'Editar Vendedor' : 'Nuevo Vendedor';
+    const e = entity || { user_name: '', nombre_tienda: '', email: '', codigo_pais: 'AR', moneda_local: 'ARS', tipo_plan: 1, esta_activo: true };
+    document.getElementById('modal-box').className = 'modal-box';
+    document.getElementById('modal-body').innerHTML = `
+      <div class="form-grid">
+        <div class="form-group"><label>Usuario *</label><input id="f-user_name" type="text" value="${e.user_name}"></div>
+        <div class="form-group"><label>Nombre Tienda *</label><input id="f-nombre_tienda" type="text" value="${e.nombre_tienda}"></div>
+        <div class="form-group full-width"><label>Email *</label><input id="f-email" type="email" value="${e.email}"></div>
+        <div class="form-group"><label>País *</label><select id="f-codigo_pais">${PAISES.map(p => `<option value="${p.codigo}" ${e.codigo_pais === p.codigo ? 'selected' : ''}>${p.nombre}</option>`).join('')}</select></div>
+        <div class="form-group"><label>Moneda *</label><select id="f-moneda_local">${MONEDAS.map(m => `<option value="${m.codigo}" ${e.moneda_local === m.codigo ? 'selected' : ''}>${m.nombre}</option>`).join('')}</select></div>
+        <div class="form-group"><label>Plan *</label><select id="f-tipo_plan">${MOCK_PLANES.map(p => `<option value="${p.id}" ${e.tipo_plan === p.id ? 'selected' : ''}>${p.nombre_plan}</option>`).join('')}</select></div>
+        <div class="form-group"><div class="checkbox-wrap"><input id="f-esta_activo" type="checkbox" ${e.esta_activo ? 'checked' : ''}><label style="text-transform:none;letter-spacing:0;cursor:pointer">Vendedor activo</label></div></div>
+      </div>`;
+    document.getElementById('modal-overlay').style.display = 'flex';
+  }
+
+  function openPlanForm(entity) {
+    const isEdit = !!entity;
+    document.getElementById('modal-title').textContent = isEdit ? 'Editar Plan' : 'Nuevo Plan';
+    const e = entity || { nombre_plan: '', precio_mensual: 0, limite_publicaciones: 10, limite_metricas_dias: 30, descripcion: '' };
+    document.getElementById('modal-box').className = 'modal-box';
+    document.getElementById('modal-body').innerHTML = `
+      <div class="form-grid">
+        <div class="form-group full-width"><label>Nombre del Plan *</label><input id="f-nombre_plan" type="text" value="${e.nombre_plan}"></div>
+        <div class="form-group"><label>Precio Mensual *</label><input id="f-precio_mensual" type="number" step="0.01" min="0" value="${e.precio_mensual}"></div>
+        <div class="form-group"><label>Límite Publicaciones</label><input id="f-limite_publicaciones" type="number" min="0" value="${e.limite_publicaciones}"></div>
+        <div class="form-group"><label>Días de Métricas</label><input id="f-limite_metricas_dias" type="number" min="1" value="${e.limite_metricas_dias}"></div>
+        <div class="form-group full-width"><label>Descripción</label><textarea id="f-descripcion">${e.descripcion}</textarea></div>
+      </div>`;
+    document.getElementById('modal-overlay').style.display = 'flex';
+  }
+
+  function openEditRango(id) {
+    editingSection = 'metricas';
+    editingEntity = MOCK_KPI_RANGES.find(k => k.id === id);
+    if (!editingEntity) return showToast('KPI no encontrado', 'error');
+    const k = editingEntity;
+    document.getElementById('modal-title').textContent = 'Rangos: ' + k.nombre;
+    document.getElementById('modal-box').className = 'modal-box wide';
+    const row = (nivel, minVal, maxVal) => `
+      <div style="background:var(--bg);padding:12px;border-radius:var(--radius-sm);margin-bottom:10px">
+        <div style="font-size:12px;font-weight:700;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:6px">
+          <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${nivel === 'verde' ? '#10B981' : nivel === 'amarillo' ? '#F59E0B' : '#EF4444'}"></span>
+          ${nivel.charAt(0).toUpperCase() + nivel.slice(1)}
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <div class="range-input-group"><label>Mínimo</label><input id="f-${nivel}-min" type="number" step="0.01" value="${minVal !== null && minVal !== undefined ? minVal : ''}" placeholder="0"></div>
+          <div class="range-input-group"><label>Máximo</label><input id="f-${nivel}-max" type="number" step="0.01" value="${maxVal !== null && maxVal !== undefined ? maxVal : ''}" placeholder="∞"><span>${k.unidad}</span></div>
+        </div>
+      </div>`;
+    document.getElementById('modal-body').innerHTML = `
+      <div style="margin-bottom:14px">
+        <p style="font-size:14px;font-weight:700;color:var(--primary)">${k.nombre}</p>
+        <p style="font-size:11px;color:var(--text-muted);font-family:'JetBrains Mono',monospace">${k.categoria_nombre} · ${k.indicador}</p>
+      </div>
+      ${row('verde', k.verde_min, k.verde_max)}
+      ${row('amarillo', k.amarillo_min, k.amarillo_max)}
+      ${row('rojo', k.rojo_min, k.rojo_max)}`;
+    document.getElementById('modal-overlay').style.display = 'flex';
+  }
+
+  function saveEntity() {
+    if (editingSection === 'vendedores') saveVendedor();
+    else if (editingSection === 'planes') savePlan();
+    else if (editingSection === 'metricas') saveRango();
+  }
+
+  function saveVendedor() {
+    const data = {
+      user_name: document.getElementById('f-user_name').value.trim(),
+      nombre_tienda: document.getElementById('f-nombre_tienda').value.trim(),
+      email: document.getElementById('f-email').value.trim(),
+      codigo_pais: document.getElementById('f-codigo_pais').value,
+      moneda_local: document.getElementById('f-moneda_local').value,
+      tipo_plan: parseInt(document.getElementById('f-tipo_plan').value),
+      esta_activo: document.getElementById('f-esta_activo').checked
+    };
+    if (!data.user_name || !data.nombre_tienda || !data.email) { showToast('Completa los campos obligatorios', 'error'); return; }
+    if (editingEntity) {
+      Object.assign(editingEntity, data);
+      showToast('Vendedor actualizado', 'success');
+    } else {
+      data.id = nextVendedorId++;
+      data.fecha_creacion = new Date().toISOString().split('T')[0];
+      MOCK_VENDEDORES.push(data);
+      showToast('Vendedor creado', 'success');
+    }
+    closeModal();
+    renderVendedores();
+  }
+
+  function savePlan() {
+    const data = {
+      nombre_plan: document.getElementById('f-nombre_plan').value.trim(),
+      precio_mensual: parseFloat(document.getElementById('f-precio_mensual').value) || 0,
+      limite_publicaciones: parseInt(document.getElementById('f-limite_publicaciones').value) || 0,
+      limite_metricas_dias: parseInt(document.getElementById('f-limite_metricas_dias').value) || 30,
+      descripcion: document.getElementById('f-descripcion').value.trim()
+    };
+    if (!data.nombre_plan) { showToast('El nombre del plan es obligatorio', 'error'); return; }
+    if (editingEntity) {
+      Object.assign(editingEntity, data);
+      showToast('Plan actualizado', 'success');
+    } else {
+      data.id = nextPlanId++;
+      MOCK_PLANES.push(data);
+      showToast('Plan creado', 'success');
+    }
+    closeModal();
+    renderPlanes();
+  }
+
+  function saveRango() {
+    const k = editingEntity;
+    if (!k) return;
+    const verdeMin = document.getElementById('f-verde-min');
+    const verdeMax = document.getElementById('f-verde-max');
+    const amarilloMin = document.getElementById('f-amarillo-min');
+    const amarilloMax = document.getElementById('f-amarillo-max');
+    const rojoMin = document.getElementById('f-rojo-min');
+    const rojoMax = document.getElementById('f-rojo-max');
+    if (!verdeMin || !verdeMax || !amarilloMin || !amarilloMax || !rojoMin || !rojoMax) return;
+    k.verde_min = verdeMin.value !== '' ? Number(verdeMin.value) : 0;
+    k.verde_max = verdeMax.value !== '' ? Number(verdeMax.value) : null;
+    k.amarillo_min = amarilloMin.value !== '' ? Number(amarilloMin.value) : 0;
+    k.amarillo_max = amarilloMax.value !== '' ? Number(amarilloMax.value) : null;
+    k.rojo_min = rojoMin.value !== '' ? Number(rojoMin.value) : 0;
+    k.rojo_max = rojoMax.value !== '' ? Number(rojoMax.value) : null;
+    showToast('Rangos actualizados correctamente', 'success');
+    closeModal();
+    renderKpiRangos();
+  }
+
+  function openDelete(section, id) {
+    deleteTarget = { section, id };
+    const labels = { vendedores: 'vendedor', planes: 'plan' };
+    const name = section === 'vendedores' ? (MOCK_VENDEDORES.find(v => v.id === id) || {}).user_name : (MOCK_PLANES.find(p => p.id === id) || {}).nombre_plan;
+    document.getElementById('delete-msg').textContent = `¿Estás seguro de eliminar ${labels[section] || 'entidad'} "${name || id}"? Esta acción no se puede deshacer.`;
+    document.getElementById('delete-modal').style.display = 'flex';
+  }
+
+  function confirmDelete() {
+    if (!deleteTarget) return;
+    const { section, id } = deleteTarget;
+    if (section === 'vendedores') {
+      MOCK_VENDEDORES = MOCK_VENDEDORES.filter(v => v.id !== id);
+      showToast('Vendedor eliminado', 'success');
+      closeDeleteModal();
+      renderVendedores();
+    } else if (section === 'planes') {
+      MOCK_PLANES = MOCK_PLANES.filter(p => p.id !== id);
+      showToast('Plan eliminado', 'success');
+      closeDeleteModal();
+      renderPlanes();
+    }
+    deleteTarget = null;
+  }
+
+  function closeModal() { document.getElementById('modal-overlay').style.display = 'none'; editingEntity = null; editingSection = null; }
+  function closeDeleteModal() { document.getElementById('delete-modal').style.display = 'none'; deleteTarget = null; }
+
+  document.getElementById('user-profile-button').addEventListener('click', function(e) {
+    e.stopPropagation();
+    const m = document.getElementById('profile-dropdown-menu');
+    m.style.display = m.style.display === 'none' ? 'block' : 'none';
+  });
+  document.addEventListener('click', () => {
+    const m = document.getElementById('profile-dropdown-menu');
+    if (m.style.display !== 'none') m.style.display = 'none';
+  });
+  document.getElementById('btn-signout').addEventListener('click', () => { localStorage.clear(); sessionStorage.clear(); window.location.href = '/'; });
+
+  document.querySelectorAll('.sidebar nav .nav-btn').forEach(btn => {
+    btn.addEventListener('click', function() { switchSection(this.dataset.section); });
+  });
+
+  switchSection('vendedores');
+</script>
+</body>
+</html>
