@@ -1,12 +1,14 @@
 const API_URL = "http://127.0.0.1:8000/api";
 
-function clearErrors() {
+function clearErrors() 
+{
     document.querySelectorAll('.form-group').forEach(g => g.classList.remove('error'));
     document.querySelectorAll('.field-error').forEach(e => { e.textContent = ''; e.classList.remove('visible'); });
     document.getElementById('mensaje').style.display = 'none';
 }
 
-function showFieldError(fieldId) {
+function showFieldError(fieldId) 
+{
     const group = document.getElementById(fieldId + '-group');
     if (group) group.classList.add('error');
 }
@@ -21,14 +23,18 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
     const mensajeDiv = document.getElementById('mensaje');
     let hasError = false;
 
-    if (!email) {
+    if (!email) 
+    {
         showFieldError('email');
         hasError = true;
     }
-    if (!password) {
+
+    if (!password) 
+    {
         showFieldError('password');
         hasError = true;
     }
+
     if (hasError) return;
 
     try 
@@ -36,18 +42,16 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         const response = await fetch(`${API_URL}/auth/login`, {
             method: 'POST',
             headers: {
+
                 'Content-Type': 'application/json'
             },
+
             body: JSON.stringify({ email, password })
         });
 
         if (response.ok) 
         {
             const data = await response.json().catch(() => ({}));
-            mensajeDiv.style.display = 'block';
-            mensajeDiv.style.color = "green";
-            mensajeDiv.innerText = "¡Éxito! Redirigiendo...";
-
             if (data && data.access_token) localStorage.setItem('token', data.access_token);
             window.location.href = '/me/dashboard';
         } 
@@ -58,7 +62,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             showFieldError('password');
             mensajeDiv.style.display = 'block';
             mensajeDiv.style.color = "red";
-            mensajeDiv.innerText = 'Credenciales Inválidas *';
+            mensajeDiv.innerText = 'Credenciales Inválidas. *';
         }
 
     } 

@@ -8,7 +8,7 @@ from schemas import DashboardResponse
 
 router = APIRouter()
 
-@router.get("", response_model=DashboardResponse)
+@router.get("/dashboard", response_model=DashboardResponse)
 def dashboard(db: Session = Depends(get_db), current_user: Vendedor = Depends(get_current_user)):
 
     try:

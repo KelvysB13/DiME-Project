@@ -12,7 +12,7 @@ PAGE_ROUTES = {
     "/auth/login": "login.html",
     "/me/dashboard": "user_dashboard.html",
     "/me/settings": "user_settings.html",
-    "/qa": "qa.html",
+    "/faq": "faq.html",
 }
 
 def _make_route(file: str):

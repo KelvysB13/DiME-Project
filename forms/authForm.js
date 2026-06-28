@@ -8,13 +8,12 @@ async function renovarAccessToken()
     if (!refreshTokenActual) 
     {
         // No hay forma de renovar, hay que mandarlo al login
-        window.location.href = 'login.html';
+        window.location.href = '/auth/login';
         return null;
     }
 
     try 
     {
-        // 2. Enviar la solicitud cumpliendo con TokenRequest
         const response = await fetch(`${API_URL}/auth/refresh`, {
             method: 'POST',
             headers: {
@@ -29,20 +28,15 @@ async function renovarAccessToken()
 
         if (response.ok) 
         {
-            // 3. Procesar TokenResponse
-            // access_token, token_type ("bearer"), expires_in
             localStorage.setItem('token', data.access_token);
-            console.log(`Token renovado. Expira en: ${data.expires_in} segundos.`);
-            
             return data.access_token;
         } 
 
         else 
         {
-            // Si el refresh_token también expiró o es inválido
             console.error("El refresh token no es válido:", data.detail);
-            localStorage.clear(); // Limpia sesión antigua
-            window.location.href = 'login.html';
+            localStorage.clear();
+            window.location.href = '/auth/login';
             return null;
         }
 
