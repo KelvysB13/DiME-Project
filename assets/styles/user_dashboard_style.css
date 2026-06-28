@@ -1006,3 +1006,16 @@ a { text-decoration: none; color: inherit; }
   font-family: 'JetBrains Mono', monospace;
   font-size: 12px;
 }
+
+/* Estilos para la vista de Plan de Acción */
+.alert-card {
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-light);
+  margin-bottom: 10px;
+  display: flex;
+  gap: 10px;
+  font-size: 12px;
+}
+.alert-high { border-left: 4px solid var(--danger); background: rgba(239, 68, 68, 0.05); }
+.alert-medium { border-left: 4px solid var(--warning); background: rgba(245, 158, 11, 0.05); }

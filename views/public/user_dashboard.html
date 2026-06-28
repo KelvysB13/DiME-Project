@@ -23,6 +23,8 @@
       "instanceUrl": "http://localhost:3000"
     });
   </script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
 
@@ -54,7 +56,7 @@
           <span class="icon-placeholder">◉</span>
           <span>Diagnóstico</span>
         </button>
-        <button class="nav-btn" onclick="window.location.href='plan_accion.html'">
+        <button class="nav-btn" data-view="view-plan">
           <span class="icon-placeholder">↗</span>
           <span>Plan de acción</span>
         </button>
@@ -241,11 +243,21 @@
           <div id="view-plan" class="content-view">
             <div class="section-card">
               <h2 style="font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">Plan de Acción Estratégico</h2>
-              <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5;">
-                Próximamente se desplegará aquí la hoja de ruta automatizada basada en las debilidades críticas detectadas por el sistema.
-              </p>
+    
+          <div id="action-plan-empty">
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">
+               Nuestro algoritmo auditará tu salud de reputación, rendimiento de publicaciones e inventario para generar una hoja de ruta priorizada.
+            </p>
+          <button id="btn-generate-plan" class="btn-retry" style="background-color: var(--primary); color: #fff;">
+           Generar plan de acción ⚡
+          </button>
+         </div>
+
+          <div id="action-plan-results" style="display: none; margin-top: 20px;">
+            <div class="space-y-4"></div>
             </div>
           </div>
+      </div>
 
           <div id="view-dudas" class="content-view">
             <div class="section-card">
@@ -657,6 +669,105 @@
           </div>`;
       }
     }
+
+    // ====================================================================
+    // LÓGICA INTEGRADA: Generador de Plan de Acción 
+    // ====================================================================
+
+// 1. Pre-cargar el logo en memoria
+const logoDime = new Image();
+logoDime.src = '/assets/images/DiME_Logo_Inverso.png'; // Asegúrate de que esta ruta sea correcta desde la raíz
+
+// 2. Motor de Diagnóstico (Lógica de Negocio)
+function generarDiagnostico(seller) {
+    const tareas = [];
+    if (seller.reputacion.total_reclamos > 10) {
+        tareas.push({ area: "Reputación y Calidad", kpi: "Tasa de Reclamos", prioridad: "Urgente", emoji: "🔴", colorRGB: [239, 68, 68], accion: "Auditar la causa raíz de los reclamos recientes y pausar publicaciones con problemas recurrentes." });
+    }
+    if (seller.stock.productos_sin_rotacion > 5) {
+        tareas.push({ area: "Stock Full", kpi: "Sin Rotación", prioridad: "Urgente", emoji: "🔴", colorRGB: [239, 68, 68], accion: "Auditar catálogo para liquidar o retirar SKUs sin rotación." });
+    }
+    if (seller.stock.puntaje_calidad < 80) {
+        tareas.push({ area: "Calidad", kpi: "Puntaje de Calidad", prioridad: "Preventiva", emoji: "🟡", colorRGB: [245, 158, 11], accion: "Revisar fichas técnicas y multimedia de SKUs con bajo puntaje." });
+    }
+    return tareas;
+}
+
+// 3. Listener del Botón (Integrado en el Dashboard)
+document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('click', function(e) {
+        if (e.target && e.target.id === 'btn-generate-plan') {
+            const btn = e.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = 'Generando plan... ⏳';
+            
+            const seller = MOCK_SELLERS[state.selectedSellerId];
+            const planDeAccion = generarDiagnostico(seller);
+
+            setTimeout(() => {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                const primaryColor = [3, 28, 60];
+
+                // HEADER PROFESIONAL
+                doc.setFillColor(...primaryColor);
+                doc.rect(0, 0, 210, 28, 'F');
+                try { doc.addImage(logoDime, 'PNG', 15, 8, 38, 12); } catch(e) { doc.text("DiME", 15, 18); }
+                doc.setFont("helvetica", "normal");
+                doc.setTextColor(200, 200, 200);
+                doc.text("Hoja de Ruta Estratégica", 60, 17);
+
+                // METADATA
+                doc.setTextColor(0, 0, 0);
+                doc.setFontSize(11);
+                doc.setFont("helvetica", "bold");
+                doc.text("Cuenta Auditada:", 15, 45);
+                doc.setFont("helvetica", "normal");
+                doc.text(seller.nombre_tienda, 50, 45);
+                doc.text(new Date().toLocaleDateString('es-ES'), 175, 45);
+                doc.line(15, 52, 195, 52);
+
+                // CUERPO DE TAREAS
+                let y = 65;
+                planDeAccion.forEach((tarea) => {
+                    if (y > 260) { doc.addPage(); y = 30; }
+                    doc.setFillColor(...tarea.colorRGB);
+                    doc.circle(18, y - 1.5, 3, 'F');
+                    doc.setFont("helvetica", "bold");
+                    doc.setTextColor(...primaryColor);
+                    doc.text(`${tarea.area}: ${tarea.kpi}`, 25, y);
+                    doc.setFontSize(9);
+                    doc.text(`[ ${tarea.prioridad.toUpperCase()} ]`, 195, y, { align: "right" });
+                    y += 7;
+                    doc.setFont("helvetica", "normal");
+                    doc.setTextColor(70, 70, 70);
+                    const lineas = doc.splitTextToSize(tarea.accion, 160);
+                    doc.text(lineas, 25, y);
+                    y += (lineas.length * 5) + 12;
+                });
+
+                // FOOTER
+                const pageCount = doc.internal.getNumberOfPages();
+                for(let i = 1; i <= pageCount; i++) {
+                    doc.setPage(i);
+                    doc.setTextColor(150, 150, 150);
+                    doc.text("Generado por DiME Dashboard", 15, 290);
+                }
+
+                window.open(URL.createObjectURL(doc.output('blob')), '_blank');
+                
+                // Actualizar interfaz web
+                btn.innerHTML = originalText;
+                document.getElementById('action-plan-results').style.display = 'block';
+                document.querySelector('#action-plan-results .space-y-4').innerHTML = planDeAccion.map(t => `
+                    <div class="alert-card ${t.prioridad === 'Urgente' ? 'alert-high' : 'alert-medium'}">
+                        <span>${t.emoji}</span>
+                        <div><strong>${t.kpi}</strong><br>${t.accion}</div>
+                    </div>`).join('');
+            }, 1000);
+        }
+    });
+});
 
     // ====================================================================
     // 7. LISTENERS DE NAVEGACIÓN SPA & CLICKS GENERALES
