@@ -54,7 +54,7 @@
           <span class="icon-placeholder">◉</span>
           <span>Diagnóstico</span>
         </button>
-        <button class="nav-btn" data-view="view-plan">
+        <button class="nav-btn" onclick="window.location.href='plan_accion.html'">
           <span class="icon-placeholder">↗</span>
           <span>Plan de acción</span>
         </button>
@@ -271,7 +271,7 @@
     // 1. CONFIG
     // ====================================================================
     const apiBase = '';
-    const PLAN_MAP = { 1: 'Gratuito', 2: 'Pro', 3: 'Enterprise' };
+    const PLAN_MAP = { 1: 'Gratuito', 2: 'Basico', 3: 'Premium' };
     let state = {
       selectedSellerId: null,
       sellers: {},

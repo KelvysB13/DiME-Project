@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DiME | Plan de Acción Estratégico</title>
+  
+  <link rel="icon" href="../../assets/icons/favicon.ico">
+
+  <!-- Tipografías -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+
+
+  <link rel="stylesheet" href="../../assets/styles/user_dashboard_style.css">
+  
+  <!-- Enlace al NUEVO CSS específico de esta vista -->
+  <link rel="stylesheet" href="../../assets/styles/plan_accion_style.css">
+  <!-- Librería para generar PDFs en el frontend (Temporal para Mockup) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+  <div class="flex min-h-screen">
+
+    <!-- ==========================================
+         SIDEBAR 
+         ========================================== -->
+    <aside class="sidebar">
+      <div class="logo-area">
+        <div class="relative dime-logo" style="width:32px;height:32px">
+          <div class="dime-logo-dot"></div>
+          <div class="dime-logo-bars" style="width:16px;height:12px">
+            <div style="width:3px;height:4px"></div>
+            <div style="width:3px;height:8px"></div>
+            <div style="width:3px;height:6px"></div>
+          </div>
+        </div>
+        <div>
+          <h2>DiME</h2>
+          <p>Cerebro Estratégico</p>
+        </div>
+      </div>
+
+      <nav>
+        <button class="nav-btn" onclick="window.location.href='user_dashboard.html'">
+          <span class="icon-placeholder">⌂</span>
+          <span>Inicio</span>
+        </button>
+        <!-- Pestaña Activa -->
+        <button class="nav-btn active">
+          <span class="icon-placeholder">↗</span>
+          <span>Plan de acción</span>
+        </button>
+        <button class="nav-btn" onclick="window.location.href='qa.html'">
+          <span class="icon-placeholder">✉</span>
+          <span>Dudas frecuentes</span>
+        </button>
+        <button class="nav-btn" onclick="window.location.href='user_settings.html'">
+          <span class="icon-placeholder">⚙</span>
+          <span>Configuración</span>
+        </button>
+      </nav>
+    </aside>
+
+    <!-- ==========================================
+         MAIN CONTENT
+         ========================================== -->
+    <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
+
+      <!-- TOPBAR -->
+      <header class="topbar">
+        <div>
+          <h1 class="topbar-title">Plan de Acción Estratégico</h1>
+          <p class="topbar-subtitle">Hoja de ruta basada en tus métricas actuales</p>
+        </div>
+        
+        <div class="flex items-center gap-4">
+          <!-- Botón de regreso usando estilo ghost -->
+          <button class="btn-ghost flex items-center gap-2" onclick="window.location.href='user_dashboard.html'">
+            <span>←</span> Volver al tablero
+          </button>
+        </div>
+      </header>
+
+      <!-- ÁREA DE CONTENIDO -->
+      <div class="flex-1 p-5" style="max-width:1000px; margin:0 auto; width:100%">
+        
+        <div class="section-card">
+          
+          <!-- ESTADO INICIAL (VACÍO) -->
+          <div id="action-plan-empty" class="empty-state-container">
+            <div class="empty-state-icon">
+              🎯
+            </div>
+            <h2 style="font-size: 22px; font-weight: 800; color: var(--primary); margin-bottom: 12px;">Optimiza tu e-commerce hoy</h2>
+            <p style="font-size: 14px; color: var(--text-secondary); max-width: 600px; margin-bottom: 32px; line-height: 1.6;">
+              Nuestro algoritmo auditará tu salud de reputación, el rendimiento de tus publicaciones y tu inventario en FULL para generar una lista de tareas concretas, priorizadas por impacto financiero.
+            </p>
+            
+            <!-- EL BOTÓN AZUL OSCURO SOLICITADO -->
+            <button id="btn-generate-plan" class="btn-action-primary">
+              Generar plan de acción <span>⚡</span>
+            </button>
+          </div>
+
+          <!-- CONTENEDOR DE RESULTADOS (Oculto por defecto) -->
+          <div id="action-plan-results" style="display: none;">
+            <div class="flex justify-between items-center" style="border-bottom: 1px solid var(--border-light); padding-bottom: 16px; margin-bottom: 24px;">
+              <div>
+                <h3 style="font-size: 18px; font-weight: 700; color: var(--primary);">Tareas Pendientes</h3>
+                <p style="font-size: 12px; color: var(--text-secondary); margin-top: 4px;">Última actualización: Hoy</p>
+              </div>
+              <span class="badge badge-yellow" style="font-size: 12px; padding: 6px 12px;">3 Tareas Críticas</span>
+            </div>
+            
+            <!-- Aquí el backend renderizará las alertas (Ejemplo visual) -->
+            <div class="space-y-4">
+              <div class="alert-card alert-high" style="padding: 16px; font-size: 13px;">
+                <span style="font-size: 16px;">🔴</span>
+                <div>
+                  <strong style="display: block; margin-bottom: 4px;">Riesgo de stock muerto</strong>
+                  <span style="color: var(--text-secondary);">Tienes 3 productos en FULL sin rotación desde hace más de 90 días. Crea una campaña de descuentos para liberar espacio.</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- SCRIPT PARA SIMULAR LA CARGA -->
+  <script>
+    // 1. Pre-cargar el logo en memoria para evitar retrasos al generar el PDF
+    const logoDime = new Image();
+    // Ajusta los '../' según la profundidad real de tu carpeta si es necesario
+    logoDime.src = '../../assets/images/DiME_Logo_Inverso.png';
+
+    // 2. Datos simulados del vendedor
+    const mockSeller = {
+      nombre_tienda: "TecnoHogar S.A.",
+      reputacion: { tasa_reclamos: 2.8, nivel: "Rojo" },
+      stock_full: { dead_stock: 3.5 },
+      calidad: { fotos: 2 }
+    };
+
+    // 3. Motor de Diagnóstico Simulado
+    function generarDiagnostico(seller) {
+      const tareas = [];
+
+      if (seller.reputacion.tasa_reclamos > 2.5) {
+        tareas.push({
+          area: "Reputacion y Calidad",
+          kpi: "Tasa de Reclamos",
+          prioridad: "Urgente",
+          emoji: "🔴",
+          colorRGB: [239, 68, 68],
+          accion: "Auditar la causa raiz de los reclamos mas recientes (producto, despacho, comunicacion) y pausar publicaciones con reclamos recurrentes mientras se corrige el origen." 
+        });
+      } else if (seller.reputacion.tasa_reclamos >= 1.25) {
+        tareas.push({
+          area: "Reputacion y Calidad",
+          kpi: "Tasa de Reclamos",
+          prioridad: "Preventiva",
+          emoji: "🟡",
+          colorRGB: [245, 158, 11],
+          accion: "Revisar las ultimas 20 ordenes con reclamo para identificar un patron comun antes de que el indicador escale." 
+        });
+      }
+
+      if (seller.stock_full.dead_stock > 2) {
+        tareas.push({
+          area: "Stock Full",
+          kpi: "Productos Sin Rotacion",
+          prioridad: "Urgente",
+          emoji: "🔴",
+          colorRGB: [239, 68, 68],
+          accion: "Auditar de inmediato el catalogo para definir que SKUs liquidar, promocionar o retirar de Full." 
+        });
+      }
+
+      if (seller.calidad.fotos <= 2) {
+        tareas.push({
+          area: "Calidad de Publicacion",
+          kpi: "Cobertura de Fotos",
+          prioridad: "Urgente",
+          emoji: "🔴",
+          colorRGB: [239, 68, 68],
+          accion: "Subir de inmediato minimo 5 fotos profesionales; es el cambio de mayor impacto y menor costo disponible en todo el catalogo." 
+        });
+      }
+
+      return tareas;
+    }
+
+    // 4. Generación del PDF Estilizado y UX
+    document.addEventListener('DOMContentLoaded', () => {
+      const btnGenerate = document.getElementById('btn-generate-plan');
+      const emptyState = document.getElementById('action-plan-empty');
+      const resultsContainer = document.getElementById('action-plan-results');
+
+      btnGenerate.addEventListener('click', () => {
+        const originalText = btnGenerate.innerHTML;
+        btnGenerate.innerHTML = 'Compilando reporte... ⏳';
+        btnGenerate.style.opacity = '0.8';
+        btnGenerate.style.cursor = 'wait';
+
+        setTimeout(() => {
+          const planDeAccion = generarDiagnostico(mockSeller);
+
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF();
+          const primaryColor = [3, 28, 60];
+
+          // ==========================================
+          // HEADER PROFESIONAL CON LOGO
+          // ==========================================
+          doc.setFillColor(...primaryColor);
+          doc.rect(0, 0, 210, 28, 'F');
+
+          // Incrustar el logo (x: 15, y: 8, ancho: 38, alto: 12)
+          // Estas medidas mantienen la proporción original de tu imagen
+          try {
+            doc.addImage(logoDime, 'PNG', 15, 8, 38, 12);
+          } catch (error) {
+            console.warn("No se pudo cargar el logo. Verifica la ruta de la imagen.");
+            // Fallback en caso de que la ruta de la imagen falle localmente
+            doc.setTextColor(255, 255, 255);
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(22);
+            doc.text("DiME", 15, 19);
+          }
+
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(12);
+          doc.setTextColor(200, 200, 200);
+          doc.text("Hoja de Ruta Estratégica", 60, 17); // Desplazado a la derecha para no pisar el logo
+
+          // ==========================================
+          // METADATA DEL DIAGNÓSTICO
+          // ==========================================
+          doc.setTextColor(0, 0, 0);
+          doc.setFontSize(11);
+          
+          doc.setFont("helvetica", "bold");
+          doc.text("Cuenta Auditada:", 15, 45);
+          doc.setFont("helvetica", "normal");
+          doc.text(mockSeller.nombre_tienda, 50, 45);
+
+          doc.setFont("helvetica", "bold");
+          doc.text("Fecha de Emisión:", 135, 45);
+          doc.setFont("helvetica", "normal");
+          doc.text(new Date().toLocaleDateString('es-ES'), 175, 45);
+
+          doc.setLineWidth(0.3);
+          doc.setDrawColor(200, 200, 200);
+          doc.line(15, 52, 195, 52);
+
+          // ==========================================
+          // CUERPO: BUCLE DE TAREAS
+          // ==========================================
+          let y = 65;
+          
+          planDeAccion.forEach((tarea) => {
+            if (y > 260) {
+              doc.addPage();
+              y = 30;
+            }
+
+            doc.setFillColor(...tarea.colorRGB);
+            doc.circle(18, y - 1.5, 3, 'F');
+
+            doc.setFont("helvetica", "bold");
+            doc.setFontSize(12);
+            doc.setTextColor(...primaryColor);
+            doc.text(`${tarea.area}: ${tarea.kpi}`, 25, y);
+
+            doc.setFontSize(9);
+            doc.setTextColor(...tarea.colorRGB);
+            doc.text(`[ ${tarea.prioridad.toUpperCase()} ]`, 195, y, { align: "right" });
+
+            y += 7;
+            doc.setFont("helvetica", "normal");
+            doc.setFontSize(10);
+            doc.setTextColor(70, 70, 70);
+            const lineasAccion = doc.splitTextToSize(tarea.accion, 160);
+            doc.text(lineasAccion, 25, y);
+            
+            y += (lineasAccion.length * 5) + 12;
+
+            doc.setDrawColor(240, 240, 240);
+            doc.line(25, y - 6, 195, y - 6);
+          });
+
+          // ==========================================
+          // FOOTER
+          // ==========================================
+          const pageCount = doc.internal.getNumberOfPages();
+          for(let i = 1; i <= pageCount; i++) {
+            doc.setPage(i);
+            doc.setFont("helvetica", "italic");
+            doc.setFontSize(8);
+            doc.setTextColor(150, 150, 150);
+            doc.text("Generado por DiME Dashboard | Centro de Estrategia Automática", 15, 290);
+            doc.text(`Página ${i} de ${pageCount}`, 195, 290, { align: "right" });
+          }
+
+          // Renderizar en el DOM
+          const listadoResultados = document.querySelector('.space-y-4');
+          listadoResultados.innerHTML = planDeAccion.map(tarea => `
+            <div class="alert-card ${tarea.prioridad === 'Urgente' ? 'alert-high' : 'alert-medium'}" style="padding: 16px; font-size: 13px;">
+              <span style="font-size: 16px;">${tarea.emoji}</span>
+              <div>
+                <strong style="display: block; margin-bottom: 4px;">${tarea.kpi}</strong>
+                <span style="color: var(--text-secondary);">${tarea.accion}</span>
+              </div>
+            </div>
+          `).join('');
+          
+          document.querySelector('.badge-yellow').textContent = `${planDeAccion.length} Tareas Críticas`;
+
+          // Generar PDF
+          const pdfBlob = doc.output('blob');
+          const pdfUrl = URL.createObjectURL(pdfBlob);
+          window.open(pdfUrl, '_blank');
+
+          // Restaurar estado del botón
+          btnGenerate.innerHTML = originalText;
+          btnGenerate.style.opacity = '1';
+          btnGenerate.style.cursor = 'pointer';
+          
+          emptyState.style.display = 'none';
+          resultsContainer.style.display = 'block';
+          resultsContainer.style.animation = 'fadeIn 0.4s ease-out';
+          
+        }, 1200);
+      });
+    });
+  </script>
+</body>
+</html>
