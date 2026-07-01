@@ -10,6 +10,7 @@ PAGE_ROUTES = {
 
     "/": "home.html",
     "/auth/login": "login.html",
+    "/auth/register": "user_createNew.html",
     "/me/dashboard": "user_dashboard.html",
     "/me/settings": "user_settings.html",
     "/faq": "faq.html",

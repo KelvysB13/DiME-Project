@@ -987,19 +987,4 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_stock_vendedor
     ON mv_diagnostico_stock (id);
 
 
--- Borrar las tablas(General)
-    DROP TABLE IF EXISTS 
-    metrica_calidad_publicacion, 
-    rendimiento_publicacion, 
-    metrica_mi_pagina, 
-    metrica_stock_full, 
-    metrica_costo, 
-    metrica_negocio, 
-    metrica_reputacion, 
-    reporte_diagnostico, 
-    publicacion, 
-    vendedor, 
-    plan, 
-    moneda, 
-    pais 
-CASCADE;
+-- Las tablas se crean con CREATE TABLE IF NOT EXISTS al inicio del script
