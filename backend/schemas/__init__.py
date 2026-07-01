@@ -11,6 +11,14 @@ from schemas.dashboard_schema import (
     PaginaInfo,
     PublicacionResumen,
 )
+from schemas.diagnostico_schema import (
+    MvDiagnosticoReputacion,
+    MvDiagnosticoFinanzas,
+    MvDiagnosticoAds,
+    MvDiagnosticoStock,
+    MvDiagnosticoPublicaciones,
+    MetricaCalidadPublicacion,
+)
 
 __all__ = [
     "LoginRequest",
@@ -25,4 +33,10 @@ __all__ = [
     "PublicacionResumen",
     "PersonalDataResponse",
     "RegisterRequest",
+    "MvDiagnosticoReputacion",
+    "MvDiagnosticoFinanzas",
+    "MvDiagnosticoAds",
+    "MvDiagnosticoStock",
+    "MvDiagnosticoPublicaciones",
+    "MetricaCalidadPublicacion",
 ]
