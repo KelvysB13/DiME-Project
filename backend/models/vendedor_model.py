@@ -22,7 +22,7 @@ class Vendedor(Base):
 
     email = Column(String(255), nullable=False, unique=True)
 
-    password = Column(String(255), nullable=False)
+    password_hash = Column("password_hash", String(255), nullable=False, server_default="")
 
     access_token = Column(Text)
 

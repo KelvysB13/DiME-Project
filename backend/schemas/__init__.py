@@ -9,6 +9,7 @@ from schemas.dashboard_schema import (
     PaginaInfo,
     PublicacionResumen,
 )
+from schemas.logout_schema import LogoutResponse
 
 __all__ = [
     "LoginRequest",
@@ -21,4 +22,5 @@ __all__ = [
     "StockInfo",
     "PaginaInfo",
     "PublicacionResumen",
+    "LogoutResponse",
 ]

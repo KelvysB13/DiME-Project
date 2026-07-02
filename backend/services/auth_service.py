@@ -14,7 +14,7 @@ def login(db: Session, payload: LoginRequest) -> TokenResponse:
 
     vendedor = db.query(Vendedor).filter(Vendedor.email == payload.email).first()
 
-    if not vendedor or not verify_password(payload.password.get_secret_value(), vendedor.password):
+    if not vendedor or not verify_password(payload.password.get_secret_value(), vendedor.password_hash):
         raise InvalidCredentialsError()
 
     if not vendedor.esta_activo:
@@ -22,3 +22,10 @@ def login(db: Session, payload: LoginRequest) -> TokenResponse:
 
     access_token = create_access_token(data={"sub": str(vendedor.id_vendedor)})
     return TokenResponse(access_token=access_token, token_type="bearer", expires_in=3600)
+
+def logout(db: Session, vendedor: Vendedor) -> None:
+
+    vendedor.access_token = None
+    vendedor.refresh_token = None
+    vendedor.tiempo_token = None
+    db.commit()
