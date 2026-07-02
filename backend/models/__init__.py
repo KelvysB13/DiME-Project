@@ -12,6 +12,11 @@ from models.metrica_stock_model import Stock
 from models.metrica_pagina_model import Pagina
 from models.rendimiento_model import Rendimiento
 from models.metrica_calidad_model import Calidad
+from models.mv_diagnostico_reputacion import DiagnosticoReputacion
+from models.mv_diagnostico_finanzas import DiagnosticoFinanzas
+from models.mv_diagnostico_ads import DiagnosticoAds
+from models.mv_diagnostico_stock import DiagnosticoStock
+from models.mv_diagnostico_publicaciones import DiagnosticoPublicaciones
 
 __all__ = [
     "Base",
@@ -28,4 +33,9 @@ __all__ = [
     "Pagina",
     "Rendimiento",
     "Calidad",
+    "DiagnosticoReputacion",
+    "DiagnosticoFinanzas",
+    "DiagnosticoAds",
+    "DiagnosticoStock",
+    "DiagnosticoPublicaciones",
 ]
