@@ -1,4 +1,4 @@
-﻿from services.auth_service import login, InvalidCredentialsError, InactiveAccountError
+﻿from services.auth_service import login, logout, InvalidCredentialsError, InactiveAccountError, InvalidTokenError
 from services.dashboard_service import get_dashboard
 from services.personal_data_service import get_personal_data, UserNotFoundError
 from services.register_service import register, EmailAlreadyExistsError
@@ -13,8 +13,10 @@ from services.diagnostico_service import (
 
 __all__ = [
     "login",
+    "logout",
     "InvalidCredentialsError",
     "InactiveAccountError",
+    "InvalidTokenError",
     "get_dashboard",
     "get_personal_data",
     "UserNotFoundError",

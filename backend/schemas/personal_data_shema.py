@@ -1,7 +1,6 @@
 from typing import Optional
 from pydantic import BaseModel, Field
 
-
 class PersonalDataResponse(BaseModel):
 
     nombre_tienda: str = Field(..., min_length=1, max_length=100, description="Nombre de la tienda")

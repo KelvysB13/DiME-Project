@@ -7,7 +7,6 @@ from schemas import PersonalDataResponse
 class UserNotFoundError(Exception):
     pass
 
-
 def get_personal_data(db: Session, vendedor_id: int) -> PersonalDataResponse:
 
     vendedor = db.query(Vendedor).filter(Vendedor.id_vendedor == vendedor_id).first()
