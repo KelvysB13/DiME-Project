@@ -8,6 +8,6 @@ from api.diagnostico_router import router as diagnostico_router
 api_router = APIRouter()
 api_router.include_router(auth_router, prefix="/auth", tags=["Autenticacion"])
 api_router.include_router(dashboard_router, prefix="", tags=["Dashboard"])
-api_router.include_router(personal_data_router, prefix="/auth", tags=["Autenticacion"])
+api_router.include_router(personal_data_router, prefix="", tags=["Datos Personales"])
 api_router.include_router(register_router, prefix="/auth", tags=["Autenticacion"])
 api_router.include_router(diagnostico_router, prefix="", tags=["Diagnostico"])
