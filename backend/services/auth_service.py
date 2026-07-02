@@ -14,7 +14,7 @@ def login(db: Session, payload: LoginRequest) -> TokenResponse:
 
     vendedor = db.query(Vendedor).filter(Vendedor.email == payload.email).first()
 
-    if not vendedor or not verify_password(payload.password.get_secret_value(), vendedor.password_hash):
+    if not vendedor or not verify_password(payload.password.get_secret_value(), vendedor.password):
         raise InvalidCredentialsError()
 
     if not vendedor.esta_activo:
