@@ -1,4 +1,4 @@
-﻿from schemas.personal_data_shema import PersonalDataResponse
+from schemas.personal_data_shema import PersonalDataResponse
 from schemas.register_shema import RegisterRequest
 from schemas.login_schema import LoginRequest
 from schemas.token_schema import TokenRequest, TokenResponse
@@ -14,6 +14,8 @@ from schemas.dashboard_schema import (DashboardResponse,
 )
 
 from schemas.general_information_schema import UserInfo
+
+from schemas.account_deletion_schema import AccountDeletionResponse
 
 from schemas.diagnostico_schema import (
     MvDiagnosticoReputacion,
@@ -46,4 +48,5 @@ __all__ = [
     "MvDiagnosticoPublicaciones",
     "MetricaCalidadPublicacion",
     "UserInfo",
+    "AccountDeletionResponse",
 ]

@@ -1,4 +1,4 @@
-﻿from services.auth_service import login, logout, InvalidCredentialsError, InactiveAccountError, InvalidTokenError
+from services.auth_service import login, logout, InvalidCredentialsError, InactiveAccountError, InvalidTokenError
 from services.dashboard_service import get_dashboard
 from services.personal_data_service import get_personal_data, UserNotFoundError
 from services.register_service import register, EmailAlreadyExistsError
@@ -11,6 +11,7 @@ from services.diagnostico_service import (
     get_metricas_calidad_publicacion,
 )
 from services.general_information_service import get_user_info
+from services.account_deletion_service import delete_account, AccountDeletionError
 
 __all__ = [
     "login",
@@ -30,4 +31,6 @@ __all__ = [
     "get_diagnostico_publicaciones",
     "get_metricas_calidad_publicacion",
     "get_user_info",
+    "delete_account",
+    "AccountDeletionError",
 ]
