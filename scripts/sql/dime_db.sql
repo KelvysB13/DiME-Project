@@ -8,6 +8,36 @@
 
 
 -- ==============================================================================
+-- DROP ALL (LIMPIEZA COMPLETA)
+-- ==============================================================================
+-- Elimina todos los objetos en orden inverso al de creación para respetar
+-- las restricciones de claves foráneas.
+
+DROP VIEW IF EXISTS v_diagnostico_vendedores_semaforo CASCADE;
+
+DROP MATERIALIZED VIEW IF EXISTS mv_diagnostico_stock CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS mv_diagnostico_ads CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS mv_diagnostico_publicaciones CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS mv_diagnostico_finanzas CASCADE;
+DROP MATERIALIZED VIEW IF EXISTS mv_diagnostico_reputacion CASCADE;
+
+DROP TABLE IF EXISTS kpis_configuracion CASCADE;
+DROP TABLE IF EXISTS metrica_calidad_publicacion CASCADE;
+DROP TABLE IF EXISTS rendimiento_publicacion CASCADE;
+DROP TABLE IF EXISTS metrica_mi_pagina CASCADE;
+DROP TABLE IF EXISTS metrica_stock_full CASCADE;
+DROP TABLE IF EXISTS metrica_costo CASCADE;
+DROP TABLE IF EXISTS metrica_negocio CASCADE;
+DROP TABLE IF EXISTS metrica_reputacion CASCADE;
+DROP TABLE IF EXISTS reporte_diagnostico CASCADE;
+DROP TABLE IF EXISTS publicacion CASCADE;
+DROP TABLE IF EXISTS tarjeta CASCADE;
+DROP TABLE IF EXISTS vendedor CASCADE;
+DROP TABLE IF EXISTS plan CASCADE;
+DROP TABLE IF EXISTS moneda CASCADE;
+DROP TABLE IF EXISTS pais CASCADE;
+
+-- ==============================================================================
 -- TABLAS MAESTRAS (CATÁLOGOS DE REFERENCIA)
 -- ==============================================================================
 -- Estas tablas almacenan datos de referencia que se usan como catálogos
@@ -32,7 +62,7 @@ CREATE TABLE IF NOT EXISTS moneda (
 
 -- TABLA: plan
 -- Propósito: Define los planes de suscripción del sistema SaaS.
---   1 = Free:   plan gratuito con métricas básicas
+--   2 = Básico: métricas avanzadas y reportes personalizados
 --   2 = Básico: plan pago con métricas avanzadas y reportes
 --   3 = Premium: plan completo con soporte prioritario y máxima capacidad
 CREATE TABLE IF NOT EXISTS plan (
@@ -65,7 +95,7 @@ CREATE TABLE IF NOT EXISTS vendedor (
     -- Relaciones con tablas maestras
     codigo_pais VARCHAR(2) NOT NULL,  -- País donde opera el vendedor (FK -> pais)
     moneda_local VARCHAR(3) NOT NULL,  -- Moneda en la que factura (FK -> moneda)
-    tipo_plan INTEGER DEFAULT 1,       -- Plan SaaS contratado, 1=Free por defecto (FK -> plan)
+    tipo_plan INTEGER,                 -- Plan SaaS contratado (FK -> plan), se asigna al hacer checkout
     
     -- Datos de autenticación y conexión con Mercado Libre
     email VARCHAR(255) NOT NULL UNIQUE, -- Correo electrónico del vendedor (único en el sistema)
@@ -79,11 +109,24 @@ CREATE TABLE IF NOT EXISTS vendedor (
     -- Restricciones de Integridad Referencial (Foreign Keys)
     CONSTRAINT fk_vendedor_pais FOREIGN KEY (codigo_pais) REFERENCES pais(codigo_pais),
     CONSTRAINT fk_vendedor_moneda FOREIGN KEY (moneda_local) REFERENCES moneda(codigo_moneda),
-    CONSTRAINT fk_vendedor_plan FOREIGN KEY (tipo_plan) REFERENCES plan(id),
+    CONSTRAINT fk_vendedor_plan FOREIGN KEY (tipo_plan) REFERENCES plan(id) ON DELETE SET NULL,
     
     -- Validación de formato de email mediante expresión regular
     -- Asegura que el email tenga el formato: usuario@dominio.ext (ext de 2 a 4 letras)
     CONSTRAINT chk_email_formato CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$')
+);
+
+CREATE TABLE IF NOT EXISTS tarjeta (
+    id_tarjeta BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, -- ID auto-generado de la tarjeta
+    id_vendedor BIGINT NOT NULL,          -- Vendedor propietario de la tarjeta (FK -> vendedor)
+    nombre_titular VARCHAR(100) NOT NULL, -- Nombre del titular de la tarjeta
+    numero_tarjeta VARCHAR(255) NOT NULL, -- Número de tarjeta (hash bcrypt)
+    fecha_expiracion DATE NOT NULL,       -- Fecha de expiración de la tarjeta
+    cvv VARCHAR(255) NOT NULL,            -- Código de seguridad (hash bcrypt)
+    tipo_tarjeta VARCHAR(20) NOT NULL CHECK (tipo_tarjeta IN ('Visa', 'MasterCard')), -- Tipo de tarjeta
+    
+    CONSTRAINT fk_tarjeta_vendedor FOREIGN KEY (id_vendedor) 
+        REFERENCES vendedor(id_vendedor) ON DELETE CASCADE -- Si se elimina el vendedor, se eliminan sus tarjetas
 );
 
 
@@ -342,7 +385,6 @@ ON CONFLICT (codigo_moneda) DO NOTHING;
 
 -- Inserts de Planes SaaS
 INSERT INTO plan (id, nombre_plan, precio_mensual, limite_publicaciones, limite_metricas_dias, features, descripcion) VALUES 
-(1, 'Free', 0.00, 5, 30, '["metricas_basicas", "reporte_mensual"]', 'Métricas básicas para empezar.'),
 (2, 'Básico', 19.99, 50, 90, '["metricas_basicas", "metricas_avanzadas", "reporte_mensual", "reporte_personalizado", "exportar_datos"]', 'Métricas avanzadas y reportes personalizados.'),
 (3, 'Premium', 49.99, NULL, 365, '["metricas_basicas", "metricas_avanzadas", "reporte_mensual", "reporte_personalizado", "exportar_datos", "soporte_prioritario", "multi_cuenta", "api_acceso"]', 'Soporte prioritario, multi-cuenta y acceso API.')
 ON CONFLICT (id) DO NOTHING;
@@ -370,11 +412,11 @@ INSERT INTO vendedor (
     esta_activo
 ) VALUES
 -- Vendedores de Argentina (AR / ARS)
--- 3 vendedores: uno Enterprise (tech), uno Pro (deco), uno Free (gaming)
+-- 3 vendedores: uno Premium (tech), uno Básico (deco), uno Básico (gaming)
 -- Password para todos los vendedores de prueba: Test12345678
 ('tech_guru_ar', 'Tech Guru Argentina', 'AR', 'ARS', 3, 'contacto@techguru.com.ar', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_01', 'ref_tk_01', CURRENT_TIMESTAMP, true),
 ('home_deco_ar', 'Home & Deco Baires', 'AR', 'ARS', 2, 'hola@homedecoar.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_02', 'ref_tk_02', CURRENT_TIMESTAMP, true),
-('gaming_ar', 'Gaming Store AR', 'AR', 'ARS', 1, 'soporte@gamingar.com.ar', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_03', 'ref_tk_03', CURRENT_TIMESTAMP, true),
+('gaming_ar', 'Gaming Store AR', 'AR', 'ARS', 2, 'soporte@gamingar.com.ar', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_03', 'ref_tk_03', CURRENT_TIMESTAMP, true),
 
 -- Vendedores de México (MX / MXN)
 -- El vendedor 6 (ferreteria) está inactivo para probar el comportamiento del sistema con cuentas deshabilitadas
@@ -383,14 +425,14 @@ INSERT INTO vendedor (
 ('ferreteria_mx', 'La Gran Ferretería', 'MX', 'MXN', 2, 'ventas@ferreteriamx.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_06', 'ref_tk_06', CURRENT_TIMESTAMP, false),
 
 -- Vendedores de Brasil (BR / BRL)
-('brasil_sports', 'Brasil Sports SA', 'BR', 'BRL', 1, 'contato@brasilsports.com.br', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_07', 'ref_tk_07', CURRENT_TIMESTAMP, true),
+('brasil_sports', 'Brasil Sports SA', 'BR', 'BRL', 2, 'contato@brasilsports.com.br', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_07', 'ref_tk_07', CURRENT_TIMESTAMP, true),
 ('beleza_br', 'Beleza Store Brasil', 'BR', 'BRL', 2, 'sac@belezabr.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_08', 'ref_tk_08', CURRENT_TIMESTAMP, true),
 ('calcados_br', 'Sapatos e Cia', 'BR', 'BRL', 3, 'atendimento@calcados.br', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_09', 'ref_tk_09', CURRENT_TIMESTAMP, true),
 
 -- Vendedores de Colombia (CO / COP)
 ('colombia_coffee', 'Café de Colombia Shop', 'CO', 'COP', 2, 'info@cafecolombia.co', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_10', 'ref_tk_10', CURRENT_TIMESTAMP, true),
-('juguetes_co', 'Juguetería Bogotá', 'CO', 'COP', 1, 'pedidos@juguetesco.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_11', 'ref_tk_11', CURRENT_TIMESTAMP, true),
-('mascotas_co', 'Mascotas Felices CO', 'CO', 'COP', 1, 'hola@mascotasco.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_12', 'ref_tk_12', CURRENT_TIMESTAMP, true),
+('juguetes_co', 'Juguetería Bogotá', 'CO', 'COP', 2, 'pedidos@juguetesco.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_11', 'ref_tk_11', CURRENT_TIMESTAMP, true),
+('mascotas_co', 'Mascotas Felices CO', 'CO', 'COP', 2, 'hola@mascotasco.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_12', 'ref_tk_12', CURRENT_TIMESTAMP, true),
 
 -- Vendedores de Chile (CL / CLP)
 ('chile_wines', 'Vinos Chilenos Premium', 'CL', 'CLP', 3, 'ventas@chilewines.cl', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_13', 'ref_tk_13', CURRENT_TIMESTAMP, true),
@@ -399,8 +441,8 @@ INSERT INTO vendedor (
 
 -- Vendedores de Venezuela (VE / USD)
 -- Venezuela usa USD porque el Bolívar (VES) no es práctico para transacciones digitales
-('ve_electronics', 'Venezuela Electronics', 'VE', 'USD', 1, 'sales@ve-electronics.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_16', 'ref_tk_16', CURRENT_TIMESTAMP, true),
-('ropa_ve', 'Boutique Caracas', 'VE', 'USD', 1, 'info@ropave.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_17', 'ref_tk_17', CURRENT_TIMESTAMP, true),
+('ve_electronics', 'Venezuela Electronics', 'VE', 'USD', 2, 'sales@ve-electronics.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_16', 'ref_tk_16', CURRENT_TIMESTAMP, true),
+('ropa_ve', 'Boutique Caracas', 'VE', 'USD', 2, 'info@ropave.com', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_17', 'ref_tk_17', CURRENT_TIMESTAMP, true),
 ('tecnologia_global_ve', 'Tecno Global VE', 'VE', 'USD', 3, 'admin@tecnoglobal.ve', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_18', 'ref_tk_18', CURRENT_TIMESTAMP, true);
 
 

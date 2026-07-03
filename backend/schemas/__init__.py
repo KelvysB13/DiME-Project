@@ -1,8 +1,10 @@
-from schemas.personal_data_shema import PersonalDataResponse
-from schemas.register_shema import RegisterRequest
+from schemas.personal_data_schema import PersonalDataResponse
+from schemas.register_schema import RegisterRequest, PreRegisterResponse
 from schemas.login_schema import LoginRequest
 from schemas.token_schema import TokenRequest, TokenResponse
 from schemas.logout_schema import LogoutRequest, LogoutResponse
+from schemas.payment_method_schema import PaymentMethodRequest, PaymentMethodResponse
+from schemas.checkout_schema import CheckoutRequest, CheckoutResponse
 
 from schemas.dashboard_schema import (DashboardResponse, 
     ReputacionInfo, 
@@ -28,6 +30,8 @@ from schemas.diagnostico_schema import (
 
 __all__ = [
     "LoginRequest",
+    "LogoutRequest",
+    "LogoutResponse",
     "TokenRequest",
     "TokenResponse",
     "DashboardResponse",
@@ -37,10 +41,13 @@ __all__ = [
     "StockInfo",
     "PaginaInfo",
     "PublicacionResumen",
-    "LogoutRequest",
-    "LogoutResponse",
     "PersonalDataResponse",
     "RegisterRequest",
+    "PreRegisterResponse",
+    "PaymentMethodRequest",
+    "PaymentMethodResponse",
+    "CheckoutRequest",
+    "CheckoutResponse",
     "MvDiagnosticoReputacion",
     "MvDiagnosticoFinanzas",
     "MvDiagnosticoAds",
