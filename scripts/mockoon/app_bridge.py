@@ -1,5 +1,12 @@
 from flask import Flask, request, jsonify
-import psycopg2
+import psycopg2 
+from flask import Flask, request, jsonify
+# es necesario instalar esta dependencia: pip install flask-cors
+from flask_cors import CORS  # 1. Importa CORS
+
+app = Flask(__name__)
+CORS(app)  # 2. Habilita CORS para todas las rutas de la app
+
 # -*- coding: utf-8 -*-\
 
 app = Flask(__name__)
