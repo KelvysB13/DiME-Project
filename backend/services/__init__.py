@@ -17,6 +17,14 @@ from services.diagnostico_service import (
     get_metricas_calidad_publicacion,
 )
 
+from services.kpis_maestro_service import (
+    get_all_kpis,
+    get_kpi_by_id,
+    create_kpi,
+    update_kpi,
+    delete_kpi,
+)
+
 __all__ = [
     "login",
     "logout",
@@ -43,4 +51,9 @@ __all__ = [
     "CheckoutError",
     "update_password",
     "InvalidCurrentPasswordError",
+    "get_all_kpis",
+    "get_kpi_by_id",
+    "create_kpi",
+    "update_kpi",
+    "delete_kpi",
 ]

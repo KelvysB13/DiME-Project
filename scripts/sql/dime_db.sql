@@ -1032,110 +1032,80 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_stock_vendedor
 -- Las tablas se crean con CREATE TABLE IF NOT EXISTS al inicio del script
 
 -- ==============================================================================
--- 1. ESTRUCTURA: Tabla Maestra de Configuración Dinámica de KPIs (Por Vendedor)
+-- 1. TABLA MAESTRA GLOBAL (Configuración única para todo el sistema)
 -- ==============================================================================
-CREATE TABLE IF NOT EXISTS kpis_configuracion (
+CREATE TABLE IF NOT EXISTS kpis_maestro (
     id_kpi SERIAL PRIMARY KEY,
-    id_vendedor BIGINT NOT NULL,             -- <-- CREADA: Columna para relacionar al vendedor
     dimension VARCHAR(50) NOT NULL,          -- Reputación, Finanzas, Publicaciones, Publicidad, Logística
-    nombre_kpi VARCHAR(100) NOT NULL,        -- <-- CORREGIDO: Se quitó el UNIQUE de aquí
-    operador_logico VARCHAR(20) NOT NULL,    -- '<', '>', 'RANGO', 'ESPECIAL_NO_APTOS', '='
-    umbral_ideal NUMERIC(10,4),              -- Límite numérico para VERDE
-    umbral_alerta NUMERIC(10,4),             -- Límite numérico para AMARILLO
-    valor_texto_ideal VARCHAR(50),           -- Para cualitativos (ej. 'verde', 'platinum')
-    valor_texto_peligro VARCHAR(50),         -- Para cualitativos (ej. 'rojo', 'sin_insignia')
-    prioridad VARCHAR(20) NOT NULL,          -- <-- CORREGIDO: Se añadió la coma faltante
-
-    -- 1. CLAVE FORÁNEA: Relaciona la configuración con un vendedor (1 vendedor -> N métricas)
-    CONSTRAINT fk_kpis_configuracion_vendedor FOREIGN KEY (id_vendedor) 
-        REFERENCES vendedor(id_vendedor) ON DELETE CASCADE,
-
-    -- 2. RESTRICCIÓN ÚNICA COMPUESTA: Evita que un mismo vendedor tenga duplicado el mismo KPI
-    CONSTRAINT uq_vendedor_nombre_kpi UNIQUE (id_vendedor, nombre_kpi)
+    nombre_kpi VARCHAR(100) NOT NULL UNIQUE,  -- Ahora sí es UNIQUE global
+    operador_logico VARCHAR(20) NOT NULL,    -- '<', '>', 'RANGO', '='
+    
+    -- Umbrales Numéricos Flexibles
+    umbral_verde_inf NUMERIC(10,4),
+    umbral_verde_sup NUMERIC(10,4),
+    umbral_amarillo_inf NUMERIC(10,4),
+    umbral_amarillo_sup NUMERIC(10,4),
+    
+    -- Umbrales de Texto (Para respuestas de la API de MercadoLibre)
+    texto_ideal VARCHAR(50),                  -- Ej: 'verde', 'platinum'
+    texto_alerta VARCHAR(100),                -- Ej: 'amarillo,naranja', 'silver,gold'
+    texto_peligro VARCHAR(50),                -- Ej: 'rojo', 'sin_insignia'
+    
+    prioridad VARCHAR(20) NOT NULL
 );
 
--- ==============================================================================
--- 2. SEED DATA: Inserción Masiva de Reglas Base para todos los Vendedores
--- ==============================================================================
-INSERT INTO kpis_configuracion 
-(id_vendedor, dimension, nombre_kpi, operador_logico, umbral_ideal, umbral_alerta, valor_texto_ideal, valor_texto_peligro, prioridad)
-SELECT 
-    v.id_vendedor, -- <-- Asigna automáticamente estas reglas a cada vendedor existente
-    d.dimension, 
-    d.nombre_kpi, 
-    d.operador_logico, 
-    d.umbral_ideal, 
-    d.umbral_alerta, 
-    d.valor_texto_ideal, 
-    d.valor_texto_peligro, 
-    d.prioridad
-FROM vendedor v -- <-- Tabla origen de vendedores
-CROSS JOIN (
-    -- Bloque 1: Reputación y Calidad (mv_diagnostico_reputacion)
-    SELECT 'Reputación' AS dimension, * FROM (VALUES
-        ('Tasa de Reclamos', '<', 1.2500, 2.5000, NULL::VARCHAR, NULL::VARCHAR, 'CRÍTICO'),
-        ('Tasa de Cancelaciones', '<', 2.0000, 5.0000, NULL::VARCHAR, NULL::VARCHAR, 'CRÍTICO'),
-        ('Tasa de Mediaciones', '<', 0.2500, 0.5000, NULL::VARCHAR, NULL::VARCHAR, 'CRÍTICO'),
-        ('Tasa de Envíos Incorrectos', '<', 10.0000, 12.0000, NULL::VARCHAR, NULL::VARCHAR, 'ALTO'),
-        ('Nivel de Reputación', '=', NULL::NUMERIC, NULL::NUMERIC, 'verde', 'rojo', 'ALTO'),
-        ('Insignia Mercado Líder', '=', NULL::NUMERIC, NULL::NUMERIC, 'platinum', 'sin_insignia', 'MEDIO')
-    ) AS t1(nombre_kpi, operador_logico, umbral_ideal, umbral_alerta, valor_texto_ideal, valor_texto_peligro, prioridad)
-    
-    UNION ALL
-    -- Bloque 2: Ventas y Finanzas (mv_diagnostico_finanzas)
-    SELECT 'Finanzas' AS dimension, * FROM (VALUES
-        ('Tasa de Conversión Global (CVR)', '>', 6.0000, 3.0000, NULL::VARCHAR, NULL::VARCHAR, 'CRÍTICO'),
-        ('Margen Neto Real', '>', 15.0000, 5.0000, NULL::VARCHAR, NULL::VARCHAR, 'CRÍTICO'),
-        ('Ticket Promedio / AOV (USD)', '>', 50.0000, 20.0000, NULL::VARCHAR, NULL::VARCHAR, 'ALTO'),
-        ('Carga Total de Costos', '<', 25.0000, 35.0000, NULL::VARCHAR, NULL::VARCHAR, 'ALTO'),
-        ('Ratio Intención de Compra', '>', 35.0000, 25.0000, NULL::VARCHAR, NULL::VARCHAR, 'ALTO'),
-        ('Descuento por Reputación', '<', 0.0000, 2.0000, NULL::VARCHAR, NULL::VARCHAR, 'MEDIO'),
-        ('Cobro Efectivo Rate', '>', 95.0000, 90.0000, NULL::VARCHAR, NULL::VARCHAR, 'MEDIO'),
-        ('Crecimiento MoM Ventas Brutas', '>', 10.0000, 0.0000, NULL::VARCHAR, NULL::VARCHAR, 'MEDIO')
-    ) AS t2(nombre_kpi, operador_logico, umbral_ideal, umbral_alerta, valor_texto_ideal, valor_texto_peligro, prioridad)
-    
-    UNION ALL
-    -- Bloque 3: Publicaciones (mv_diagnostico_publicaciones)
-    SELECT 'Publicaciones' AS dimension, * FROM (VALUES
-        ('CVR por Publicación', '>', 2.5000, 0.5000, NULL::VARCHAR, NULL::VARCHAR, 'CRÍTICO'),
-        ('% Catálogo con Características Completas', '>', 90.0000, 60.0000, NULL::VARCHAR, NULL::VARCHAR, 'ALTO'),
-        ('% Publicaciones con Video', '>', 30.0000, 10.0000, NULL::VARCHAR, NULL::VARCHAR, 'MEDIO')
-    ) AS t3(nombre_kpi, operador_logico, umbral_ideal, umbral_alerta, valor_texto_ideal, valor_texto_peligro, prioridad)
-    
-    UNION ALL
-    -- Bloque 4: Publicidad / Mercado Ads (mv_diagnostico_ads)
-    SELECT 'Publicidad' AS dimension, * FROM (VALUES
-        ('ROAS (Return on Ad Spend)', '>', 5.0000, 3.3000, NULL::VARCHAR, NULL::VARCHAR, 'CRÍTICO'),
-        ('ACoS (Advertising Cost of Sale)', '<', 15.0000, 35.0000, NULL::VARCHAR, NULL::VARCHAR, 'CRÍTICO'),
-        ('Inversión Ads / Ventas Brutas', '<', 10.0000, 15.0000, NULL::VARCHAR, NULL::VARCHAR, 'ALTO')
-    ) AS t4(nombre_kpi, operador_logico, umbral_ideal, umbral_alerta, valor_texto_ideal, valor_texto_peligro, prioridad)
-    
-    UNION ALL
-    -- Bloque 5: Stock Full / Logística (mv_diagnostico_stock)
-    SELECT 'Logística' AS dimension, * FROM (VALUES
-        ('% Productos Sin Rotación', '<', 1.0000, 2.0000, NULL::VARCHAR, NULL::VARCHAR, 'CRÍTICO'),
-        ('% Productos con Antigüedad de Riesgo', '<', 2.0000, 3.0000, NULL::VARCHAR, NULL::VARCHAR, 'CRÍTICO'),
-        ('% Productos No Aptos Venta', 'ESPECIAL_NO_APTOS', NULL::NUMERIC, NULL::NUMERIC, NULL::VARCHAR, NULL::VARCHAR, 'ALTO'),
-        ('% Exceso de Proyección', '<', 4.0000, 8.0000, NULL::VARCHAR, NULL::VARCHAR, 'ALTO'),
-        ('Utilización Espacios Full', 'RANGO', NULL::NUMERIC, NULL::NUMERIC, NULL::VARCHAR, NULL::VARCHAR, 'MEDIO'),
-        ('Puntaje de Calidad de Publicación', '>', 80.0000, 50.0000, NULL::VARCHAR, NULL::VARCHAR, 'CRÍTICO')
-    ) AS t5(nombre_kpi, operador_logico, umbral_ideal, umbral_alerta, valor_texto_ideal, valor_texto_peligro, prioridad)
-) AS d(dimension, nombre_kpi, operador_logico, umbral_ideal, umbral_alerta, valor_texto_ideal, valor_texto_peligro, prioridad)
--- <-- CORREGIDO: El conflicto ahora se evalúa bajo la clave compuesta
-ON CONFLICT (id_vendedor, nombre_kpi) DO UPDATE SET
-    operador_logico = EXCLUDED.operador_logico,
-    umbral_ideal = EXCLUDED.umbral_ideal,
-    umbral_alerta = EXCLUDED.umbral_alerta,
-    valor_texto_ideal = EXCLUDED.valor_texto_ideal,
-    valor_texto_peligro = EXCLUDED.valor_texto_peligro,
-    prioridad = EXCLUDED.prioridad;
+INSERT INTO kpis_maestro 
+(dimension, nombre_kpi, operador_logico, umbral_verde_inf, umbral_verde_sup, umbral_amarillo_inf, umbral_amarillo_sup, texto_ideal, texto_alerta, texto_peligro, prioridad)
+VALUES
+    -- Bloque 1: Reputación y Calidad (Límites superiores para operadores '<')
+    ('Reputación', 'Tasa de Reclamos', '<', NULL, 1.2500, NULL, 2.5000, NULL, NULL, NULL, 'CRÍTICO'),
+    ('Reputación', 'Tasa de Cancelaciones', '<', NULL, 2.0000, NULL, 5.0000, NULL, NULL, NULL, 'CRÍTICO'),
+    ('Reputación', 'Tasa de Mediaciones', '<', NULL, 0.2500, NULL, 0.5000, NULL, NULL, NULL, 'CRÍTICO'),
+    ('Reputación', 'Tasa de Envíos Incorrectos', '<', NULL, 10.0000, NULL, 12.0000, NULL, NULL, NULL, 'ALTO'),
+    ('Reputación', 'Nivel de Reputación', '=', NULL, NULL, NULL, NULL, 'verde', 'amarillo,naranja', 'rojo', 'ALTO'),
+    ('Reputación', 'Insignia Mercado Líder', '=', NULL, NULL, NULL, NULL, 'platinum', 'silver,gold', 'sin_insignia', 'MEDIO'),
 
--- ==============================================================================
--- 3. MOTOR DE EVALUACIÓN: Vista Consolidada con Unpivot Eficiente (LATERAL)
--- ==============================================================================
-CREATE OR REPLACE VIEW v_diagnostico_vendedores_semaforo AS
+    -- Bloque 2: Ventas y Finanzas (Límites inferiores para operadores '>')
+    ('Finanzas', 'Tasa de Conversión Global (CVR)', '>', 6.0000, NULL, 3.0000, NULL, NULL, NULL, NULL, 'CRÍTICO'),
+    ('Finanzas', 'Margen Neto Real', '>', 15.0000, NULL, 5.0000, NULL, NULL, NULL, NULL, 'CRÍTICO'),
+    ('Finanzas', 'Ticket Promedio / AOV (USD)', '>', 50.0000, NULL, 20.0000, NULL, NULL, NULL, NULL, 'ALTO'),
+    ('Finanzas', 'Carga Total de Costos', '<', NULL, 25.0000, NULL, 35.0000, NULL, NULL, NULL, 'ALTO'),
+    ('Finanzas', 'Ratio Intención de Compra', '>', 35.0000, NULL, 25.0000, NULL, NULL, NULL, NULL, 'ALTO'),
+    ('Finanzas', 'Descuento por Reputación', '<', NULL, 0.0000, NULL, 2.0000, NULL, NULL, NULL, 'MEDIO'),
+    ('Finanzas', 'Cobro Efectivo Rate', '>', 95.0000, NULL, 90.0000, NULL, NULL, NULL, NULL, 'MEDIO'),
+    ('Finanzas', 'Crecimiento MoM Ventas Brutas', '>', 10.0000, NULL, 0.0000, NULL, NULL, NULL, NULL, 'MEDIO'),
+
+    -- Bloque 3: Publicaciones
+    ('Publicaciones', 'CVR por Publicación', '>', 2.5000, NULL, 0.5000, NULL, NULL, NULL, NULL, 'CRÍTICO'),
+    ('Publicaciones', '% Catálogo con Características Completas', '>', 90.0000, NULL, 60.0000, NULL, NULL, NULL, NULL, 'ALTO'),
+    ('Publicaciones', '% Publicaciones con Video', '>', 30.0000, NULL, 10.0000, NULL, NULL, NULL, NULL, 'MEDIO'),
+    ('Publicaciones', 'Puntaje de Calidad de Publicación', '>', 80.0000, NULL, 50.0000, NULL, NULL, NULL, NULL, 'CRÍTICO'),
+
+    -- Bloque 4: Publicidad / Mercado Ads
+    ('Publicidad', 'ROAS (Return on Ad Spend)', '>', 5.0000, NULL, 3.3000, NULL, NULL, NULL, NULL, 'CRÍTICO'),
+    ('Publicidad', 'ACoS (Advertising Cost of Sale)', '<', NULL, 15.0000, NULL, 35.0000, NULL, NULL, NULL, 'CRÍTICO'),
+    ('Publicidad', 'Inversión Ads / Ventas Brutas', '<', NULL, 10.0000, NULL, 15.0000, NULL, NULL, NULL, 'ALTO'),
+
+    -- Bloque 5: Stock Full / Logística
+    ('Logística', '% Productos Sin Rotación', '<', NULL, 1.0000, NULL, 2.0000, NULL, NULL, NULL, 'CRÍTICO'),
+    ('Logística', '% Productos con Antigüedad de Riesgo', '<', NULL, 2.0000, NULL, 3.0000, NULL, NULL, NULL, 'CRÍTICO'),
+    ('Logística', '% Productos No Aptos Venta', '<', NULL, 0.0000, NULL, 0.0000, NULL, NULL, NULL, 'ALTO'), 
+    ('Logística', '% Exceso de Proyección', '<', NULL, 4.0000, NULL, 8.0000, NULL, NULL, NULL, 'ALTO'),
+    ('Logística', 'Utilización Espacios Full', 'RANGO', 70.0000, 90.0000, 50.0000, 95.0000, NULL, NULL, NULL, 'MEDIO')
+ON CONFLICT (nombre_kpi) DO UPDATE SET
+    operador_logico = EXCLUDED.operador_logico,
+    umbral_verde_inf = EXCLUDED.umbral_verde_inf,
+    umbral_verde_sup = EXCLUDED.umbral_verde_sup,
+    umbral_amarillo_inf = EXCLUDED.umbral_amarillo_inf,
+    umbral_amarillo_sup = EXCLUDED.umbral_amarillo_sup,
+    texto_ideal = EXCLUDED.texto_ideal,
+    texto_alerta = EXCLUDED.texto_alerta,
+    texto_peligro = EXCLUDED.texto_peligro,
+    prioridad = EXCLUDED.prioridad;
+   
+    CREATE OR REPLACE VIEW v_diagnostico_vendedores_semaforo AS
 WITH metricas_unificadas AS (
-    -- 1. Reputación (1 solo scan físico a mv_diagnostico_reputacion)
+    -- 1. Reputación
     SELECT r.id AS id_vendedor, u.nombre_kpi, u.valor_numerico, u.valor_texto
     FROM mv_diagnostico_reputacion r
     CROSS JOIN LATERAL (VALUES
@@ -1149,7 +1119,7 @@ WITH metricas_unificadas AS (
 
     UNION ALL
 
-    -- 2. Finanzas (1 solo scan físico a mv_diagnostico_finanzas)
+    -- 2. Finanzas
     SELECT f.id AS id_vendedor, u.nombre_kpi, u.valor_numerico, u.valor_texto
     FROM mv_diagnostico_finanzas f
     CROSS JOIN LATERAL (VALUES
@@ -1165,7 +1135,7 @@ WITH metricas_unificadas AS (
 
     UNION ALL
 
-    -- 3. Publicaciones (1 solo scan físico a mv_diagnostico_publicaciones)
+    -- 3. Publicaciones
     SELECT p.id AS id_vendedor, u.nombre_kpi, u.valor_numerico, u.valor_texto
     FROM mv_diagnostico_publicaciones p
     CROSS JOIN LATERAL (VALUES
@@ -1176,7 +1146,7 @@ WITH metricas_unificadas AS (
 
     UNION ALL
 
-    -- 4. Publicidad (1 solo scan físico a mv_diagnostico_ads)
+    -- 4. Publicidad
     SELECT a.id AS id_vendedor, u.nombre_kpi, u.valor_numerico, u.valor_texto
     FROM mv_diagnostico_ads a
     CROSS JOIN LATERAL (VALUES
@@ -1187,7 +1157,7 @@ WITH metricas_unificadas AS (
 
     UNION ALL
 
-    -- 5. Logística / Stock Full (1 solo scan físico a mv_diagnostico_stock)
+    -- 5. Logística / Stock Full
     SELECT s.id AS id_vendedor, u.nombre_kpi, u.valor_numerico, u.valor_texto
     FROM mv_diagnostico_stock s
     CROSS JOIN LATERAL (VALUES
@@ -1201,54 +1171,47 @@ WITH metricas_unificadas AS (
 )
 SELECT 
     m.id_vendedor,
-    c.dimension,
+    km.dimension,
     m.nombre_kpi,
-    c.prioridad,
+    km.prioridad,
     COALESCE(TO_CHAR(m.valor_numerico, 'FM999,990.99'), m.valor_texto) AS valor_actual,
     CASE 
         -- Regla 1: Menor es mejor (<)
-        WHEN c.operador_logico = '<' THEN
+        WHEN km.operador_logico = '<' THEN
             CASE 
-                WHEN m.valor_numerico <= c.umbral_ideal THEN 'VERDE'
-                WHEN m.valor_numerico <= c.umbral_alerta THEN 'AMARILLO'
+                WHEN m.valor_numerico <= COALESCE(kv.umbral_verde_sup, km.umbral_verde_sup) THEN 'VERDE'
+                WHEN m.valor_numerico <= COALESCE(kv.umbral_amarillo_sup, km.umbral_amarillo_sup) THEN 'AMARILLO'
                 ELSE 'ROJO'
             END
             
         -- Regla 2: Mayor es mejor (>)
-        WHEN c.operador_logico = '>' THEN
+        WHEN km.operador_logico = '>' THEN
             CASE 
-                WHEN m.valor_numerico >= c.umbral_ideal THEN 'VERDE'
-                WHEN m.valor_numerico >= c.umbral_alerta THEN 'AMARILLO'
+                WHEN m.valor_numerico >= COALESCE(kv.umbral_verde_inf, km.umbral_verde_inf) THEN 'VERDE'
+                WHEN m.valor_numerico >= COALESCE(kv.umbral_amarillo_inf, km.umbral_amarillo_inf) THEN 'AMARILLO'
                 ELSE 'ROJO'
             END
 
-        -- Regla 3: Rango de tolerancia (Utilización de Espacios Logísticos)
-        WHEN c.operador_logico = 'RANGO' THEN
+        -- Regla 3: Rango de tolerancia dinámico (Utilización de Espacios)
+        WHEN km.operador_logico = 'RANGO' THEN
             CASE 
-                WHEN m.valor_numerico BETWEEN 70.00 AND 90.00 THEN 'VERDE'
-                WHEN m.valor_numerico BETWEEN 50.00 AND 69.99 THEN 'AMARILLO'
-                WHEN m.valor_numerico BETWEEN 90.01 AND 95.00 THEN 'AMARILLO'
+                WHEN m.valor_numerico BETWEEN COALESCE(kv.umbral_verde_inf, km.umbral_verde_inf) 
+                                          AND COALESCE(kv.umbral_verde_sup, km.umbral_verde_sup) THEN 'VERDE'
+                WHEN m.valor_numerico BETWEEN COALESCE(kv.umbral_amarillo_inf, km.umbral_amarillo_inf) 
+                                          AND COALESCE(kv.umbral_amarillo_sup, km.umbral_amarillo_sup) THEN 'AMARILLO'
                 ELSE 'ROJO'
             END
 
-        -- Regla 4: Penalización Directa (Productos retenidos/dañados en Full)
-        WHEN c.operador_logico = 'ESPECIAL_NO_APTOS' THEN
+        -- Regla 4: Evaluación de Textos Oficiales (Sensible a listas separadas por comas)
+        WHEN km.operador_logico = '=' THEN
             CASE 
-                WHEN m.valor_numerico <= 0.0000 THEN 'VERDE'
-                ELSE 'ROJO'
-            END
-
-        -- Regla 5: Evaluación de Textos Oficiales de la API de MercadoLibre (=)
-        WHEN c.operador_logico = '=' THEN
-            CASE 
-                WHEN LOWER(m.valor_texto) = LOWER(c.valor_texto_ideal) THEN 'VERDE'
-                WHEN LOWER(m.valor_texto) = LOWER(c.valor_texto_peligro) THEN 'ROJO'
-                WHEN m.nombre_kpi = 'Nivel de Reputación' AND LOWER(m.valor_texto) IN ('amarillo', 'naranja') THEN 'AMARILLO'
-                WHEN m.nombre_kpi = 'Insignia Mercado Líder' AND LOWER(m.valor_texto) IN ('silver', 'gold') THEN 'AMARILLO'
+                WHEN LOWER(m.valor_texto) = LOWER(COALESCE(kv.texto_ideal, km.texto_ideal)) THEN 'VERDE'
+                WHEN LOWER(COALESCE(kv.texto_alerta, km.texto_alerta)) LIKE '%' || LOWER(m.valor_texto) || '%' THEN 'AMARILLO'
                 ELSE 'ROJO'
             END
         ELSE 'GRIS'
     END AS estado_semaforo
 FROM metricas_unificadas m
--- <-- CORREGIDO: La unión ahora compara el KPI Y el vendedor correspondiente
-JOIN kpis_configuracion c ON m.nombre_kpi = c.nombre_kpi AND m.id_vendedor = c.id_vendedor;
+JOIN kpis_maestro km ON m.nombre_kpi = km.nombre_kpi
+LEFT JOIN kpis_vendedor_personalizado kv ON km.id_kpi = kv.id_kpi AND m.id_vendedor = kv.id_vendedor;
+    

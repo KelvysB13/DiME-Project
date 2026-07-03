@@ -9,6 +9,7 @@ from api.account_deletion_router import router as account_deletion_router
 from api.payment_method_router import router as payment_method_router
 from api.checkout_router import router as checkout_router
 from api.update_password_router import router as update_password_router
+from api.kpis_maestro_router import router as kpis_maestro_router
 
 api_router = APIRouter()
 
@@ -22,3 +23,4 @@ api_router.include_router(account_deletion_router, prefix="", tags=["Cuenta"])
 api_router.include_router(payment_method_router, prefix="/payment", tags=["Método de Pago"])
 api_router.include_router(checkout_router, prefix="/payment", tags=["Checkout"])
 api_router.include_router(update_password_router, prefix="", tags=["Cuenta"])
+api_router.include_router(kpis_maestro_router, prefix="", tags=["KPIs Maestro"])
