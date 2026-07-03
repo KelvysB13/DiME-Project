@@ -11,6 +11,7 @@ from services.diagnostico_service import (
     get_metricas_calidad_publicacion,
 )
 from services.general_information_service import get_user_info
+from services.update_password_service import update_password, InvalidCurrentPasswordError
 from services.account_deletion_service import delete_account, AccountDeletionError
 
 __all__ = [
@@ -33,4 +34,6 @@ __all__ = [
     "get_user_info",
     "delete_account",
     "AccountDeletionError",
+    "update_password",
+    "InvalidCurrentPasswordError",
 ]
