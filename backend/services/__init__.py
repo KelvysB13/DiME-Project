@@ -10,6 +10,7 @@ from services.diagnostico_service import (
     get_diagnostico_publicaciones,
     get_metricas_calidad_publicacion,
 )
+from services.general_information_service import get_user_info
 
 __all__ = [
     "login",
@@ -28,4 +29,5 @@ __all__ = [
     "get_diagnostico_stock",
     "get_diagnostico_publicaciones",
     "get_metricas_calidad_publicacion",
+    "get_user_info",
 ]

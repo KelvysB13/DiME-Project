@@ -13,6 +13,8 @@ from schemas.dashboard_schema import (DashboardResponse,
     PublicacionResumen
 )
 
+from schemas.general_information_schema import UserInfo
+
 from schemas.diagnostico_schema import (
     MvDiagnosticoReputacion,
     MvDiagnosticoFinanzas,
@@ -43,4 +45,5 @@ __all__ = [
     "MvDiagnosticoStock",
     "MvDiagnosticoPublicaciones",
     "MetricaCalidadPublicacion",
+    "UserInfo",
 ]
