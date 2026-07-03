@@ -3,6 +3,7 @@ from schemas.register_shema import RegisterRequest
 from schemas.login_schema import LoginRequest
 from schemas.token_schema import TokenRequest, TokenResponse
 from schemas.logout_schema import LogoutRequest, LogoutResponse
+from schemas.password_recovery_schema import PasswordRecoveryRequest, PasswordRecoveryResponse, ResetPasswordRequest, ResetPasswordResponse
 
 from schemas.dashboard_schema import (DashboardResponse, 
     ReputacionInfo, 
