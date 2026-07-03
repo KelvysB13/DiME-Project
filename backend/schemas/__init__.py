@@ -16,8 +16,8 @@ from schemas.dashboard_schema import (DashboardResponse,
 )
 
 from schemas.general_information_schema import UserInfo
-
 from schemas.account_deletion_schema import AccountDeletionResponse
+from schemas.update_password_schema import UpdatePasswordRequest
 
 from schemas.diagnostico_schema import (
     MvDiagnosticoReputacion,
@@ -56,4 +56,5 @@ __all__ = [
     "MetricaCalidadPublicacion",
     "UserInfo",
     "AccountDeletionResponse",
+    "UpdatePasswordRequest",
 ]

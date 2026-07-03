@@ -6,6 +6,7 @@ from services.payment_method_service import update_payment_method, PaymentMethod
 from services.checkout_service import checkout, CheckoutError
 from services.general_information_service import get_user_info
 from services.account_deletion_service import delete_account, AccountDeletionError
+from services.update_password_service import update_password, InvalidCurrentPasswordError
 
 from services.diagnostico_service import (
     get_diagnostico_reputacion,
@@ -15,7 +16,6 @@ from services.diagnostico_service import (
     get_diagnostico_publicaciones,
     get_metricas_calidad_publicacion,
 )
-
 
 __all__ = [
     "login",
@@ -41,4 +41,6 @@ __all__ = [
     "PaymentMethodError",
     "checkout",
     "CheckoutError",
+    "update_password",
+    "InvalidCurrentPasswordError",
 ]
