@@ -25,6 +25,11 @@ from services.kpis_maestro_service import (
     delete_kpi,
 )
 
+from services.kpis_query_service import (
+    query_kpis,
+    get_kpi_by_name,
+)
+
 __all__ = [
     "login",
     "logout",
@@ -56,4 +61,6 @@ __all__ = [
     "create_kpi",
     "update_kpi",
     "delete_kpi",
+    "query_kpis",
+    "get_kpi_by_name",
 ]

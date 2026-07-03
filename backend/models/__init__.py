@@ -19,6 +19,7 @@ from models.mv_diagnostico_stock import DiagnosticoStock
 from models.mv_diagnostico_publicaciones import DiagnosticoPublicaciones
 from models.tarjeta_model import Tarjeta
 from models.kpis_maestro_model import KpiMaestro
+from models.v_diagnostico_vendedores_semaforo import DiagnosticoVendedoresSemaforo
 
 __all__ = [
     "Base",
@@ -42,4 +43,5 @@ __all__ = [
     "DiagnosticoPublicaciones",
     "Tarjeta",
     "KpiMaestro",
+    "DiagnosticoVendedoresSemaforo",
 ]

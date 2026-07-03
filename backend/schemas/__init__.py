@@ -34,6 +34,11 @@ from schemas.kpis_maestro_schema import (
     KpiMaestroResponse,
 )
 
+from schemas.kpis_query_schema import (
+    KpiQueryItem,
+    KpiQueryResponse,
+)
+
 __all__ = [
     "LoginRequest",
     "LogoutRequest",
@@ -66,4 +71,6 @@ __all__ = [
     "KpiMaestroCreate",
     "KpiMaestroUpdate",
     "KpiMaestroResponse",
+    "KpiQueryItem",
+    "KpiQueryResponse",
 ]

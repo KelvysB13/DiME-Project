@@ -14,6 +14,7 @@
 -- las restricciones de claves foráneas.
 
 DROP VIEW IF EXISTS v_diagnostico_vendedores_semaforo CASCADE;
+DROP TABLE IF EXISTS kpis_vendedor_personalizado CASCADE;
 
 DROP MATERIALIZED VIEW IF EXISTS mv_diagnostico_stock CASCADE;
 DROP MATERIALIZED VIEW IF EXISTS mv_diagnostico_ads CASCADE;
@@ -1103,7 +1104,32 @@ ON CONFLICT (nombre_kpi) DO UPDATE SET
     texto_peligro = EXCLUDED.texto_peligro,
     prioridad = EXCLUDED.prioridad;
    
-    CREATE OR REPLACE VIEW v_diagnostico_vendedores_semaforo AS
+-- ==============================================================================
+-- Personalización de Umbrales por Vendedor
+-- ==============================================================================
+-- Permite sobrescribir los umbrales globales de kpis_maestro para un vendedor
+-- específico. Si no hay fila aquí, se usan los valores de kpis_maestro.
+
+CREATE TABLE IF NOT EXISTS kpis_vendedor_personalizado (
+    id_kpi INTEGER NOT NULL,
+    id_vendedor INTEGER NOT NULL,
+    umbral_verde_inf NUMERIC(10, 4),
+    umbral_verde_sup NUMERIC(10, 4),
+    umbral_amarillo_inf NUMERIC(10, 4),
+    umbral_amarillo_sup NUMERIC(10, 4),
+    texto_ideal VARCHAR(50),
+    texto_alerta VARCHAR(100),
+    texto_peligro VARCHAR(50),
+    PRIMARY KEY (id_kpi, id_vendedor),
+    FOREIGN KEY (id_kpi) REFERENCES kpis_maestro(id_kpi),
+    FOREIGN KEY (id_vendedor) REFERENCES vendedor(id_vendedor)
+);
+
+-- ==============================================================================
+-- Vista de Semáforo de Diagnóstico
+-- ==============================================================================
+
+CREATE OR REPLACE VIEW v_diagnostico_vendedores_semaforo AS
 WITH metricas_unificadas AS (
     -- 1. Reputación
     SELECT r.id AS id_vendedor, u.nombre_kpi, u.valor_numerico, u.valor_texto
