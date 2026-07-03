@@ -2,7 +2,7 @@
 from sqlalchemy.orm import Session
 from models.vendedor_model import Vendedor
 from schemas import LoginRequest, TokenResponse, LogoutRequest
-from auth.password_handler import verify_password
+from auth.hash_handler import verify_hash
 from auth.jwt_handler import create_access_token, ALGORITHM
 from core.config import settings
 
@@ -19,7 +19,7 @@ def login(db: Session, payload: LoginRequest) -> TokenResponse:
 
     vendedor = db.query(Vendedor).filter(Vendedor.email == payload.email).first()
 
-    if not vendedor or not verify_password(payload.password.get_secret_value(), vendedor.password):
+    if not vendedor or not verify_hash(payload.password.get_secret_value(), vendedor.password):
         raise InvalidCredentialsError()
 
     if not vendedor.esta_activo:

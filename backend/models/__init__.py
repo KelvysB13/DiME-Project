@@ -17,6 +17,7 @@ from models.mv_diagnostico_finanzas import DiagnosticoFinanzas
 from models.mv_diagnostico_ads import DiagnosticoAds
 from models.mv_diagnostico_stock import DiagnosticoStock
 from models.mv_diagnostico_publicaciones import DiagnosticoPublicaciones
+from models.tarjeta_model import Tarjeta
 
 __all__ = [
     "Base",
@@ -38,4 +39,5 @@ __all__ = [
     "DiagnosticoAds",
     "DiagnosticoStock",
     "DiagnosticoPublicaciones",
+    "Tarjeta",
 ]
