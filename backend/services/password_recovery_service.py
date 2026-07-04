@@ -3,7 +3,7 @@ import jwt
 from datetime import timedelta
 from sqlalchemy.orm import Session
 from models.vendedor_model import Vendedor
-from auth.password_handler import hash_password
+from auth.hash_handler import hash_data
 from auth.jwt_handler import create_access_token, ALGORITHM
 from core.config import settings
 
@@ -54,5 +54,5 @@ def reset_password(db: Session, token: str, new_password: str) -> None:
     if not vendedor:
         raise InvalidResetTokenError()
     
-    vendedor.password = hash_password(new_password)
+    vendedor.password = hash_data(new_password)
     db.commit()
