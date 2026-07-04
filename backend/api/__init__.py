@@ -12,6 +12,7 @@ from api.update_password_router import router as update_password_router
 from api.kpis_maestro_router import router as kpis_maestro_router
 from api.kpis_query_router import router as kpis_query_router
 from api.mv_refresh_router import router as mv_refresh_router
+from api.plan_router import router as plan_router
 
 api_router = APIRouter()
 
@@ -28,3 +29,4 @@ api_router.include_router(update_password_router, prefix="", tags=["Cuenta"])
 api_router.include_router(kpis_maestro_router, prefix="", tags=["KPIs Maestro"])
 api_router.include_router(kpis_query_router, prefix="", tags=["Diagnostico"])
 api_router.include_router(mv_refresh_router, prefix="", tags=["Diagnostico"])
+api_router.include_router(plan_router, prefix="", tags=["Planes"])
