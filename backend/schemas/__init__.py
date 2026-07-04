@@ -28,6 +28,17 @@ from schemas.diagnostico_schema import (
     MetricaCalidadPublicacion,
 )
 
+from schemas.kpis_maestro_schema import (
+    KpiMaestroCreate,
+    KpiMaestroUpdate,
+    KpiMaestroResponse,
+)
+
+from schemas.kpis_query_schema import (
+    KpiQueryItem,
+    KpiQueryResponse,
+)
+
 __all__ = [
     "LoginRequest",
     "LogoutRequest",
@@ -57,4 +68,9 @@ __all__ = [
     "UserInfo",
     "AccountDeletionResponse",
     "UpdatePasswordRequest",
+    "KpiMaestroCreate",
+    "KpiMaestroUpdate",
+    "KpiMaestroResponse",
+    "KpiQueryItem",
+    "KpiQueryResponse",
 ]
