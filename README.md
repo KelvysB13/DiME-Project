@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img src="backend/assets/img/DiME_Banner.png" alt="DiME Banner" width="100%">
+  <img src="assets/images/DiME_Banner.png" alt="DiME Banner" width="100%">
 </p>
 
 **Sistema de Diagnostico Automatizado para Vendedores de Mercado Libre**
