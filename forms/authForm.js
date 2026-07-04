@@ -28,7 +28,7 @@ async function renovarAccessToken()
 
         if (response.ok) 
         {
-            localStorage.setItem('token', data.access_token);
+            localStorage.setItem('access_token', data.access_token);
             return data.access_token;
         } 
 

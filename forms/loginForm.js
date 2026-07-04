@@ -52,7 +52,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         if (response.ok) 
         {
             const data = await response.json().catch(() => ({}));
-            if (data && data.access_token) localStorage.setItem('token', data.access_token);
+            if (data && data.access_token) localStorage.setItem('access_token', data.access_token);
             window.location.href = '/me/dashboard';
         } 
         

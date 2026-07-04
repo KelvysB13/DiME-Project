@@ -10,7 +10,8 @@ let state = {
   sellers: {},
   publications: [],
   filteredPublications: [],
-  currentUser: null
+  currentUser: null,
+  usingMockData: false
 };
 
 function getToken() {
@@ -344,10 +345,82 @@ function renderFilteredPublications() {
   `).join('');
 }
 
+function adaptDashboardData(apiData) {
+  const reputacion = apiData.reputacion || {};
+  const negocio = apiData.negocio || {};
+  const costos = apiData.costos || {};
+  const stock = apiData.stock || {};
+  const pagina = apiData.pagina || {};
+  
+  return {
+    id: apiData.tipo_plan || 1,
+    user_name: apiData.nombre_tienda || 'Vendedor',
+    nombre_tienda: apiData.nombre_tienda || 'Mi Tienda',
+    email: '',
+    codigo_pais: apiData.codigo_pais || 'AR',
+    moneda_local: apiData.codigo_pais === 'VE' ? 'USD' : (apiData.codigo_pais === 'AR' ? 'ARS' : 'USD'),
+    tipo_plan: apiData.tipo_plan || 1,
+    reputacion: {
+      nivel_reputacion: reputacion.nivel || 'yellow',
+      insignia: reputacion.insignia || 'Sin insignia',
+      total_reclamos: reputacion.total_reclamos || 0,
+      total_canceladas: reputacion.total_canceladas || 0,
+      total_mediaciones: reputacion.total_mediaciones || 0,
+      total_envios_incorrectos: 0,
+      tasa_reclamos: reputacion.tasa_reclamos || 0.0
+    },
+    negocio: {
+      ventas_brutas_moneda_local: negocio.ventas_brutas_moneda_local || 0.0,
+      unidades_vendidas: negocio.unidades_vendidas || 0,
+      visitas_totales: negocio.visitas_totales || 0,
+      ventas_concretadas: negocio.ventas_concretadas || 0
+    },
+    costos: {
+      ventas_cobradas_total: costos.ventas_cobradas_total || 0.0,
+      neto_recibido: costos.neto_recibido || 0.0,
+      cargos_por_venta: costos.cargos_por_venta || 0.0,
+      costos_envio: costos.costos_envio || 0.0,
+      inversion_ads: costos.inversion_ads || 0.0,
+      descuento_reputacion: 0
+    },
+    stock_full: {
+      puntaje_calidad: stock.puntaje_calidad || 0,
+      espacios_p_asignados: stock.espacios_p_asignados || 0,
+      espacios_g_asignados: 0,
+      productos_no_aptos_venta: stock.productos_no_aptos_venta || 0,
+      productos_sin_rotacion: stock.productos_sin_rotacion || 0,
+      productos_antiguedad: 0
+    },
+    mi_pagina: {
+      tiene_banner: pagina.tiene_banner || false,
+      tiene_logo: pagina.tiene_logo || false,
+      tiene_carruseles: pagina.tiene_carruseles || false,
+      categories_organizadas: pagina.categorias_organizadas || false
+    },
+    alertas: [
+      ...(stock.productos_sin_rotacion > 0 ? [{ nivel: 'high', mensaje: `${stock.productos_sin_rotacion} productos sin rotación` }] : []),
+      ...(stock.puntaje_calidad < 80 ? [{ nivel: 'medium', mensaje: 'Puntaje de calidad bajo' }] : [])
+    ],
+    categorias: [
+      { nombre: 'General', ventas: 100, margen: 0, color: 'primary' }
+    ],
+    publicaciones: (apiData.publicaciones || []).map(p => ({
+      titulo: p.titulo,
+      ml_item_id: p.ml_item_id,
+      tipo_publicacion: p.tipo_publicacion,
+      estado_publicacion: p.estado_publicacion,
+      visitas: p.visitas,
+      ventas: p.ventas,
+      calidad: p.puntaje_calidad || 0
+    })),
+    metabaseCharts: []
+  };
+}
+
 function renderMetabaseFilter() {
   const container = document.getElementById('metabase-filter');
   container.innerHTML = '';
-  Object.values(MOCK_SELLERS).forEach(s => {
+  Object.values(state.sellers).forEach(s => {
     const btn = document.createElement('button');
     btn.className = 'metabase-filter-btn' + (state.selectedSellerId === s.id ? ' active' : '');
     btn.textContent = s.user_name + ' (' + s.metabaseCharts.length + ')';
@@ -364,11 +437,14 @@ function renderMetabaseFilter() {
 function renderMetabaseCharts() {
   const container = document.getElementById('metabase-charts');
   const countEl = document.getElementById('metabase-chart-count');
-  const seller = MOCK_SELLERS[state.selectedSellerId];
+  const seller = state.sellers[state.selectedSellerId];
+  const metabaseSection = document.getElementById('metabaseSection');
   if (!seller || !seller.metabaseCharts || !seller.metabaseCharts.length) {
-    container.innerHTML = '<p class="metabase-empty">Selecciona un vendedor para ver sus gráficos.</p>';
+    if (metabaseSection) metabaseSection.style.display = 'none';
+    container.innerHTML = '<p class="metabase-empty">No hay gráficos de Metabase configurados para este vendedor.</p>';
     countEl.textContent = '0 gráficos'; return;
   }
+  if (metabaseSection) metabaseSection.style.display = 'block';
   countEl.textContent = seller.metabaseCharts.length + ' gráficos';
   container.innerHTML = seller.metabaseCharts.map(ch => `
     <div class="metabase-chart-card">
@@ -380,7 +456,7 @@ function renderMetabaseCharts() {
 
 function updateDashboard(sellerId) {
   state.selectedSellerId = sellerId;
-  const seller = MOCK_SELLERS[sellerId];
+  const seller = state.sellers[sellerId];
   if (seller) {
     const welcomeNameNode = document.getElementById('welcome-store-name');
     if (welcomeNameNode) {
@@ -408,15 +484,51 @@ function updateDashboard(sellerId) {
   renderMetabaseFilter();
   renderMetabaseCharts();
   document.getElementById('update-timestamp').textContent = 'Actualizado: ' + new Date().toLocaleString('es');
+  document.getElementById('data-source-label').textContent = state.usingMockData ? ' • Mock Data' : '';
   document.getElementById('loadingSpinner').style.display = 'none';
   document.getElementById('dashboardContent').style.display = 'block';
 }
 
 async function loadDashboard() {
   try {
-    try { throw new Error('API no disponible — mock data'); } catch (e) { console.warn('[DiME]', e.message); }
-    const firstId = Object.keys(MOCK_SELLERS)[0];
-    updateDashboard(Number(firstId));
+    document.getElementById('loadingSpinner').style.display = 'block';
+    document.getElementById('dashboardContent').style.display = 'none';
+    
+    let userInfo = null;
+    try {
+      userInfo = await apiFetch('/general-information');
+      state.currentUser = userInfo;
+    } catch (e) {
+      console.warn('Error fetching general-information:', e.message);
+    }
+    
+    let dashData = null;
+    try {
+      dashData = await apiFetch('/dashboard');
+    } catch (e) {
+      console.warn('Error fetching dashboard data, falling back to mock:', e.message);
+    }
+    
+    let activeSeller;
+    if (dashData) {
+      activeSeller = adaptDashboardData(dashData);
+      if (userInfo) {
+        activeSeller.user_name = userInfo.user_name;
+        activeSeller.nombre_tienda = userInfo.nombre_tienda;
+        activeSeller.email = userInfo.email;
+      }
+      state.sellers = { [activeSeller.id]: activeSeller };
+      state.selectedSellerId = activeSeller.id;
+      state.usingMockData = false;
+    } else {
+      console.warn('[DiME] Usando datos mock debido a fallo en la API');
+      state.sellers = MOCK_SELLERS;
+      state.selectedSellerId = Number(Object.keys(MOCK_SELLERS)[0]);
+      activeSeller = state.sellers[state.selectedSellerId];
+      state.usingMockData = true;
+    }
+    
+    updateDashboard(state.selectedSellerId);
   } catch (err) {
     document.getElementById('loadingSpinner').innerHTML = `
       <div class="error-message">
