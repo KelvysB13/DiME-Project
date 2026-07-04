@@ -1,4 +1,7 @@
 const apiBase = '/api';
+const METABASE_DIAG_DASHBOARDS = {
+  ventas: 'http://localhost:3000/public/dashboard/63e3a3e8-395f-4f79-af4c-1010793fc00d'
+};
 const PLAN_MAP = { 1: 'Gratuito', 2: 'Pro', 3: 'Enterprise' };
 const REPUTATION_COLORS = {
   green: { color: '#10B981', label: 'Excelente' },
@@ -20,6 +23,40 @@ function getToken() {
 
 function getRefreshToken() {
   return localStorage.getItem('refresh_token') || sessionStorage.getItem('refresh_token');
+}
+
+function decodeJwtPayload(token) {
+  try {
+    const base64 = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+    const json = decodeURIComponent(atob(base64).split('').map(c =>
+      '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+    ).join(''));
+    return JSON.parse(json);
+  } catch {
+    return null;
+  }
+}
+
+function getVendedorId() {
+  const token = getToken();
+  if (!token) return null;
+  const payload = decodeJwtPayload(token);
+  return payload ? payload.sub : null;
+}
+
+function loadDiagnosticoEmbeds() {
+  const vendedorId = getVendedorId();
+  const emptyEl = document.getElementById('diag-ventas-empty');
+  const embedEl = document.getElementById('diag-ventas-embed');
+  const iframe = document.getElementById('diag-ventas-iframe');
+  if (!vendedorId) {
+    emptyEl.style.display = 'block';
+    embedEl.style.display = 'none';
+    return;
+  }
+  iframe.src = `${METABASE_DIAG_DASHBOARDS.ventas}?idvendedor=${vendedorId}#bordered=true&titled=true`;
+  emptyEl.style.display = 'none';
+  embedEl.style.display = 'block';
 }
 
 async function apiFetch(url, options = {}) {
@@ -581,4 +618,5 @@ document.addEventListener('DOMContentLoaded', () => {
   const token = getToken();
   if (!token) console.warn('[DiME] Sin token — mostrando datos mock');
   loadDashboard();
+  loadDiagnosticoEmbeds();
 });

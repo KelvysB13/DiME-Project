@@ -231,7 +231,10 @@
               <div class="section-card">
                 <h3 style="font-size:14px; font-weight:700; color:var(--primary); margin-bottom:6px;">Análisis de Ventas y Rentabilidad</h3>
                 <p style="font-size:12px; color:var(--text-secondary); line-height: 1.5;">Evaluación de márgenes brutos, netos y balance financiero del canal.</p>
-                <div class="metabase-placeholder">[Dashboards embebidos de Metabase / Textos analíticos en desarrollo]</div>
+                <div id="diag-ventas-empty" class="metabase-placeholder">Inicia sesión para ver tu diagnóstico de ventas y rentabilidad.</div>
+                <div id="diag-ventas-embed" class="metabase-diag-embed" style="display:none">
+                  <iframe id="diag-ventas-iframe" src="" loading="lazy" allowtransparency></iframe>
+                </div>
               </div>
             </div>
 
