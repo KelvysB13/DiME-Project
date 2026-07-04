@@ -11,6 +11,7 @@ from api.checkout_router import router as checkout_router
 from api.update_password_router import router as update_password_router
 from api.kpis_maestro_router import router as kpis_maestro_router
 from api.kpis_query_router import router as kpis_query_router
+from api.mv_refresh_router import router as mv_refresh_router
 
 api_router = APIRouter()
 
@@ -26,3 +27,4 @@ api_router.include_router(checkout_router, prefix="/payment", tags=["Checkout"])
 api_router.include_router(update_password_router, prefix="", tags=["Cuenta"])
 api_router.include_router(kpis_maestro_router, prefix="", tags=["KPIs Maestro"])
 api_router.include_router(kpis_query_router, prefix="", tags=["Diagnostico"])
+api_router.include_router(mv_refresh_router, prefix="", tags=["Diagnostico"])
