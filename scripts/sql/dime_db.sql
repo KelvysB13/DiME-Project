@@ -95,8 +95,8 @@ CREATE TABLE IF NOT EXISTS vendedor (
     
     -- Relaciones con tablas maestras
     codigo_pais VARCHAR(2) NOT NULL,  -- País donde opera el vendedor (FK -> pais)
-    moneda_local VARCHAR(3) NOT NULL,  -- Moneda en la que factura (FK -> moneda)
-    tipo_plan INTEGER,                 -- Plan SaaS contratado (FK -> plan), se asigna al hacer checkout
+    moneda_local VARCHAR(3) NOT NULL, -- Moneda en la que factura (FK -> moneda)
+    tipo_plan INTEGER,                -- Plan SaaS contratado (FK -> plan), se asigna al hacer checkout
     
     -- Datos de autenticación y conexión con Mercado Libre
     email VARCHAR(255) NOT NULL UNIQUE, -- Correo electrónico del vendedor (único en el sistema)

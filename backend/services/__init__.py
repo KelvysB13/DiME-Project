@@ -6,6 +6,7 @@ from services.payment_method_service import update_payment_method, PaymentMethod
 from services.checkout_service import checkout, CheckoutError
 from services.general_information_service import get_user_info
 from services.account_deletion_service import delete_account, AccountDeletionError
+from services.password_recovery_service import request_password_recovery, reset_password, InvalidResetTokenError
 from services.update_password_service import update_password, InvalidCurrentPasswordError
 
 from services.diagnostico_service import (
@@ -36,6 +37,9 @@ __all__ = [
     "InvalidCredentialsError",
     "InactiveAccountError",
     "InvalidTokenError",
+    "request_password_recovery",
+    "reset_password",
+    "InvalidResetTokenError",
     "get_dashboard",
     "get_personal_data",
     "UserNotFoundError",
