@@ -3,6 +3,7 @@ from schemas.register_schema import RegisterRequest, PreRegisterResponse
 from schemas.login_schema import LoginRequest
 from schemas.token_schema import TokenRequest, TokenResponse
 from schemas.logout_schema import LogoutRequest, LogoutResponse
+from schemas.password_recovery_schema import PasswordRecoveryRequest, PasswordRecoveryResponse, ResetPasswordRequest, ResetPasswordResponse
 from schemas.payment_method_schema import PaymentMethodRequest, PaymentMethodResponse
 from schemas.checkout_schema import CheckoutRequest, CheckoutResponse
 
@@ -28,10 +29,25 @@ from schemas.diagnostico_schema import (
     MetricaCalidadPublicacion,
 )
 
+from schemas.kpis_maestro_schema import (
+    KpiMaestroCreate,
+    KpiMaestroUpdate,
+    KpiMaestroResponse,
+)
+
+from schemas.kpis_query_schema import (
+    KpiQueryItem,
+    KpiQueryResponse,
+)
+
 __all__ = [
     "LoginRequest",
     "LogoutRequest",
     "LogoutResponse",
+    "PasswordRecoveryRequest", 
+    "PasswordRecoveryResponse", 
+    "ResetPasswordRequest", 
+    "ResetPasswordResponse",
     "TokenRequest",
     "TokenResponse",
     "DashboardResponse",
@@ -57,4 +73,9 @@ __all__ = [
     "UserInfo",
     "AccountDeletionResponse",
     "UpdatePasswordRequest",
+    "KpiMaestroCreate",
+    "KpiMaestroUpdate",
+    "KpiMaestroResponse",
+    "KpiQueryItem",
+    "KpiQueryResponse",
 ]
