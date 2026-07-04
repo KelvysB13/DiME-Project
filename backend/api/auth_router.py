@@ -37,13 +37,16 @@ def logout(payload: LogoutRequest, db: Session = Depends(get_db)):
 
 @router.post("/password-recovery", response_model=PasswordRecoveryResponse, status_code=status.HTTP_200_OK)
 def password_recovery(payload: PasswordRecoveryRequest, db: Session = Depends(get_db)):
+
     token = request_password_recovery(db, payload.email)
     return PasswordRecoveryResponse(reset_token=token)
 
 @router.post("/reset-password", response_model=ResetPasswordResponse, status_code=status.HTTP_200_OK)
 def reset_password(payload: ResetPasswordRequest, db: Session = Depends(get_db)):
+
     try:
         reset_password_service(db, payload.token, payload.new_password.get_secret_value())
         return ResetPasswordResponse()
+    
     except InvalidResetTokenError:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Token inválido o expirado")
