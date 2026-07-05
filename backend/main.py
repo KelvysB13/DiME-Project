@@ -22,6 +22,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 app.include_router(api_router, prefix="/api")
 
 app.mount("/assets", StaticFiles(directory=str(BASE_DIR / "assets")), name="assets")
-app.mount("/forms", StaticFiles(directory=str(BASE_DIR / "forms")), name="forms")
+app.mount("/controllers", StaticFiles(directory=str(BASE_DIR / "controllers")), name="controllers")
 
 app.include_router(frontend_router)
