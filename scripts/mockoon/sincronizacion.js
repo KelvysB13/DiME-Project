@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
     
     // --- VARIABLES DE ESTADO Y CONFIGURACIÓN ---
-    const API_FASTAPI = 'http://127.0.0.1:8000/api'; // Ajusta esto según el prefijo de tus rutas en FastAPI
+    const API_FASTAPI = 'http://127.0.0.1:8000/api'; 
     const API_PYTHON_METRICAS = 'http://localhost:8080/api';
     const API_MOCKOON = 'http://localhost:3001/api';
 
@@ -108,16 +108,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Convertimos mes y año a enteros estandarizados como pide Pydantic
-            const payload = {
-                nombre_titular: nombre_titular,
-                numero_tarjeta: numero_tarjeta,
-                mes_caducidad: parseInt(mes, 10),
-                anio_caducidad: parseInt(anio, 10),
-                cvv: cvv
-            };
+            // 1. Construimos el payload extrayendo los valores exactos de tu HTML
+const payload = {
+    pre_token: preTokenGlobal, // Se inyecta la variable de la fase 1
+    id_plan: 2, // Lo fijamos en 1 porque no hay selección de planes en el HTML actual
+    nombre_titular: document.getElementById("nombre_titular").value,
+    numero_tarjeta: document.getElementById("numero_tarjeta").value,
+    mes_caducidad: parseInt(document.getElementById("mes_caducidad").value, 10),
+    anio_caducidad: parseInt(document.getElementById("anio_caducidad").value, 10),
+    cvv: document.getElementById("cvv").value
+};
 
-            const response = await fetch(`${API_FASTAPI}/auth/method`, {
-                method: 'PUT',
+
+            const response = await fetch(`${API_FASTAPI}/payment/checkout`, {
+                method: 'POST', // Cambiamos PUT por POST
                 headers: { 
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${preTokenGlobal}` // Inyección del Token de la Fase 1
