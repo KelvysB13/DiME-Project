@@ -33,23 +33,20 @@ def guardar_metricas():
 
         # Desempaquetamos los bloques según tu JSON real de Mockoon
         basicos = payload.get('datos_basicos', {})
-        negocio = payload.get('metricas_negocio', {})
-        costo = payload.get('metricas_costo', {})
-        reputacion = payload.get('metricas_reputacion', {})
-        stock_full = payload.get('metricas_stock_full', {})
-        mi_pagina = payload.get('metricas_mi_pagina', {})
+        negocio = payload.get('metrica_negocio', {})
+        costo = payload.get('metrica_costo', {})
+        reputacion = payload.get('metrica_reputacion', {})
+        stock_full = payload.get('metrica_stock_full', {})
+        mi_pagina = payload.get('metrica_mi_pagina', {})
 
         print(f"📥 [BACKEND] Procesando e-commerce de: {basicos.get('nombre_tienda', 'Desconocido')}")
 
         plan_map = {
-            "free": 1,
-            "gratuito": 1,
-            "plan gratuito": 1,
-            "pro": 2,
-            "plan pro": 2,
-            "enterprise": 3,
+            "Básico": 2,
+            "Plan básico": 2,
+            "Premium": 3,
             "premium": 3,
-            "plan enterprise": 3
+            "Plan Premium": 3
         }
         
         # Extraemos lo que mande Mockoon, lo pasamos a minúsculas y limpiamos espacios
