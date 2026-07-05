@@ -15,6 +15,7 @@ pydantic[email]==2.13.4
 psycopg==3.3.4
 psycopg-binary==3.3.4
 sqlalchemy==2.0.40
+supabase>=2.31.0
 
 # --- Autenticación ---
 PyJWT==2.13.0
