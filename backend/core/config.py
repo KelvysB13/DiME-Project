@@ -1,7 +1,11 @@
-﻿from pathlib import Path
+from pathlib import Path
 from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
+    
+    supabase_url: str
+    supabase_key: str
+    supabase_project_url: str
     
     database_url: str
 
