@@ -294,22 +294,9 @@
     { id: 2, nombre_plan: 'Premium', precio_mensual: 80, limite_publicaciones: 9999, limite_metricas_dias: 365, descripcion: 'Plan premium con acceso completo y soporte prioritario.' }
   ];
 
-  // Fallback local: mismo shape que la respuesta de GET /api/master-kpis, usado solo si la API no responde.
-  let MOCK_KPI_RANGES = [
-    { id_kpi: 5, dimension: 'Negocio', nombre_kpi: 'cvr_global', operador_logico: 'RANGO', umbral_verde_inf: 5, umbral_verde_sup: null, umbral_amarillo_inf: 2, umbral_amarillo_sup: 5, texto_ideal: null, texto_alerta: null, texto_peligro: null, prioridad: 'alta' },
-    { id_kpi: 6, dimension: 'Negocio', nombre_kpi: 'margen_neto', operador_logico: 'RANGO', umbral_verde_inf: 20, umbral_verde_sup: null, umbral_amarillo_inf: 10, umbral_amarillo_sup: 20, texto_ideal: null, texto_alerta: null, texto_peligro: null, prioridad: 'alta' },
-    { id_kpi: 7, dimension: 'Negocio', nombre_kpi: 'ticket_promedio', operador_logico: 'RANGO', umbral_verde_inf: 50, umbral_verde_sup: null, umbral_amarillo_inf: 20, umbral_amarillo_sup: 50, texto_ideal: null, texto_alerta: null, texto_peligro: null, prioridad: 'media' },
-    { id_kpi: 8, dimension: 'Negocio', nombre_kpi: 'roas', operador_logico: 'RANGO', umbral_verde_inf: 4, umbral_verde_sup: null, umbral_amarillo_inf: 2, umbral_amarillo_sup: 4, texto_ideal: null, texto_alerta: null, texto_peligro: null, prioridad: 'alta' },
-    { id_kpi: 9, dimension: 'Stock Full', nombre_kpi: 'dead_stock_rate', operador_logico: 'RANGO', umbral_verde_inf: 0, umbral_verde_sup: 10, umbral_amarillo_inf: 10, umbral_amarillo_sup: 25, texto_ideal: null, texto_alerta: null, texto_peligro: null, prioridad: 'media' },
-    { id_kpi: 10, dimension: 'Stock Full', nombre_kpi: 'puntaje_calidad', operador_logico: 'RANGO', umbral_verde_inf: 80, umbral_verde_sup: 100, umbral_amarillo_inf: 60, umbral_amarillo_sup: 80, texto_ideal: null, texto_alerta: null, texto_peligro: null, prioridad: 'alta' },
-    { id_kpi: 11, dimension: 'Stock Full', nombre_kpi: 'overstock_rate', operador_logico: 'RANGO', umbral_verde_inf: 0, umbral_verde_sup: 15, umbral_amarillo_inf: 15, umbral_amarillo_sup: 30, texto_ideal: null, texto_alerta: null, texto_peligro: null, prioridad: 'media' },
-    { id_kpi: 12, dimension: 'Publicaciones', nombre_kpi: 'cvr_publicacion', operador_logico: 'RANGO', umbral_verde_inf: 5, umbral_verde_sup: null, umbral_amarillo_inf: 2, umbral_amarillo_sup: 5, texto_ideal: null, texto_alerta: null, texto_peligro: null, prioridad: 'media' },
-    { id_kpi: 13, dimension: 'Publicaciones', nombre_kpi: 'puntaje_calidad_pub', operador_logico: 'RANGO', umbral_verde_inf: 80, umbral_verde_sup: 100, umbral_amarillo_inf: 60, umbral_amarillo_sup: 80, texto_ideal: null, texto_alerta: null, texto_peligro: null, prioridad: 'media' },
-    { id_kpi: 14, dimension: 'Publicaciones', nombre_kpi: 'pct_catalogo_completo', operador_logico: 'RANGO', umbral_verde_inf: 80, umbral_verde_sup: null, umbral_amarillo_inf: 50, umbral_amarillo_sup: 80, texto_ideal: null, texto_alerta: null, texto_peligro: null, prioridad: 'baja' }
-  ];
   let KPI_RANGOS = [];
-  let usingMockKpis = false;
   let kpiRangosLoaded = false;
+  let kpiRangosError = null;
 
     let nextVendedorId = 7;
   let nextPlanId = 3;
@@ -418,11 +405,11 @@
     try {
       const data = await apiFetch('/master-kpis');
       KPI_RANGOS = data || [];
-      usingMockKpis = false;
+      kpiRangosError = null;
     } catch (e) {
-      console.warn('Error obteniendo /master-kpis, usando datos mock:', e.message);
-      KPI_RANGOS = MOCK_KPI_RANGES;
-      usingMockKpis = true;
+      console.error('Error obteniendo /master-kpis:', e.message);
+      KPI_RANGOS = [];
+      kpiRangosError = e.message || 'Error al obtener los KPIs';
     }
     kpiRangosLoaded = true;
     renderKpiRangos();
@@ -433,6 +420,17 @@
   function renderKpiRangos() {
     const container = document.getElementById('section-metricas');
     if (!kpiRangosLoaded) { loadKpiRangos(); return; }
+    if (kpiRangosError) {
+      container.innerHTML = `
+        <div class="crud-header">
+          <h2>Configuración de Rangos KPI</h2>
+        </div>
+        <div class="empty-state" style="color:var(--danger)">
+          Error al cargar los KPIs: ${kpiRangosError}
+          <div style="margin-top:12px"><button class="btn-edit" onclick="loadKpiRangos()">Reintentar</button></div>
+        </div>`;
+      return;
+    }
     const filtered = KPI_RANGOS;
     container.innerHTML = `
       <div class="crud-header">
@@ -463,7 +461,7 @@
           </div>
         </div>`;
       }).join('') : '<p class="empty-state">No hay KPIs configurados.</p>'}
-      <div style="margin-top:14px;text-align:right;font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace">${KPI_RANGOS.length} indicadores configurados${usingMockKpis ? ' · Mock Data' : ''}</div>`;
+      <div style="margin-top:14px;text-align:right;font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace">${KPI_RANGOS.length} indicadores configurados</div>`;
   }
 
   function switchSection(section) {
@@ -629,13 +627,6 @@
       texto_peligro: strOrNull('f-texto_peligro'),
       prioridad: strOrNull('f-prioridad') || k.prioridad
     };
-    if (usingMockKpis) {
-      Object.assign(k, payload);
-      showToast('Rangos actualizados (mock, sin conexión a la API)', 'success');
-      closeModal();
-      renderKpiRangos();
-      return;
-    }
     try {
       const updated = await apiFetch(`/master-kpis/${k.id_kpi}`, {
         method: 'PUT',
