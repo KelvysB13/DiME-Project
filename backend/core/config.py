@@ -6,8 +6,6 @@ class Settings(BaseSettings):
     supabase_url: str
     supabase_key: str
     supabase_project_url: str
-    
-    database_url: str
 
     app_host: str = "0.0.0.0"
     app_port: int = 8000
