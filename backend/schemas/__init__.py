@@ -40,6 +40,16 @@ from schemas.kpis_query_schema import (
     KpiQueryResponse,
 )
 
+from schemas.mockoon_schema import (
+    MetricsRequest,
+    MetricsResponse,
+    BasicData,
+    BusinessMetrics,
+    CostMetrics,
+    ReputationMetrics,
+    FullStockMetrics,
+)
+
 __all__ = [
     "LoginRequest",
     "LogoutRequest",
@@ -78,4 +88,11 @@ __all__ = [
     "KpiMaestroResponse",
     "KpiQueryItem",
     "KpiQueryResponse",
+    "MetricsRequest",
+    "MetricsResponse",
+    "BasicData",
+    "BusinessMetrics",
+    "CostMetrics",
+    "ReputationMetrics",
+    "FullStockMetrics",
 ]
