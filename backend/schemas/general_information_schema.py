@@ -18,3 +18,7 @@ class UserInfo(BaseModel):
         ..., min_length=1, max_length=60,
         description="Nombre del país (ej. México, Argentina, Colombia)"
     )
+    es_admin: bool = Field(
+        default=False,
+        description="Indica si el vendedor tiene rol de administrador de la plataforma"
+    )

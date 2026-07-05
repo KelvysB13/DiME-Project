@@ -685,7 +685,19 @@
     btn.addEventListener('click', function() { switchSection(this.dataset.section); });
   });
 
-  switchSection('vendedores');
+  async function checkAdminAccess() {
+    if (!getToken()) { window.location.href = '/auth/login'; return; }
+    try {
+      const info = await apiFetch('/general-information');
+      if (!info || !info.es_admin) { window.location.href = '/me/dashboard'; return; }
+    } catch (e) {
+      window.location.href = '/auth/login';
+      return;
+    }
+    switchSection('vendedores');
+  }
+
+  checkAdminAccess();
 </script>
 </body>
 </html>

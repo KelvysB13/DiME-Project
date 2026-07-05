@@ -106,8 +106,9 @@ CREATE TABLE IF NOT EXISTS vendedor (
     refresh_token TEXT,                 -- Token para renovar el access_token sin pedir credenciales
     tiempo_token TIMESTAMPTZ,           -- Fecha/hora de expiración/emisión del token
     esta_activo BOOLEAN NOT NULL DEFAULT TRUE, -- Indica si la cuenta está activa (false = deshabilitada)
+    es_admin BOOLEAN NOT NULL DEFAULT FALSE,   -- Indica si el vendedor tiene rol de administrador de la plataforma
     fecha_creacion TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP, -- Fecha de registro del vendedor
-    
+
     -- Restricciones de Integridad Referencial (Foreign Keys)
     CONSTRAINT fk_vendedor_pais FOREIGN KEY (codigo_pais) REFERENCES pais(codigo_pais),
     CONSTRAINT fk_vendedor_moneda FOREIGN KEY (moneda_local) REFERENCES moneda(codigo_moneda),

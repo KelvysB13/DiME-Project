@@ -26,4 +26,5 @@ def get_user_info(db: Session, vendedor_id: int) -> UserInfo:
         nombre_tienda=vendedor.nombre_tienda,
         email=vendedor.email,
         nombre_pais=nombre_pais,
+        es_admin=vendedor.es_admin,
     )

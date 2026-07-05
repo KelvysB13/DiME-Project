@@ -32,4 +32,6 @@ class Vendedor(Base):
 
     esta_activo = Column(Boolean, nullable=False, default=True)
 
+    es_admin = Column(Boolean, nullable=False, default=False)
+
     fecha_creacion = Column(DateTime(timezone=True), nullable=False, server_default="CURRENT_TIMESTAMP")

@@ -49,12 +49,30 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             body: JSON.stringify({ email, password })
         });
 
-        if (response.ok) 
+        if (response.ok)
         {
             const data = await response.json().catch(() => ({}));
             if (data && data.access_token) localStorage.setItem('access_token', data.access_token);
-            window.location.href = '/me/dashboard';
-        } 
+
+            let esAdmin = false;
+            try
+            {
+                const infoResponse = await fetch(`${API_URL}/general-information`, {
+                    headers: { 'Authorization': `Bearer ${data.access_token}` }
+                });
+                if (infoResponse.ok)
+                {
+                    const info = await infoResponse.json();
+                    esAdmin = !!info.es_admin;
+                }
+            }
+            catch (e)
+            {
+                console.warn('No se pudo obtener el rol del usuario:', e.message);
+            }
+
+            window.location.href = esAdmin ? '/admin/dashboard' : '/me/dashboard';
+        }
         
         else 
         {
