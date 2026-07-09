@@ -38,6 +38,8 @@ DROP TABLE IF EXISTS plan CASCADE;
 DROP TABLE IF EXISTS moneda CASCADE;
 DROP TABLE IF EXISTS pais CASCADE;
 
+DROP EXTENSION IF EXISTS pg_cron CASCADE;
+
 -- ==============================================================================
 -- TABLAS MAESTRAS (CATÁLOGOS DE REFERENCIA)
 -- ==============================================================================
@@ -604,25 +606,24 @@ INSERT INTO metrica_negocio (id_vendedor, fecha_inicio_periodo, fecha_fin_period
 --   - v7 (BR, Full): costos_envio = 0 porque usa Full, pero paga cargos_envio_full
 --   - v3, v6: sin inversión en ads (inversion_ads = 0)
 INSERT INTO metrica_costo (id_vendedor, ventas_cobradas_total, neto_recibido, cargos_por_venta, costos_envio, inversion_ads, otros_cargos, cargos_envio_full, descuento_reputacion) VALUES 
-(1, 1500000.00, 1100000.00, 225000.00, 100000.00, 50000.00, 5000.00, 20000.00, 0.00),
-(2, 450000.00, 330000.00, 67500.00, 40000.00, 10000.00, 2500.00, 0.00, 0.00),
-(3, 240000.00, 180000.00, 36000.00, 20000.00, 0.00, 4000.00, 0.00, 0.00),
-(4, 800000.00, 580000.00, 120000.00, 60000.00, 30000.00, 10000.00, 0.00, 0.00),
-(5, 450000.00, 290000.00, 67500.00, 50000.00, 20000.00, 5000.00, 0.00, 17500.00),
-(6, 15000.00, 11000.00, 2250.00, 1500.00, 0.00, 250.00, 0.00, 0.00),
-(7, 210000.00, 150000.00, 31500.00, 0.00, 15000.00, 3500.00, 10000.00, 0.00),
-(8, 90000.00, 65000.00, 13500.00, 8000.00, 2000.00, 1500.00, 0.00, 0.00),
-(9, 220000.00, 160000.00, 33000.00, 15000.00, 8000.00, 4000.00, 0.00, 0.00),
-(10, 1700000.00, 1250000.00, 255000.00, 150000.00, 30000.00, 15000.00, 0.00, 0.00),
-(11, 2000000.00, 1400000.00, 300000.00, 200000.00, 50000.00, 50000.00, 0.00, 0.00),
-(12, 1200000.00, 850000.00, 180000.00, 120000.00, 20000.00, 30000.00, 0.00, 0.00),
-(13, 45000000.00, 32000000.00, 6750000.00, 4000000.00, 1500000.00, 750000.00, 0.00, 0.00),
-(14, 7500000.00, 5500000.00, 1125000.00, 500000.00, 200000.00, 175000.00, 0.00, 0.00),
-(15, 16000000.00, 10500000.00, 2400000.00, 1500000.00, 500000.00, 300000.00, 0.00, 800000.00),
-(16, 190000.00, 125000.00, 28500.00, 20000.00, 10000.00, 6500.00, 0.00, 0.00),
-(17, 2250.00, 1600.00, 337.50, 200.00, 50.00, 62.50, 0.00, 0.00),
-(18, 3150000.00, 2300000.00, 472500.00, 200000.00, 120000.00, 57500.00, 0.00, 0.00);
-
+(1, 1500000.00, 1100000.00, 225000.00, 100000.00, 2350.00, 5000.00, 20000.00, 0.00),
+(2, 450000.00, 330000.00, 67500.00, 40000.00, 840.00, 2500.00, 0.00, 0.00),
+(3, 240000.00, 180000.00, 36000.00, 20000.00, 150.00, 4000.00, 0.00, 0.00),
+(4, 800000.00, 580000.00, 120000.00, 60000.00, 3120.00, 10000.00, 0.00, 0.00),
+(5, 450000.00, 290000.00, 67500.00, 50000.00, 1950.00, 5000.00, 0.00, 17500.00),
+(6, 15000.00, 11000.00, 2250.00, 1500.00, 45.00, 250.00, 0.00, 0.00),
+(7, 210000.00, 150000.00, 31500.00, 0.00, 1250.00, 3500.00, 10000.00, 0.00),
+(8, 90000.00, 65000.00, 13500.00, 8000.00, 320.00, 1500.00, 0.00, 0.00),
+(9, 220000.00, 160000.00, 33000.00, 15000.00, 980.00, 4000.00, 0.00, 0.00),
+(10, 1700000.00, 1250000.00, 255000.00, 150000.00, 3850.00, 15000.00, 0.00, 0.00),
+(11, 2000000.00, 1400000.00, 300000.00, 200000.00, 2700.00, 50000.00, 0.00, 0.00),
+(12, 1200000.00, 850000.00, 180000.00, 120000.00, 1640.00, 30000.00, 0.00, 0.00),
+(13, 45000000.00, 32000000.00, 6750000.00, 4000000.00, 4000.00, 750000.00, 0.00, 0.00),
+(14, 7500000.00, 5500000.00, 1125000.00, 500000.00, 3500.00, 175000.00, 0.00, 0.00),
+(15, 16000000.00, 10500000.00, 2400000.00, 1500000.00, 3950.00, 300000.00, 0.00, 800000.00),
+(16, 190000.00, 125000.00, 28500.00, 20000.00, 620.00, 6500.00, 0.00, 0.00),
+(17, 2250.00, 1600.00, 337.50, 200.00, 15.00, 62.50, 0.00, 0.00),
+(18, 3150000.00, 2300000.00, 472500.00, 200000.00, 3100.00, 57500.00, 0.00, 0.00);
 
 -- ==============================================================================
 -- 6. INSERCIÓN DE MÉTRICAS DE STOCK FULL (18 registros)
@@ -775,6 +776,10 @@ INSERT INTO metrica_calidad_publicacion (id_publicacion, cantidad_fotos, tiene_v
 -- Todas las vistas incluyen COALESCE + NULLIF para evitar división por cero.
 -- Se refrescan lote mediante:   REFRESH MATERIALIZED VIEW CONCURRENTLY <name>
 -- ==============================================================================
+
+-- ACTIVACIÓN DE LA HERRAMIENTA AUTOMÁTICA
+-- (Activa el "reloj" interno de la base de datos si no lo estaba ya)
+CREATE EXTENSION IF NOT EXISTS pg_cron;
 
 -- ==============================================================================
 -- 1. Reputación y Calidad
@@ -1030,7 +1035,159 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_stock_vendedor
     ON mv_diagnostico_stock (id);
 
 
--- Las tablas se crean con CREATE TABLE IF NOT EXISTS al inicio del script
+-- ==============================================================================
+-- CAPA 2: TABLAS PARA ALMACENAR EL HISTÓRICO TIME-SERIES
+-- ==============================================================================
+
+-- 1. Histórico Reputación
+CREATE TABLE IF NOT EXISTS hist_diagnostico_reputacion (
+    id_hist_reputacion SERIAL PRIMARY KEY,
+    id_vendedor BIGINT NOT NULL REFERENCES vendedor(id_vendedor) ON DELETE CASCADE,
+    tasa_reclamos NUMERIC,
+    tasa_cancelaciones NUMERIC,
+    tasa_mediaciones NUMERIC,
+    tasa_envios_incorrectos NUMERIC,
+    nivel_reputacion TEXT,
+    insignia TEXT,
+    fecha_captura DATE,
+    fecha_ingesta TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_hist_reputacion_vendedor ON hist_diagnostico_reputacion (id_vendedor);
+CREATE INDEX IF NOT EXISTS idx_hist_reputacion_fecha ON hist_diagnostico_reputacion (fecha_ingesta);
+
+-- 2. Histórico Finanzas
+CREATE TABLE IF NOT EXISTS hist_diagnostico_finanzas (
+    id_hist_finanzas SERIAL PRIMARY KEY,
+    id_vendedor BIGINT NOT NULL REFERENCES vendedor(id_vendedor) ON DELETE CASCADE,
+    cvr_global NUMERIC,
+    margen_neto_real NUMERIC,
+    ticket_promedio NUMERIC,
+    carga_total_costos NUMERIC,
+    ratio_intencion_compra NUMERIC,
+    descuento_reputacion NUMERIC,
+    tasa_cobro_efectivo NUMERIC,
+    crecimiento_mom NUMERIC,
+    ventas_periodo_actual NUMERIC,
+    fecha_inicio_periodo DATE,
+    fecha_fin_periodo DATE,
+    fecha_ingesta TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_hist_finanzas_vendedor ON hist_diagnostico_finanzas (id_vendedor);
+CREATE INDEX IF NOT EXISTS idx_hist_finanzas_fecha ON hist_diagnostico_finanzas (fecha_ingesta);
+
+-- 3. Histórico Publicaciones
+CREATE TABLE IF NOT EXISTS hist_diagnostico_publicaciones (
+    id_hist_publicaciones SERIAL PRIMARY KEY,
+    id_vendedor BIGINT NOT NULL REFERENCES vendedor(id_vendedor) ON DELETE CASCADE,
+    total_publicaciones BIGINT,
+    cvr_publicacion NUMERIC,
+    pct_catalogo_completo NUMERIC,
+    pct_publicaciones_con_video NUMERIC,
+    fecha_ingesta TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_hist_publicaciones_vendedor ON hist_diagnostico_publicaciones (id_vendedor);
+CREATE INDEX IF NOT EXISTS idx_hist_publicaciones_fecha ON hist_diagnostico_publicaciones (fecha_ingesta);
+
+-- 4. Histórico Publicidad
+CREATE TABLE IF NOT EXISTS hist_diagnostico_ads (
+    id_hist_ads SERIAL PRIMARY KEY,
+    id_vendedor BIGINT NOT NULL REFERENCES vendedor(id_vendedor) ON DELETE CASCADE,
+    roas NUMERIC,
+    acos NUMERIC,
+    inversion_ads_sobre_ventas NUMERIC,
+    inversion_ads NUMERIC,
+    fecha_ingesta TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_hist_ads_vendedor ON hist_diagnostico_ads (id_vendedor);
+CREATE INDEX IF NOT EXISTS idx_hist_ads_fecha ON hist_diagnostico_ads (fecha_ingesta);
+
+-- 5. Histórico Stock Full
+CREATE TABLE IF NOT EXISTS hist_diagnostico_stock (
+    id_hist_stock SERIAL PRIMARY KEY,
+    id_vendedor BIGINT NOT NULL REFERENCES vendedor(id_vendedor) ON DELETE CASCADE,
+    dead_stock_rate NUMERIC,
+    antiguedad_riesgo NUMERIC,
+    productos_no_aptos NUMERIC,
+    overstock_rate NUMERIC,
+    utilizacion_espacios NUMERIC,
+    puntaje_calidad NUMERIC,
+    fecha_ingesta TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+CREATE INDEX IF NOT EXISTS idx_hist_stock_vendedor ON hist_diagnostico_stock (id_vendedor);
+CREATE INDEX IF NOT EXISTS idx_hist_stock_fecha ON hist_diagnostico_stock (fecha_ingesta);
+
+
+-- ==============================================================================
+-- CAPA 3: PROCESO DE ORQUESTACIÓN (El procedimiento manual corregido)
+-- ==============================================================================
+
+CREATE OR REPLACE PROCEDURE sp_sincronizar_diagnostico_dime()
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    -- --------------------------------------------------------------------------
+    -- PASO 1: Refrescar Capa Actual (Vistas Materializadas en modo Concurrente)
+    -- --------------------------------------------------------------------------
+    RAISE NOTICE 'Iniciando refresco de vistas actuales...';
+    REFRESH MATERIALIZED VIEW CONCURRENTLY mv_diagnostico_reputacion;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY mv_diagnostico_finanzas;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY mv_diagnostico_publicaciones;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY mv_diagnostico_ads;
+    REFRESH MATERIALIZED VIEW CONCURRENTLY mv_diagnostico_stock;
+
+    -- --------------------------------------------------------------------------
+    -- PASO 2: Persistir fotos en las tablas históricas
+    -- --------------------------------------------------------------------------
+    RAISE NOTICE 'Volcando datos hacia tablas históricas...';
+    
+    -- Histórico de Reputación
+    INSERT INTO hist_diagnostico_reputacion (id_vendedor, tasa_reclamos, tasa_cancelaciones, tasa_mediaciones, tasa_envios_incorrectos, nivel_reputacion, insignia, fecha_captura)
+    SELECT id, tasa_reclamos, tasa_cancelaciones, tasa_mediaciones, tasa_envios_incorrectos, nivel_reputacion, insignia, fecha_captura 
+    FROM mv_diagnostico_reputacion;
+
+    -- Histórico de Finanzas
+    INSERT INTO hist_diagnostico_finanzas (id_vendedor, cvr_global, margen_neto_real, ticket_promedio, carga_total_costos, ratio_intencion_compra, descuento_reputacion, tasa_cobro_efectivo, crecimiento_mom, ventas_periodo_actual, fecha_inicio_periodo, fecha_fin_periodo)
+    SELECT id, cvr_global, margen_neto_real, ticket_promedio, carga_total_costos, ratio_intencion_compra, descuento_reputacion, tasa_cobro_efectivo, crecimiento_mom, ventas_periodo_actual, fecha_inicio_periodo, fecha_fin_periodo 
+    FROM mv_diagnostico_finanzas;
+
+    -- Histórico de Publicaciones
+    INSERT INTO hist_diagnostico_publicaciones (id_vendedor, total_publicaciones, cvr_publicacion, pct_catalogo_completo, pct_publicaciones_con_video)
+    SELECT id, total_publicaciones, cvr_publicacion, pct_catalogo_completo, pct_publicaciones_con_video 
+    FROM mv_diagnostico_publicaciones;
+
+    -- Histórico de Publicidad
+    INSERT INTO hist_diagnostico_ads (id_vendedor, roas, acos, inversion_ads_sobre_ventas, inversion_ads)
+    SELECT id, roas, acos, inversion_ads_sobre_ventas, inversion_ads 
+    FROM mv_diagnostico_ads;
+
+    -- Histórico de Stock
+    INSERT INTO hist_diagnostico_stock (id_vendedor, dead_stock_rate, antiguedad_riesgo, productos_no_aptos, overstock_rate, utilizacion_espacios, puntaje_calidad)
+    SELECT id, dead_stock_rate, antiguedad_riesgo, productos_no_aptos, overstock_rate, utilizacion_espacios, puntaje_calidad 
+    FROM mv_diagnostico_stock;
+
+    RAISE NOTICE 'Sincronización finalizada exitosamente.';
+END;
+$$;
+
+
+-- ==============================================================================
+-- CAPA 4: PROGRAMADOR AUTOMÁTICO (El disparador de producción)
+-- ==============================================================================
+
+-- Removemos limpiamente cualquier tarea previa que apunte a este procedimiento
+SELECT cron.unschedule(jobid) 
+FROM cron.job 
+WHERE command LIKE '%sp_sincronizar_diagnostico_dime%';
+
+-- Agendamos la tarea final en producción usando la sintaxis de 2 argumentos:
+-- Todos los días a las 2:00 AM.
+SELECT cron.schedule(
+    '0 2 * * *',                             
+    'CALL sp_sincronizar_diagnostico_dime();'
+);
+
+-- LLAMADA
+-- CALL sp_sincronizar_diagnostico_dime();
 
 -- ==============================================================================
 -- 1. TABLA MAESTRA GLOBAL (Configuración única para todo el sistema)
@@ -1063,7 +1220,7 @@ VALUES
     ('Reputación', 'Tasa de Cancelaciones', '<', NULL, 2.0000, NULL, 5.0000, NULL, NULL, NULL, 'CRÍTICO'),
     ('Reputación', 'Tasa de Mediaciones', '<', NULL, 0.2500, NULL, 0.5000, NULL, NULL, NULL, 'CRÍTICO'),
     ('Reputación', 'Tasa de Envíos Incorrectos', '<', NULL, 10.0000, NULL, 12.0000, NULL, NULL, NULL, 'ALTO'),
-    ('Reputación', 'Nivel de Reputación', '=', NULL, NULL, NULL, NULL, 'verde', 'amarillo,naranja', 'rojo', 'ALTO'),
+    ('Reputación', 'Nivel de Reputación', '=', NULL, NULL, NULL, NULL, 'green', 'yellow,orange', 'red', 'ALTO'),
     ('Reputación', 'Insignia Mercado Líder', '=', NULL, NULL, NULL, NULL, 'platinum', 'silver,gold', 'sin_insignia', 'MEDIO'),
 
     -- Bloque 2: Ventas y Finanzas (Límites inferiores para operadores '>')

@@ -13,6 +13,7 @@ from api.kpis_maestro_router import router as kpis_maestro_router
 from api.kpis_query_router import router as kpis_query_router
 from api.mv_refresh_router import router as mv_refresh_router
 from api.mockoon_router import router as guardar_metricas_router
+from api.historiales_routes import router as historiales_router
 
 api_router = APIRouter()
 
@@ -30,3 +31,4 @@ api_router.include_router(kpis_maestro_router, prefix="", tags=["KPIs Maestro"])
 api_router.include_router(kpis_query_router, prefix="", tags=["Diagnostico"])
 api_router.include_router(mv_refresh_router, prefix="", tags=["Diagnostico"])
 api_router.include_router(guardar_metricas_router, prefix="", tags=["Mockoon"])
+api_router.include_router(historiales_router, prefix="", tags=["Historial"])
