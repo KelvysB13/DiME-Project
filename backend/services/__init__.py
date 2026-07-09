@@ -31,6 +31,24 @@ from services.kpis_query_service import (
     get_kpi_by_name,
 )
 
+from services.historiales_service import (
+    create_hist_reputacion,
+    get_hist_reputacion,
+    get_ultima_hist_reputacion,
+    create_hist_finanzas,
+    get_hist_finanzas,
+    get_ultima_hist_finanzas,
+    create_hist_publicaciones,
+    get_hist_publicaciones,
+    get_ultima_hist_publicaciones,
+    create_hist_ads,
+    get_hist_ads,
+    get_ultima_hist_ads,
+    create_hist_stock,
+    get_hist_stock,
+    get_ultima_hist_stock,
+)
+
 __all__ = [
     "login",
     "logout",
@@ -67,4 +85,19 @@ __all__ = [
     "delete_kpi",
     "query_kpis",
     "get_kpi_by_name",
+    "create_hist_reputacion",
+    "get_hist_reputacion",
+    "get_ultima_hist_reputacion",
+    "create_hist_finanzas",
+    "get_hist_finanzas",
+    "get_ultima_hist_finanzas",
+    "create_hist_publicaciones",
+    "get_hist_publicaciones",
+    "get_ultima_hist_publicaciones",
+    "create_hist_ads",
+    "get_hist_ads",
+    "get_ultima_hist_ads",
+    "create_hist_stock",
+    "get_hist_stock",
+    "get_ultima_hist_stock",
 ]

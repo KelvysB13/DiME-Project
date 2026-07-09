@@ -40,6 +40,24 @@ from schemas.kpis_query_schema import (
     KpiQueryResponse,
 )
 
+from schemas.mockoon_schema import (
+    MetricsRequest,
+    MetricsResponse,
+    BasicData,
+    BusinessMetrics,
+    CostMetrics,
+    ReputationMetrics,
+    FullStockMetrics,
+)
+
+from schemas.historiales_schemas import (
+    HistDiagnosticoReputacion,
+    HistDiagnosticoFinanzas,
+    HistDiagnosticoPublicaciones,
+    HistDiagnosticoAds,
+    HistDiagnosticoStock,
+)
+
 __all__ = [
     "LoginRequest",
     "LogoutRequest",
@@ -78,4 +96,16 @@ __all__ = [
     "KpiMaestroResponse",
     "KpiQueryItem",
     "KpiQueryResponse",
+    "MetricsRequest",
+    "MetricsResponse",
+    "BasicData",
+    "BusinessMetrics",
+    "CostMetrics",
+    "ReputationMetrics",
+    "FullStockMetrics",
+    "HistDiagnosticoReputacion",
+    "HistDiagnosticoFinanzas",
+    "HistDiagnosticoPublicaciones",
+    "HistDiagnosticoAds",
+    "HistDiagnosticoStock",
 ]

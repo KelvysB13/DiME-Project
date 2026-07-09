@@ -286,10 +286,11 @@ a {
 .welcome-title {
 
     color: #031c3c;
-    font-size: 0.8125rem;
+    font-size: 0.9rem;
     font-weight: 600;
     letter-spacing: 0.12em;
     margin-bottom: 0.25rem;
+    padding-bottom: 0.25rem;
     text-align: center;
     text-transform: uppercase;
 }
@@ -310,6 +311,13 @@ a {
     gap: 0.5rem;
     transition: border-color 0.15s;
 }
+
+.form-group + .form-group {
+    margin-top: 1.5rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
 .form-group:focus-within {
 
     border-color: #031c3c;
@@ -320,6 +328,25 @@ a {
     height: 1.25rem;
     color: #a3a3a3;
     flex-shrink: 0;
+}
+
+.card-brand {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 36px;
+    height: 24px;
+    border-radius: 4px;
+    background: #f5f5f5;
+    flex-shrink: 0;
+}
+
+.card-brand svg,
+.card-brand img {
+    display: block;
+    max-width: 40px;
+    max-height: 18px;
 }
 .form-group input {
 
@@ -335,6 +362,7 @@ a {
 
     color: #a3a3a3;
 }
+
 .form-group.password input {
 
     font-weight: 500;
@@ -358,6 +386,10 @@ a {
     width: 1.25rem;
     height: 1.25rem;
 }
+.buttons-wrap {
+    margin-top: 2rem;
+}
+
 .buttons-wrap > * + * {
 
     margin-top: 0.75rem;
@@ -516,26 +548,19 @@ a {
 
     display: flex;
     align-items: center;
-    gap: 12px;
+    justify-content: center;
+    gap: 10px;
     margin-bottom: 16px;
     border-bottom: 1px solid #eee;
     padding-bottom: 12px;
 }
-.ml-logo-mock {
 
-    width: 32px;
-    height: 32px;
-    background: #FFF159;
-    /* Amarillo Mercado Libre */    border-radius: 50%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.ml-logo {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
 }
-.ml-logo-mock::after {
 
-    content: '🤝';
-    font-size: 14px;
-}
 .modal-header h3 {
 
     margin: 0;
@@ -608,3 +633,75 @@ a {
 }
 }
 
+/* =========================================
+   CORRECCIÓN CARD GRID (CENTRADOS EXACTOS)
+   ========================================= */
+.card-grid-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-top: 1.5rem;
+}
+
+/* Base común para las tres cajas del grid */
+.card-grid-row .form-group {
+    margin-top: 0 !important;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    height: 40px; 
+    justify-content: center;
+    align-items: center;
+    gap: 0 !important;
+}
+
+/* Caja del CVV con posicionamiento relativo para controlar el ícono */
+#cvv-group {
+    position: relative; 
+}
+
+/* Hacemos que el SVG flote a la izquierda sin empujar el texto */
+#cvv-group .input-icon {
+    position: absolute;
+    left: 8px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+}
+
+/* Alineación limpia para los tres inputs del grid */
+#mes_caducidad,
+#anio_caducidad,
+#cvv {
+    text-align: center;
+    width: 100%;
+    padding: 0;
+    margin: 0;
+}
+
+/* Compensación geométrica para MM y AA debido al espacio que ocupan las flechas a la derecha */
+#mes_caducidad, 
+#anio_caducidad {
+    -moz-appearance: number-input;
+    padding-left: 14px !important;
+}
+
+/* Spinners nativos para MM y AA */
+#mes_caducidad::-webkit-inner-spin-button,
+#mes_caducidad::-webkit-outer-spin-button,
+#anio_caducidad::-webkit-inner-spin-button,
+#anio_caducidad::-webkit-outer-spin-button {
+    opacity: 1;
+    cursor: pointer;
+}
+
+/* =========================================
+   ESTILOS PARA EL MULTI-STEP FORM (PAGOS)
+   ========================================= */
+#step-1-register, #step-2-payment, #step-3-connect {
+    animation: fadeIn 0.4s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}

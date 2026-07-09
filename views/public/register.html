@@ -67,62 +67,116 @@
             </div>
 
             <form class="login-form" id="registerForm">
-                <h2 class="welcome-title">CREAR CUENTA</h2>
-
-                <!-- CAMPO NOMBRE -->
-                <div class="form-group" id="nombre-group">
-                    <svg class="input-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
-                    </svg>
-                    <input type="text" id="nombre" placeholder="Nombre de la Tienda">
-                    <span class="field-error" id="nombre-error"></span>
-                </div>
-
-                <!-- CAMPO CORREO -->
-                <div class="form-group" id="email-group">
-                    <svg class="input-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
-                    </svg>
-                    <input type="email" id="email" placeholder="Correo Electrónico">
-                    <span class="field-error" id="email-error"></span>
-                </div>
-
-                <!-- CAMPO CONTRASEÑA -->
-                <div class="form-group password" id="password-group">
-                    <svg class="input-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
-                    </svg>
-                    <input type="password" id="password" placeholder="Contraseña">
-                    <button type="button" id="togglePassword" class="toggle-btn">
-                        <svg id="eyeIcon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
-                        </svg>
-                    </button>
-                    <span class="field-error" id="password-error"></span>
-                </div>
-
-                <!-- CAMPO USUARIO MERCADO LIBRE -->
-                <div class="form-group" id="usuario-ml-group">
-                    <svg class="input-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/>
-                    </svg>
-                    <input type="text" id="usuario_ml" placeholder="Usuario de Mercado Libre">
-                    <span class="field-error" id="usuario-ml-error"></span>
-                </div>
-
-                <div class="buttons-wrap">
-                    <button type="submit" id="btnRegistrar" class="btn-primary" disabled style="opacity: 0.5; cursor: not-allowed;">
-                        Registrar
-                    </button>
+                
+                <!-- PASO 1: DATOS BÁSICOS -->
+                <div id="step-1-register">
+                    <h2 class="welcome-title">CREAR CUENTA</h2>
                     
-                    <button type="button" id="connectML" class="btn-secondary">
-                        <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                    <div class="form-group" id="nombre-group">
+                        <svg class="input-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
                         </svg>
-                        Conectar con Mercado Libre
-                    </button>
+                        <input type="text" id="nombre" placeholder="Nombre de la Tienda">
+                    </div>
+
+                    <div class="form-group" id="email-group">
+                        <svg class="input-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+                        </svg>
+                        <input type="email" id="email" placeholder="Correo Electrónico">
+                    </div>
+
+                    <div class="form-group password" id="password-group">
+                        <svg class="input-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                        </svg>
+                        <input type="password" id="password" placeholder="Contraseña (Mín. 12 caracteres)">
+                        <button type="button" id="togglePassword" class="toggle-btn">
+                            <svg id="eyeIcon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/>
+                            </svg>
+                        </button>
+                    </div>
+
+                    <div class="form-group" id="usuario-ml-group">
+                        <svg class="input-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 3h1.386c.51 0 .955.343 1.087.835l.383 1.437M7.5 14.25a3 3 0 00-3 3h15.75m-12.75-3h11.218c1.121-2.3 2.1-4.684 2.924-7.138a60.114 60.114 0 00-16.536-1.84M7.5 14.25L5.106 5.272M6 20.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm12.75 0a.75.75 0 11-1.5 0 .75.75 0 011.5 0z"/>
+                        </svg>
+                        <input type="text" id="usuario_ml" placeholder="Usuario de Mercado Libre">
+                    </div>
+
+                    <div class="buttons-wrap">
+                        <button type="button" id="btnContinuarRegistro" class="btn-primary" onclick="handleRegister()">
+                            Continuar
+                        </button>
+                    </div>
                 </div>
+
+                <!-- PASO 2: MÉTODO DE PAGO (Oculto inicialmente) -->
+                <div id="step-2-payment" style="display: none;">
+                    <h2 class="welcome-title">MÉTODO DE PAGO</h2>
+                    <p style="text-align: center; font-size: 13px; color: #666; margin-bottom: 20px;">
+                        Ingresa las credenciales de tu tarjeta de credito para continuar con el registro.
+                    </p>
+
+                    <div class="form-group">
+                        <svg class="input-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/>
+                        </svg>
+                        <input type="text" id="nombre_titular" placeholder="Titular de la tarjeta">
+                    </div>
+
+                    <div class="form-group">
+                        <svg class="input-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25v10.5A2.25 2.25 0 004.5 19.5z"/>
+                        </svg>
+                        <input type="text" id="numero_tarjeta" placeholder="0000 0000 0000 0000" maxlength="19" inputmode="numeric" oninput="this.value=this.value.replace(/\D/g,'').slice(0,16).replace(/(\d{4})(?=\d)/g,'$1 '); detectCardBrand(this.value)">
+                        <span class="card-brand" id="cardBrand"></span>
+                    </div>
+
+                    <div class="card-grid-row">
+                        <div class="form-group grid-group" id="mes-group">
+                            <input type="number" id="mes_caducidad" placeholder="MM" min="1" max="12" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)">
+                        </div>
+                        <div class="form-group grid-group" id="anio-group">
+                            <input type="number" id="anio_caducidad" placeholder="AA" min="26" max="99" oninput="if(this.value.length > 2) this.value = this.value.slice(0,2)">
+                        </div>
+                        <div class="form-group grid-group" id="cvv-group">
+                            <svg class="input-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"/>
+                            </svg>
+                            <input type="text" id="cvv" placeholder="CVV" maxlength="3" inputmode="numeric" oninput="this.value=this.value.replace(/[^0-9]/g,'')">
+                        </div>
+                    </div>
+
+                    <div class="buttons-wrap">
+                        <button type="button" id="btnGuardarPago" class="btn-primary" onclick="handlePayment()">
+                            Guardar Tarjeta
+                        </button>
+                    </div>
+                </div>
+
+                <!-- PASO 3: CONEXIÓN ML (Oculto inicialmente) -->
+                <div id="step-3-connect" style="display: none; text-align: center;">
+                    <div id="success-icon" style="font-size: 48px; color: #10B981; margin-bottom: 10px;">✓</div>
+                    <h2 class="welcome-title" style="color: #10B981; margin-bottom: 5px;">¡Cuenta Creada!</h2>
+                    <p style="font-size: 14px; color: #555; margin-bottom: 25px;">
+                        Tu cuenta en DiME ha sido configurada. Ahora debes sincronizar tu tienda.
+                    </p>
+
+                    <div class="buttons-wrap">
+                        <button type="button" id="btnConnectML" class="btn-secondary" style="margin-top: 0;">
+                            <svg fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
+                            </svg>
+                            Conectar con Mercado Libre
+                        </button>
+                    </div>
+                </div>
+
+                <input type="hidden" id="pre_token" value="">
+                <input type="hidden" id="usuario_ml_hidden" value="">
 
                 <div id="mensaje" class="mensaje"></div>
 
@@ -130,15 +184,15 @@
 
         <div class="forgot-row">
                 ¿Ya tienes cuenta?
-                <a href="/auth/login">Inicia sesión</a>.
+                <a href="/auth/login">Inicia Sesión</a>.
             </div>
 
         </div> </div> <div id="oauthModal" class="modal-overlay" style="display: none;">
         <div class="modal-content">
-            <div class="modal-header">
-                <div class="ml-logo-mock"></div>
-                <h3>Autorización Requerida</h3>
-            </div>
+                <div class="modal-header">
+                    <img src="https://customers.twilio.com/content/dam/twilio-com/core-assets/customer-logos/m-o/mercado-libre.svg" alt="Mercado Libre" class="ml-logo">
+                    <h3>Autorización Requerida</h3>
+                </div>
             <div class="modal-body">
                 <p><strong>DiME</strong> solicita acceso a tu cuenta de Mercado Libre para:</p>
                 <ul class="permissions-list">
@@ -157,7 +211,7 @@
                 <div id="syncLoader" style="display: none; text-align: center; margin-top: 20px; padding: 10px 0;">
                     <div class="spinner"></div>
                     <p style="font-size: 13px; color: var(--text-muted); margin-top: 12px; font-weight: 500;">
-                        Obteniendo Access Token y sincronizando...
+                        Obteniendo metricas y sincronizando...
                     </p>
                 </div>
             </div>
@@ -213,9 +267,111 @@
         document.addEventListener('DOMContentLoaded', () => setTimeout(typeWriter, 400));
     </script>
 
-    <script src="/forms/registerForm.js"></script>
-    <script src="/scripts/mockoon/sincronizacion.js"></script>
-</body>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const API_FASTAPI = 'http://127.0.0.1:8000/api';
+            const mensajeDiv = document.getElementById('mensaje');
+            const step1 = document.getElementById('step-1-register');
+            const step2 = document.getElementById('step-2-payment');
 
+            const showMessage = (text, color) => {
+                mensajeDiv.style.display = 'block';
+                mensajeDiv.style.color = color;
+                mensajeDiv.innerText = text;
+            };
+
+            window.handleRegister = async () => {
+                const nombre_tienda = document.getElementById('nombre').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value;
+                const usuarioML = document.getElementById('usuario_ml').value.trim();
+                const btn = document.getElementById('btnContinuarRegistro');
+
+                if (!nombre_tienda || !email || !password || !usuarioML) {
+                    showMessage('Completa todos los campos.', 'red');
+                    return;
+                }
+
+                if (password.length < 12) {
+                    showMessage('La contraseña debe tener al menos 12 caracteres.', 'red');
+                    return;
+                }
+
+                const originalText = btn.innerHTML;
+                btn.innerHTML = 'Verificando...';
+                btn.disabled = true;
+
+                try {
+                    const response = await fetch(`${API_FASTAPI}/auth/register`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nombre_tienda, email, password }),
+                    });
+
+                    if (!response.ok) {
+                        const errorData = await response.json();
+                        throw new Error(errorData.detail || 'Error en el registro.');
+                    }
+
+                    const data = await response.json();
+
+                    document.getElementById('pre_token').value = data.pre_token;
+                    document.getElementById('usuario_ml_hidden').value = usuarioML;
+
+                    mensajeDiv.style.display = 'none';
+                    step1.style.display = 'none';
+                    step2.style.display = 'block';
+                } catch (error) {
+                    showMessage(error.message, 'red');
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                }
+            };
+        });
+    </script>
+
+    <script>
+        if (location.search.includes('dev')) {
+            document.getElementById('nombre').value = 'TestTienda';
+            document.getElementById('email').value = 'test@example.com';
+            document.getElementById('password').value = 'TestPassword123';
+            document.getElementById('usuario_ml').value = 'test_ml_user';
+            document.getElementById('nombre_titular').value = 'Test User';
+            document.getElementById('numero_tarjeta').value = '4111 1111 1111 1111';
+            document.getElementById('mes_caducidad').value = 12;
+            document.getElementById('anio_caducidad').value = 28;
+            document.getElementById('cvv').value = '123';
+
+            if (location.search.includes('dev-step2')) {
+                document.getElementById('pre_token').value = 'dev_pre_token_123';
+                document.getElementById('usuario_ml_hidden').value = 'test_ml_user';
+                document.getElementById('step-1-register').style.display = 'none';
+                document.getElementById('step-2-payment').style.display = 'block';
+            }
+        }
+    </script>
+
+    <script>
+        function detectCardBrand(value) {
+            const raw = value.replace(/\s/g, '');
+            const brandEl = document.getElementById('cardBrand');
+            if (!raw) { brandEl.innerHTML = ''; return; }
+
+            const first = raw[0];
+            const firstTwo = parseInt(raw.slice(0, 2), 10);
+            const firstFour = parseInt(raw.slice(0, 4), 10);
+
+            if (first === '4') {
+                brandEl.innerHTML = '<img src="https://upload.wikimedia.org/wikipedia/commons/5/5c/Visa_Inc._logo_%282021%E2%80%93present%29.svg" alt="Visa" height="18">';
+            } else if ((firstTwo >= 51 && firstTwo <= 55) || (firstFour >= 2221 && firstFour <= 2720)) {
+                brandEl.innerHTML = '<img src="https://upload.wikimedia.org/wikipedia/commons/a/a4/Mastercard_2019_logo.svg" alt="Mastercard" height="18">';
+            } else {
+                brandEl.innerHTML = '';
+            }
+        }
+    </script>
+
+    <script src="/controllers/paymentController.js"></script>
+    <script src="/controllers/syncController.js"></script>
 </body>
 
