@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, ForeignKey
+from sqlalchemy import Column, String, BigInteger, ForeignKey
 
 from models.base import Base
 
@@ -8,9 +8,9 @@ class Publicacion(Base):
 
     __tablename__ = "publicacion"
 
-    id_publicacion = Column(Integer, primary_key=True, autoincrement=True)
+    id_publicacion = Column(BigInteger, primary_key=True, autoincrement=True)
 
-    id_vendedor = Column(Integer, ForeignKey("vendedor.id_vendedor", ondelete="CASCADE"), nullable=False)
+    id_vendedor = Column(BigInteger, ForeignKey("vendedor.id_vendedor", ondelete="CASCADE"), nullable=False)
 
     ml_item_id = Column(String(20), nullable=False, unique=True)
 

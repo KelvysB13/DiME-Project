@@ -31,7 +31,6 @@ def request_password_recovery(db: Session, email: str) -> str | None:
         expires_delta=timedelta(minutes=RESET_TOKEN_EXPIRE_MINUTES),
     )
 
-    print(f"\n>>> Token de recuperacion para {email}: {token}\n")
     return token
 
 def reset_password(db: Session, token: str, new_password: str) -> None:

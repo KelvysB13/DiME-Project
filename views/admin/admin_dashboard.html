@@ -267,7 +267,6 @@
   function formatCurrency(val, d) { d = d || 2; if (val == null || isNaN(val)) return '-'; return parseFloat(val).toLocaleString('es', { minimumFractionDigits: d, maximumFractionDigits: d }); }
   function formatNumber(val) { if (val == null || isNaN(val)) return '-'; return parseInt(val).toLocaleString('es'); }
 
-  function getPaisName(code) { const p = PAISES.find(x => x.codigo === code); return p ? p.nombre : code; }
   function getMonedaName(code) { const m = MONEDAS.find(x => x.codigo === code); return m ? m.nombre : code; }
 
   function showToast(msg, type) {

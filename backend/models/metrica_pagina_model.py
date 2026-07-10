@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Boolean, DateTime, ForeignKey
+from sqlalchemy import Column, BigInteger, Boolean, DateTime, ForeignKey
 
 from models.base import Base
 
@@ -8,9 +8,9 @@ class Pagina(Base):
 
     __tablename__ = "metrica_mi_pagina"
 
-    id_metrica_pagina = Column(Integer, primary_key=True, autoincrement=True)
+    id_metrica_pagina = Column(BigInteger, primary_key=True, autoincrement=True)
 
-    id_vendedor = Column(Integer, ForeignKey("vendedor.id_vendedor"), nullable=False, unique=True)
+    id_vendedor = Column(BigInteger, ForeignKey("vendedor.id_vendedor"), nullable=False, unique=True)
 
     fecha_captura = Column(DateTime(timezone=True), nullable=False, server_default="CURRENT_TIMESTAMP")
 

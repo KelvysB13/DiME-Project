@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 from models.plan_model import Plan
 from schemas.plan_schema import PlanCreate, PlanUpdate, PlanResponse
 
@@ -25,8 +26,8 @@ def crear_plan(db: Session, payload: PlanCreate) -> PlanResponse:
     if existing:
         raise PlanNameAlreadyExistsError()
 
-    max_id = db.query(Plan.id).order_by(Plan.id.desc()).first()
-    new_id = (max_id[0] + 1) if max_id else 1
+    max_id = db.query(func.max(Plan.id)).scalar()
+    new_id = (max_id + 1) if max_id else 1
 
     plan = Plan(
         id=new_id,

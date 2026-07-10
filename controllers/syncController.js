@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const API_FASTAPI = 'http://127.0.0.1:8000/api';
+    const API_FASTAPI = '/api';
     const API_MOCKOON = 'http://localhost:3001/api';
 
     let syncCanceled = false;
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
             template.datos_basicos.email = email;
             delete template.datos_basicos.password;
 
-            const metricsRes = await fetch(`${API_FASTAPI}/moockon-data`, {
+            const metricsRes = await fetch(`${API_FASTAPI}/mockoon-data`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(template),

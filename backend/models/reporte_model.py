@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Text, Date, ForeignKey
+from sqlalchemy import Column, BigInteger, Text, Date, ForeignKey
 
 from sqlalchemy.dialects.postgresql import JSONB
 
@@ -10,9 +10,9 @@ class Reporte(Base):
 
     __tablename__ = "reporte_diagnostico"
 
-    id_reporte = Column(Integer, primary_key=True, autoincrement=True)
+    id_reporte = Column(BigInteger, primary_key=True, autoincrement=True)
 
-    id_vendedor = Column(Integer, ForeignKey("vendedor.id_vendedor"), nullable=False)
+    id_vendedor = Column(BigInteger, ForeignKey("vendedor.id_vendedor"), nullable=False)
 
     fecha_generacion = Column(Date, nullable=False, server_default="CURRENT_DATE")
 

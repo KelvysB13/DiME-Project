@@ -19,7 +19,6 @@ class InvalidTokenError(Exception):
 def login(db: Session, payload: LoginRequest) -> TokenResponse:
 
     vendedor = db.query(Vendedor).filter(Vendedor.email == payload.email).first()
-    print(f"[DEBUG] Vendedor query: {vendedor}")
 
     if vendedor:
         if not verify_hash(payload.password.get_secret_value(), vendedor.password):
@@ -32,10 +31,8 @@ def login(db: Session, payload: LoginRequest) -> TokenResponse:
         return TokenResponse(id_vendedor=vendedor.id_vendedor, access_token=access_token, token_type="bearer", expires_in=3600, role="vendedor")
 
     admin = db.query(Admin).filter(Admin.email == payload.email).first()
-    print(f"[DEBUG] Admin query: {admin}")
 
     if not admin or not verify_hash(payload.password.get_secret_value(), admin.password):
-        print(f"[DEBUG] Admin password check failed. Stored hash: {admin.password if admin else 'N/A'}")
         raise InvalidCredentialsError()
 
     if not admin.esta_activo:

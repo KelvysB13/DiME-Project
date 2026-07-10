@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Numeric
+from sqlalchemy import Column, BigInteger, String, Numeric
 
 from models.base import Base
 
@@ -7,7 +7,7 @@ class KpiMaestro(Base):
 
     __tablename__ = "kpis_maestro"
 
-    id_kpi = Column(Integer, primary_key=True, autoincrement=True)
+    id_kpi = Column(BigInteger, primary_key=True, autoincrement=True)
 
     dimension = Column(String(50), nullable=False)
 

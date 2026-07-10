@@ -1,49 +1,11 @@
--- ==============================================================================
 -- DIME.sql - Base de datos para diagnóstico de métricas de vendedores
--- ==============================================================================
 -- Este script crea el esquema de base de datos para una aplicación que
 -- consume métricas de Mercado Libre (ventas, reputación, costos, stock, etc.)
 -- y genera reportes de diagnóstico con plan de acción para cada vendedor.
--- ==============================================================================
 
 
--- ==============================================================================
--- DROP ALL (LIMPIEZA COMPLETA)
--- ==============================================================================
--- Elimina todos los objetos en orden inverso al de creación para respetar
--- las restricciones de claves foráneas.
-
-DROP VIEW IF EXISTS v_diagnostico_vendedores_semaforo CASCADE;
-DROP TABLE IF EXISTS kpis_vendedor_personalizado CASCADE;
-
-DROP MATERIALIZED VIEW IF EXISTS mv_diagnostico_stock CASCADE;
-DROP MATERIALIZED VIEW IF EXISTS mv_diagnostico_ads CASCADE;
-DROP MATERIALIZED VIEW IF EXISTS mv_diagnostico_publicaciones CASCADE;
-DROP MATERIALIZED VIEW IF EXISTS mv_diagnostico_finanzas CASCADE;
-DROP MATERIALIZED VIEW IF EXISTS mv_diagnostico_reputacion CASCADE;
-
-DROP TABLE IF EXISTS kpis_configuracion CASCADE;
-DROP TABLE IF EXISTS metrica_calidad_publicacion CASCADE;
-DROP TABLE IF EXISTS rendimiento_publicacion CASCADE;
-DROP TABLE IF EXISTS metrica_mi_pagina CASCADE;
-DROP TABLE IF EXISTS metrica_stock_full CASCADE;
-DROP TABLE IF EXISTS metrica_costo CASCADE;
-DROP TABLE IF EXISTS metrica_negocio CASCADE;
-DROP TABLE IF EXISTS metrica_reputacion CASCADE;
-DROP TABLE IF EXISTS reporte_diagnostico CASCADE;
-DROP TABLE IF EXISTS publicacion CASCADE;
-DROP TABLE IF EXISTS tarjeta CASCADE;
-DROP TABLE IF EXISTS admin CASCADE;
-DROP TABLE IF EXISTS vendedor CASCADE;
-DROP TABLE IF EXISTS plan CASCADE;
-DROP TABLE IF EXISTS moneda CASCADE;
-DROP TABLE IF EXISTS pais CASCADE;
-
-DROP EXTENSION IF EXISTS pg_cron CASCADE;
-
--- ==============================================================================
 -- TABLAS MAESTRAS (CATÁLOGOS DE REFERENCIA)
--- ==============================================================================
+
 -- Estas tablas almacenan datos de referencia que se usan como catálogos
 -- en toda la base de datos. No cambian frecuentemente.
 
@@ -80,9 +42,9 @@ CREATE TABLE IF NOT EXISTS plan (
 );
 
 
--- ==============================================================================
+
 -- TABLA: vendedor
--- ==============================================================================
+
 -- Propósito: Almacena los datos principales de cada vendedor registrado
 -- en la plataforma. Es la tabla central del esquema; todas las demás
 -- tablas de métricas apuntan a esta mediante foreign keys.
@@ -120,9 +82,9 @@ CREATE TABLE IF NOT EXISTS vendedor (
     CONSTRAINT chk_email_formato CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$')
 );
 
--- ==============================================================================
+
 -- TABLA: admin
--- ==============================================================================
+
 -- Propósito: Almacena los administradores del sistema.
 -- Los admins se crean directamente en la base de datos, no se registran
 -- desde la aplicación. Pueden iniciar sesión en el mismo endpoint que
@@ -158,9 +120,9 @@ CREATE TABLE IF NOT EXISTS tarjeta (
 );
 
 
--- ==============================================================================
+
 -- TABLA: publicacion
--- ==============================================================================
+
 -- Propósito: Almacena las publicaciones (anuncios) que cada vendedor tiene
 -- activas en Mercado Libre. Una publicación es un producto listado para
 -- la venta en la plataforma.
@@ -181,9 +143,9 @@ CREATE TABLE IF NOT EXISTS publicacion (
 );
 
 
--- ==============================================================================
+
 -- TABLA: reporte_diagnostico
--- ==============================================================================
+
 -- Propósito: Almacena los reportes generados automáticamente para cada
 -- vendedor. Cada reporte contiene un resumen ejecutivo del desempeño
 -- del vendedor en un período y un plan de acción en formato JSON con
@@ -205,9 +167,9 @@ CREATE TABLE IF NOT EXISTS reporte_diagnostico (
 );
 
 
--- ==============================================================================
+
 -- TABLA: metrica_reputacion
--- ==============================================================================
+
 -- Propósito: Almacena las métricas de reputación de cada vendedor.
 -- La reputación en Mercado Libre se calcula en base a reclamos,
 -- mediaciones, cancelaciones y envíos incorrectos.
@@ -232,9 +194,9 @@ CREATE TABLE IF NOT EXISTS metrica_reputacion (
 );
 
 
--- ==============================================================================
+
 -- TABLA: metrica_negocio
--- ==============================================================================
+
 -- Propósito: Almacena las métricas comerciales clave de cada vendedor.
 -- Contiene información sobre ventas (en moneda local y USD), visitas,
 -- intención de compra y precios promedio.
@@ -260,9 +222,9 @@ CREATE TABLE IF NOT EXISTS metrica_negocio (
 );
 
 
--- ==============================================================================
+
 -- TABLA: metrica_costo
--- ==============================================================================
+
 -- Propósito: Almacena el desglose de costos y comisiones que ML cobra
 -- a cada vendedor. Permite calcular el neto recibido después de todos
 -- los descuentos y entender dónde se están yendo los márgenes.
@@ -287,9 +249,9 @@ CREATE TABLE IF NOT EXISTS metrica_costo (
 );
 
 
--- ==============================================================================
+
 -- TABLA: metrica_stock_full
--- ==============================================================================
+
 -- Propósito: Almacena métricas del programa Full de Mercado Libre
 -- (logística administrada por ML). Los vendedores que participan en
 -- Full envían su stock a centros de distribución de ML.
@@ -313,9 +275,9 @@ CREATE TABLE IF NOT EXISTS metrica_stock_full (
 );
 
 
--- ==============================================================================
+
 -- TABLA: metrica_mi_pagina
--- ==============================================================================
+
 -- Propósito: Almacena métricas sobre la personalización de la página
 -- oficial del vendedor en Mercado Libre ("Mi Página").
 -- 
@@ -334,9 +296,9 @@ CREATE TABLE IF NOT EXISTS metrica_mi_pagina (
 );
 
 
--- ==============================================================================
+
 -- TABLA: rendimiento_publicacion
--- ==============================================================================
+
 -- Propósito: Almacena el rendimiento individual de cada publicación.
 -- Permite analizar qué publicaciones específicas están funcionando bien
 -- y cuáles necesitan optimización.
@@ -359,9 +321,9 @@ CREATE TABLE IF NOT EXISTS rendimiento_publicacion (
 );
 
 
--- ==============================================================================
+
 -- TABLA: metrica_calidad_publicacion
--- ==============================================================================
+
 -- Propósito: Almacena métricas de calidad de cada publicación.
 -- ML asigna un puntaje de calidad (0-100) basado en la cantidad de
 -- fotos, si tiene video, si las características están completas, etc.
@@ -379,9 +341,9 @@ CREATE TABLE IF NOT EXISTS metrica_calidad_publicacion (
   FOREIGN KEY (id_publicacion) REFERENCES publicacion(id_publicacion)
 );
 
--- ==============================================================================
+
 -- INSERCIÓN DE DATOS MAESTROS INICIALES
--- ==============================================================================
+
 -- Estos inserts cargan los catálogos de referencia necesarios para
 -- que la base de datos funcione correctamente.
 -- Usan ON CONFLICT DO NOTHING para poder ejecutar el script múltiples
@@ -418,9 +380,9 @@ INSERT INTO plan (id, nombre_plan, precio_mensual, limite_publicaciones, limite_
 ON CONFLICT (id) DO NOTHING;
 
 
--- ==============================================================================
+
 -- INSERCIÓN DE DATOS DE PRUEBA: VENDEDORES
--- ==============================================================================
+
 -- Se insertan 18 vendedores de prueba distribuidos en 6 países (3 por país).
 -- Cada vendedor tiene un plan distinto para poder probar todos los escenarios.
 -- El vendedor 6 (ferreteria_mx) está inactivo para probar ese caso de uso.
@@ -474,9 +436,9 @@ INSERT INTO vendedor (
 ('tecnologia_global_ve', 'Tecno Global VE', 'VE', 'USD', 3, 'admin@tecnoglobal.ve', '$2b$12$BOaz0rU8KunPMVkMoUxeBucHBzerLajhGbiEJu7jZLGsKqZESnb2e', 'acc_tk_18', 'ref_tk_18', CURRENT_TIMESTAMP, true);
 
 
--- ==============================================================================
+
 -- 1. INSERCIÓN DE PUBLICACIONES (25 publicaciones)
--- ==============================================================================
+
 -- Se insertan 25 publicaciones distribuidas entre los 18 vendedores.
 -- Algunos vendedores tienen 1 publicación y otros tienen 2 o 3, según
 -- su nivel de actividad.
@@ -514,9 +476,9 @@ INSERT INTO publicacion (id_vendedor, ml_item_id, titulo, tipo_publicacion, esta
 (18, 'MLV18181820', 'Mouse Inalámbrico Silencioso', 'classic', 'paused');
 
 
--- ==============================================================================
+
 -- 2. INSERCIÓN DE REPORTES DE DIAGNÓSTICO (18 reportes)
--- ==============================================================================
+
 -- Un reporte por cada vendedor. Cada reporte contiene:
 --   - resumen_ejecutivo: análisis en texto libre del desempeño mensual
 --   - plan_accion: tareas recomendadas en formato JSON para mejorar métricas
@@ -546,9 +508,9 @@ INSERT INTO reporte_diagnostico (id_vendedor, fecha_inicio_periodo, fecha_fin_pe
 (18, '2023-10-01', '2023-10-31', 'Ventas récord por campaña promocional.', '{"tarea1": "Preparar stock para el próximo mes"}');
 
 
--- ==============================================================================
+
 -- 3. INSERCIÓN DE MÉTRICAS DE REPUTACIÓN (18 registros)
--- ==============================================================================
+
 -- Cada vendedor tiene un nivel de reputación que depende de sus reclamos,
 -- mediaciones, cancelaciones y envíos incorrectos.
 -- 
@@ -582,9 +544,9 @@ INSERT INTO metrica_reputacion (id_vendedor, ventas_totales_periodo, total_recla
 (18, 4500, 12, 1, 8, 1, 'green', 'platinum');
 
 
--- ==============================================================================
+
 -- 4. INSERCIÓN DE MÉTRICAS DE NEGOCIO (18 registros)
--- ==============================================================================
+
 -- Métricas comerciales clave por vendedor.
 -- 
 -- Consistencias internas verificadas:
@@ -616,9 +578,9 @@ INSERT INTO metrica_negocio (id_vendedor, fecha_inicio_periodo, fecha_fin_period
 (18, '2023-10-01', '2023-10-31', 3150000.00, 3150000.00, 4600, 120000, 5000, 4500, 684.78, 700.00);
 
 
--- ==============================================================================
+
 -- 5. INSERCIÓN DE MÉTRICAS DE COSTO (18 registros)
--- ==============================================================================
+
 -- Desglose de comisiones y costos que ML descuenta de las ventas.
 -- 
 -- Fórmula: neto_recibido = ventas_cobradas_total - cargos_por_venta
@@ -650,9 +612,9 @@ INSERT INTO metrica_costo (id_vendedor, ventas_cobradas_total, neto_recibido, ca
 (17, 2250.00, 1600.00, 337.50, 200.00, 15.00, 62.50, 0.00, 0.00),
 (18, 3150000.00, 2300000.00, 472500.00, 200000.00, 3100.00, 57500.00, 0.00, 0.00);
 
--- ==============================================================================
+
 -- 6. INSERCIÓN DE MÉTRICAS DE STOCK FULL (18 registros)
--- ==============================================================================
+
 -- Métricas del programa Full de ML (logística administrada).
 -- Los vendedores con 0 en espacios no participan en Full.
 -- 
@@ -680,9 +642,9 @@ INSERT INTO metrica_stock_full (id_vendedor, espacios_p_asignados, espacios_g_as
 (18, 1000, 200, 96, 8, 35, 2, 80);
 
 
--- ==============================================================================
+
 -- 7. INSERCIÓN DE MÉTRICAS DE MI PÁGINA (18 registros)
--- ==============================================================================
+
 -- Indica qué elementos de personalización tiene configurado cada vendedor
 -- en su página oficial de Mercado Libre.
 -- 
@@ -710,9 +672,9 @@ INSERT INTO metrica_mi_pagina (id_vendedor, tiene_banner, tiene_logo, tiene_carr
 (18, true, true, true, true);
 
 
--- ==============================================================================
+
 -- 8. INSERCIÓN DE RENDIMIENTO DE PUBLICACIONES (25 registros)
--- ==============================================================================
+
 -- Un registro por cada publicación (25 total).
 -- Las ventas de cada publicación suman al total de ventas_concretadas
 -- del vendedor correspondiente en metrica_negocio.
@@ -751,9 +713,9 @@ INSERT INTO rendimiento_publicacion (id_publicacion, fecha_inicio_periodo, fecha
 (25, '2023-10-01', '2023-10-31', 5000, 1000);
 
 
--- ==============================================================================
+
 -- 9. INSERCIÓN DE CALIDAD DE PUBLICACIONES (25 registros)
--- ==============================================================================
+
 -- Un registro por cada publicación con métricas de calidad.
 -- 
 -- El puntaje_calidad (0-100) se basa en:
@@ -794,21 +756,21 @@ INSERT INTO metrica_calidad_publicacion (id_publicacion, cantidad_fotos, tiene_v
 (25, 5, false, false, 68);
 
 
--- ==============================================================================
+
 -- Vistas Materializadas para Diagnóstico DiME
--- ==============================================================================
+
 -- Pre-calcula KPIs estratégicos para consumo directo desde Metabase y la API.
 -- Todas las vistas incluyen COALESCE + NULLIF para evitar división por cero.
 -- Se refrescan lote mediante:   REFRESH MATERIALIZED VIEW CONCURRENTLY <name>
--- ==============================================================================
+
 
 -- ACTIVACIÓN DE LA HERRAMIENTA AUTOMÁTICA
 -- (Activa el "reloj" interno de la base de datos si no lo estaba ya)
 CREATE EXTENSION IF NOT EXISTS pg_cron;
 
--- ==============================================================================
+
 -- 1. Reputación y Calidad
--- ==============================================================================
+
 CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_reputacion AS
 SELECT
     v.id_vendedor AS id,
@@ -848,13 +810,13 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_reputacion_vendedor
     ON mv_diagnostico_reputacion (id);
 
 
--- ==============================================================================
+
 -- 2. Ventas y Finanzas
--- ==============================================================================
+
 -- NOTA: Crecimiento MoM requiere datos multi-período. Con la cardinalidad
 -- actual 1:1 entre vendedor y metrica_negocio, retorna NULL hasta contar
 -- con una serie histórica.
--- ==============================================================================
+
 CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_finanzas AS
 SELECT
     v.id_vendedor AS id,
@@ -919,9 +881,9 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_finanzas_vendedor
     ON mv_diagnostico_finanzas (id);
 
 
--- ==============================================================================
+
 -- 3. Publicaciones (Calidad y Conversión Agregada)
--- ==============================================================================
+
 CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_publicaciones AS
 SELECT
     v.id_vendedor AS id,
@@ -957,13 +919,13 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_publicaciones_vendedor
     ON mv_diagnostico_publicaciones (id);
 
 
--- ==============================================================================
+
 -- 4. Publicidad (Mercado Ads)
--- ==============================================================================
+
 -- NOTA: ventas_generadas_por_ads no está disponible directamente en el esquema
 -- actual. Se usa ventas_concretadas como proxy. Cuando ML exponga atribución
 -- por campaña, reemplazar la fuente.
--- ==============================================================================
+
 CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_ads AS
 SELECT
     v.id_vendedor AS id,
@@ -998,16 +960,16 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_ads_vendedor
     ON mv_diagnostico_ads (id);
 
 
--- ==============================================================================
+
 -- 5. Stock Full (Logística)
--- ==============================================================================
+
 -- NOTA: "unidades_activas_vendibles" y "total_skus_en_full" no existen como
 -- columnas directas en metrica_stock_full. Se aproximan usando las columnas
 -- disponibles. Cuando ML exponga el inventario detallado, reemplazar.
 --
 -- NOTA MATEMÁTICA: Para estas métricas, el denominador común asumido como "Total de espacios" 
 -- es: (espacios_p_asignados + espacios_g_asignados)
--- ==============================================================================
+
 CREATE MATERIALIZED VIEW IF NOT EXISTS mv_diagnostico_stock AS
 SELECT
     v.id_vendedor AS id,
@@ -1060,9 +1022,9 @@ CREATE UNIQUE INDEX IF NOT EXISTS idx_mv_stock_vendedor
     ON mv_diagnostico_stock (id);
 
 
--- ==============================================================================
+
 -- CAPA 2: TABLAS PARA ALMACENAR EL HISTÓRICO TIME-SERIES
--- ==============================================================================
+
 
 -- 1. Histórico Reputación
 CREATE TABLE IF NOT EXISTS hist_diagnostico_reputacion (
@@ -1142,9 +1104,9 @@ CREATE INDEX IF NOT EXISTS idx_hist_stock_vendedor ON hist_diagnostico_stock (id
 CREATE INDEX IF NOT EXISTS idx_hist_stock_fecha ON hist_diagnostico_stock (fecha_ingesta);
 
 
--- ==============================================================================
+
 -- CAPA 3: PROCESO DE ORQUESTACIÓN (El procedimiento manual corregido)
--- ==============================================================================
+
 
 CREATE OR REPLACE PROCEDURE sp_sincronizar_diagnostico_dime()
 LANGUAGE plpgsql
@@ -1195,9 +1157,9 @@ END;
 $$;
 
 
--- ==============================================================================
+
 -- CAPA 4: PROGRAMADOR AUTOMÁTICO (El disparador de producción)
--- ==============================================================================
+
 
 -- Removemos limpiamente cualquier tarea previa que apunte a este procedimiento
 SELECT cron.unschedule(jobid) 
@@ -1214,9 +1176,9 @@ SELECT cron.schedule(
 -- LLAMADA
 -- CALL sp_sincronizar_diagnostico_dime();
 
--- ==============================================================================
+
 -- 1. TABLA MAESTRA GLOBAL (Configuración única para todo el sistema)
--- ==============================================================================
+
 CREATE TABLE IF NOT EXISTS kpis_maestro (
     id_kpi SERIAL PRIMARY KEY,
     dimension VARCHAR(50) NOT NULL,          -- Reputación, Finanzas, Publicaciones, Publicidad, Logística
@@ -1286,9 +1248,9 @@ ON CONFLICT (nombre_kpi) DO UPDATE SET
     texto_peligro = EXCLUDED.texto_peligro,
     prioridad = EXCLUDED.prioridad;
    
--- ==============================================================================
+
 -- Personalización de Umbrales por Vendedor
--- ==============================================================================
+
 -- Permite sobrescribir los umbrales globales de kpis_maestro para un vendedor
 -- específico. Si no hay fila aquí, se usan los valores de kpis_maestro.
 
@@ -1307,9 +1269,9 @@ CREATE TABLE IF NOT EXISTS kpis_vendedor_personalizado (
     FOREIGN KEY (id_vendedor) REFERENCES vendedor(id_vendedor)
 );
 
--- ==============================================================================
+
 -- Vista de Semáforo de Diagnóstico
--- ==============================================================================
+
 
 CREATE OR REPLACE VIEW v_diagnostico_vendedores_semaforo AS
 WITH metricas_unificadas AS (

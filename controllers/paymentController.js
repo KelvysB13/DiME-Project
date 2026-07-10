@@ -1,4 +1,4 @@
-const API_FASTAPI = 'http://127.0.0.1:8000/api';
+const API_FASTAPI = '/api';
 
 document.addEventListener('DOMContentLoaded', () => {
 

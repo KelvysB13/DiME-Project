@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Numeric, DateTime, Date, ForeignKey
+from sqlalchemy import Column, BigInteger, Numeric, DateTime, Date, ForeignKey
 
 from models.base import Base
 
@@ -8,9 +8,9 @@ class Negocio(Base):
 
     __tablename__ = "metrica_negocio"
 
-    id_metrica_negocio = Column(Integer, primary_key=True, autoincrement=True)
+    id_metrica_negocio = Column(BigInteger, primary_key=True, autoincrement=True)
 
-    id_vendedor = Column(Integer, ForeignKey("vendedor.id_vendedor"), nullable=False, unique=True)
+    id_vendedor = Column(BigInteger, ForeignKey("vendedor.id_vendedor"), nullable=False, unique=True)
 
     fecha_captura = Column(DateTime(timezone=True), nullable=False, server_default="CURRENT_TIMESTAMP")
 
@@ -22,13 +22,13 @@ class Negocio(Base):
 
     ventas_brutas_usd = Column(Numeric(15, 2), nullable=False, default=0.00)
 
-    unidades_vendidas = Column(Integer, nullable=False, default=0)
+    unidades_vendidas = Column(BigInteger, nullable=False, default=0)
 
-    visitas_totales = Column(Integer, nullable=False, default=0)
+    visitas_totales = Column(BigInteger, nullable=False, default=0)
 
-    intencion_compra = Column(Integer, nullable=False, default=0)
+    intencion_compra = Column(BigInteger, nullable=False, default=0)
 
-    ventas_concretadas = Column(Integer, nullable=False, default=0)
+    ventas_concretadas = Column(BigInteger, nullable=False, default=0)
 
     precio_promedio_unidad = Column(Numeric(15, 2), nullable=False, default=0.00)
 
