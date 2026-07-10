@@ -3,6 +3,7 @@ import jwt
 from datetime import timedelta
 from sqlalchemy.orm import Session
 from models.vendedor_model import Vendedor
+from models.admin_model import Admin
 from auth.hash_handler import hash_data
 from auth.jwt_handler import create_access_token, ALGORITHM
 from core.config import settings

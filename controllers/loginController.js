@@ -54,11 +54,9 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             const data = await response.json().catch(() => ({}));
             
             if (data && data.access_token) {
-                // 1. Guardamos el token de seguridad
                 localStorage.setItem('access_token', data.access_token);
-                
-                // 2. NUEVO: Atrapamos y guardamos el ID del vendedor
-                // Colocamos varias opciones comunes por si el backend lo llama diferente
+                localStorage.setItem('role', data.role || 'vendedor');
+
                 const idDetectado = data.vendedor_id || data.id_vendedor || data.id || data.user_id;
                 
                 if (idDetectado) {
@@ -67,8 +65,9 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
                     console.warn("⚠️ Atención: El backend no envió el ID del vendedor en el JSON de login.");
                 }
             }
-            
-            window.location.href = '/me/dashboard';
+
+            const redirectUrl = data.role === 'admin' ? '/admin/dashboard' : '/me/dashboard';
+            window.location.href = redirectUrl;
         }
         
         else 

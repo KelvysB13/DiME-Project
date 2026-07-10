@@ -33,6 +33,7 @@ DROP TABLE IF EXISTS metrica_reputacion CASCADE;
 DROP TABLE IF EXISTS reporte_diagnostico CASCADE;
 DROP TABLE IF EXISTS publicacion CASCADE;
 DROP TABLE IF EXISTS tarjeta CASCADE;
+DROP TABLE IF EXISTS admin CASCADE;
 DROP TABLE IF EXISTS vendedor CASCADE;
 DROP TABLE IF EXISTS plan CASCADE;
 DROP TABLE IF EXISTS moneda CASCADE;
@@ -118,6 +119,30 @@ CREATE TABLE IF NOT EXISTS vendedor (
     -- Asegura que el email tenga el formato: usuario@dominio.ext (ext de 2 a 4 letras)
     CONSTRAINT chk_email_formato CHECK (email ~* '^[A-Za-z0-9._%-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,4}$')
 );
+
+-- ==============================================================================
+-- TABLA: admin
+-- ==============================================================================
+-- Propósito: Almacena los administradores del sistema.
+-- Los admins se crean directamente en la base de datos, no se registran
+-- desde la aplicación. Pueden iniciar sesión en el mismo endpoint que
+-- los vendedores y son redirigidos al panel de administración.
+CREATE TABLE IF NOT EXISTS admin (
+    id_admin INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    user_name VARCHAR(50) NOT NULL UNIQUE,
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    access_token TEXT,
+    refresh_token TEXT,
+    tiempo_token TIMESTAMPTZ,
+    esta_activo BOOLEAN NOT NULL DEFAULT TRUE,
+    fecha_creacion TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Admin por defecto: admin@dime.com / Admin12345678
+INSERT INTO admin (user_name, email, password) VALUES
+('admin', 'admin@dime.com', '$2b$12$nI4I03yhi2ZdrXclHeJKMuFPeDph4orumOQiQbF17wBwsRCV5aas2')
+ON CONFLICT (email) DO NOTHING;
 
 CREATE TABLE IF NOT EXISTS tarjeta (
     id_tarjeta BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY, -- ID auto-generado de la tarjeta

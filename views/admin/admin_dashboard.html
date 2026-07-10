@@ -193,18 +193,8 @@
   </div>
 </div>
 
+<script src="/controllers/adminVendedoresController.js"></script>
 <script>
-  const PAISES = [
-    { codigo: 'AR', nombre: 'Argentina' }, { codigo: 'BO', nombre: 'Bolivia' },
-    { codigo: 'BR', nombre: 'Brasil' }, { codigo: 'CL', nombre: 'Chile' },
-    { codigo: 'CO', nombre: 'Colombia' }, { codigo: 'CR', nombre: 'Costa Rica' },
-    { codigo: 'DO', nombre: 'República Dominicana' }, { codigo: 'EC', nombre: 'Ecuador' },
-    { codigo: 'GT', nombre: 'Guatemala' }, { codigo: 'MX', nombre: 'México' },
-    { codigo: 'NI', nombre: 'Nicaragua' }, { codigo: 'PA', nombre: 'Panamá' },
-    { codigo: 'PE', nombre: 'Perú' }, { codigo: 'PY', nombre: 'Paraguay' },
-    { codigo: 'SV', nombre: 'El Salvador' }, { codigo: 'UY', nombre: 'Uruguay' },
-    { codigo: 'VE', nombre: 'Venezuela' }
-  ];
   const MONEDAS = [
     { codigo: 'ARS', nombre: 'Peso Argentino', simbolo: '$' },
     { codigo: 'BOB', nombre: 'Boliviano', simbolo: 'Bs.' },
@@ -225,22 +215,31 @@
     { codigo: 'VES', nombre: 'Bolívar Venezolano', simbolo: 'Bs.' }
   ];
 
-  const PLAN_MAP = { 1: 'Gratuito', 2: 'Pro', 3: 'Enterprise' };
+  let planes = [];
 
-  let MOCK_VENDEDORES = [
-    { id: 1, user_name: 'Tecno Hogar AR', nombre_tienda: 'TecnoHogar S.A.', email: 'ventas@tecnohogar.com.ar', codigo_pais: 'AR', moneda_local: 'ARS', tipo_plan: 2, esta_activo: true, fecha_creacion: '2024-01-15' },
-    { id: 2, user_name: 'Moda Infantil VE', nombre_tienda: 'Moda Infantil Caracas C.A.', email: 'contacto@modainfantil.com', codigo_pais: 'VE', moneda_local: 'USD', tipo_plan: 1, esta_activo: true, fecha_creacion: '2024-03-20' },
-    { id: 3, user_name: 'Tecno Chile', nombre_tienda: 'Tecno Chile SpA', email: 'ventas@tecnochile.cl', codigo_pais: 'CL', moneda_local: 'CLP', tipo_plan: 2, esta_activo: true, fecha_creacion: '2024-02-10' },
-    { id: 4, user_name: 'Electro Hogar MX', nombre_tienda: 'Electro Hogar México S.A. de C.V.', email: 'ventas@electrohogar.mx', codigo_pais: 'MX', moneda_local: 'MXN', tipo_plan: 3, esta_activo: true, fecha_creacion: '2023-11-05' },
-    { id: 5, user_name: 'Libros y Más CO', nombre_tienda: 'Libros y Más Colombia Ltda.', email: 'info@librosymas.co', codigo_pais: 'CO', moneda_local: 'COP', tipo_plan: 1, esta_activo: false, fecha_creacion: '2024-06-01' },
-    { id: 6, user_name: 'Gadgets Perú', nombre_tienda: 'Gadgets Perú SAC', email: 'ventas@gadgets.pe', codigo_pais: 'PE', moneda_local: 'PEN', tipo_plan: 2, esta_activo: true, fecha_creacion: '2024-04-10' }
-  ];
+  async function cargarPlanes() {
+    try {
+      const res = await fetch(`${API_URL}/plans`);
+      if (res.ok) {
+        const data = await res.json();
+        planes = data.planes;
+      } else {
+        throw new Error("Error al cargar planes");
+      }
+    } catch {
+      planes = [
+        { id: 1, nombre_plan: 'Gratuito', precio_mensual: 0, limite_publicaciones: 10, limite_metricas_dias: 30, descripcion: 'Plan gratuito para empezar.' },
+        { id: 2, nombre_plan: 'Pro', precio_mensual: 29.99, limite_publicaciones: 100, limite_metricas_dias: 90, descripcion: 'Plan profesional.' },
+        { id: 3, nombre_plan: 'Enterprise', precio_mensual: 99.99, limite_publicaciones: 9999, limite_metricas_dias: 365, descripcion: 'Plan empresarial.' }
+      ];
+    }
+    renderPlanes();
+  }
 
-  let MOCK_PLANES = [
-    { id: 1, nombre_plan: 'Gratuito', precio_mensual: 0, limite_publicaciones: 10, limite_metricas_dias: 30, descripcion: 'Plan gratuito para empezar a conocer la plataforma.' },
-    { id: 2, nombre_plan: 'Pro', precio_mensual: 29.99, limite_publicaciones: 100, limite_metricas_dias: 90, descripcion: 'Plan profesional para vendedores en crecimiento.' },
-    { id: 3, nombre_plan: 'Enterprise', precio_mensual: 99.99, limite_publicaciones: 9999, limite_metricas_dias: 365, descripcion: 'Plan empresarial con acceso completo y soporte prioritario.' }
-  ];
+  function getPlanName(id) {
+    const p = planes.find(x => x.id === id);
+    return p ? p.nombre_plan : 'Desconocido';
+  }
 
   let MOCK_KPI_RANGES = [
     { id: 1, categoria: 'reputacion', categoria_nombre: 'Reputación', indicador: 'tasa_reclamos', nombre: 'Tasa de Reclamos', unidad: '%', verde_min: 0, verde_max: 5, amarillo_min: 5, amarillo_max: 15, rojo_min: 15, rojo_max: null },
@@ -259,8 +258,6 @@
     { id: 14, categoria: 'publicaciones', categoria_nombre: 'Publicaciones', indicador: 'pct_catalogo_completo', nombre: '% Catálogo Completo', unidad: '%', verde_min: 80, verde_max: null, amarillo_min: 50, amarillo_max: 80, rojo_min: 0, rojo_max: 50 }
   ];
 
-    let nextVendedorId = 7;
-  let nextPlanId = 4;
   let nextKpiRangoId = 15;
   let currentSection = 'vendedores';
   let editingEntity = null;
@@ -273,8 +270,6 @@
   function getPaisName(code) { const p = PAISES.find(x => x.codigo === code); return p ? p.nombre : code; }
   function getMonedaName(code) { const m = MONEDAS.find(x => x.codigo === code); return m ? m.nombre : code; }
 
-  function badgeClass(nivel) { return { green: 'badge-green', yellow: 'badge-yellow', red: 'badge-red' }[nivel] || ''; }
-
   function showToast(msg, type) {
     const el = document.createElement('div');
     el.className = 'toast toast-' + type;
@@ -284,46 +279,9 @@
   }
 
   function renderVendedores() {
-    const container = document.getElementById('section-vendedores');
-    const searchTerm = (document.getElementById('search-vendedores') || {}).value || '';
-    let filtered = MOCK_VENDEDORES;
-    if (searchTerm) { const t = searchTerm.toLowerCase(); filtered = MOCK_VENDEDORES.filter(v => v.user_name.toLowerCase().includes(t) || v.nombre_tienda.toLowerCase().includes(t) || v.email.toLowerCase().includes(t)); }
-    container.innerHTML = `
-      <div class="crud-header">
-        <h2>Gestión de Vendedores</h2>
-        <div class="crud-toolbar">
-          <input id="search-vendedores" class="search-bar" type="text" placeholder="Buscar vendedor..." value="${searchTerm}">
-          <button class="btn-create" onclick="openCreate('vendedores')">+ Nuevo Vendedor</button>
-        </div>
-      </div>
-      <div class="section-card">
-        <div class="admin-table-wrap">
-          <table class="dime-table">
-            <thead><tr>
-              <th style="padding:10px 12px;width:50px">ID</th>
-              <th style="padding:10px 12px">Usuario</th>
-              <th style="padding:10px 12px">Tienda</th>
-              <th style="padding:10px 12px">Email</th>
-              <th style="padding:10px 12px">País</th>
-              <th style="padding:10px 12px">Plan</th>
-              <th style="padding:10px 12px;text-align:center">Estado</th>
-              <th style="padding:10px 12px;text-align:center;width:100px">Acciones</th>
-            </tr></thead>
-            <tbody>${filtered.length ? filtered.map(v => `
-              <tr>
-                <td style="padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:11px">${v.id}</td>
-                <td style="padding:10px 12px;font-weight:600;color:var(--primary)">${v.user_name}</td>
-                <td style="padding:10px 12px">${v.nombre_tienda}</td>
-                <td style="padding:10px 12px;font-size:11px">${v.email}</td>
-                <td style="padding:10px 12px;font-size:11px">${getPaisName(v.codigo_pais)}</td>
-                <td style="padding:10px 12px"><span class="badge ${badgeClass(v.tipo_plan === 3 ? 'green' : v.tipo_plan === 2 ? 'yellow' : 'red')}" style="font-size:10px">${PLAN_MAP[v.tipo_plan] || '-'}</span></td>
-                <td style="padding:10px 12px;text-align:center"><span class="badge-status ${v.esta_activo ? 'badge-active' : 'badge-inactive'}">${v.esta_activo ? 'Activo' : 'Inactivo'}</span></td>
-                <td style="padding:10px 12px;text-align:center"><div class="table-actions"><button class="btn-edit" onclick="openEdit('vendedores',${v.id})">Editar</button><button class="btn-delete" onclick="openDelete('vendedores',${v.id})">Eliminar</button></div></td>
-              </tr>`).join('') : `<tr><td colspan="8" style="text-align:center;padding:32px;color:var(--text-muted)">Sin resultados</td></tr>`}</tbody>
-          </table>
-        </div>
-      </div>`;
-    document.getElementById('search-vendedores').addEventListener('input', renderVendedores);
+    if (window.renderAdminVendedores) {
+      window.renderAdminVendedores();
+    }
   }
 
   function renderPlanes() {
@@ -347,7 +305,7 @@
               <th style="padding:10px 12px">Descripción</th>
               <th style="padding:10px 12px;text-align:center;width:100px">Acciones</th>
             </tr></thead>
-            <tbody>${MOCK_PLANES.map(p => `
+            <tbody>${planes.map(p => `
               <tr>
                 <td style="padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:11px">${p.id}</td>
                 <td style="padding:10px 12px;font-weight:600;color:var(--primary)">${p.nombre_plan}</td>
@@ -410,39 +368,19 @@
     const titles = { vendedores: 'Administración - Vendedores', planes: 'Administración - Planes',     metricas: 'Administración - Rangos KPI' };
     document.getElementById('topbar-title').textContent = titles[section] || 'Administración';
     if (section === 'vendedores') renderVendedores();
-    else if (section === 'planes') renderPlanes();
+    else if (section === 'planes') cargarPlanes();
     else if (section === 'metricas') renderKpiRangos();
   }
 
   function openCreate(section) {
     editingSection = section;
     editingEntity = null;
-    if (section === 'vendedores') openVendedorForm(null);
-    else if (section === 'planes') openPlanForm(null);
+    if (section === 'planes') openPlanForm(null);
   }
 
   function openEdit(section, id) {
     editingSection = section;
-    if (section === 'vendedores') { editingEntity = MOCK_VENDEDORES.find(v => v.id === id); openVendedorForm(editingEntity); }
-    else if (section === 'planes') { editingEntity = MOCK_PLANES.find(p => p.id === id); openPlanForm(editingEntity); }
-  }
-
-  function openVendedorForm(entity) {
-    const isEdit = !!entity;
-    document.getElementById('modal-title').textContent = isEdit ? 'Editar Vendedor' : 'Nuevo Vendedor';
-    const e = entity || { user_name: '', nombre_tienda: '', email: '', codigo_pais: 'AR', moneda_local: 'ARS', tipo_plan: 1, esta_activo: true };
-    document.getElementById('modal-box').className = 'modal-box';
-    document.getElementById('modal-body').innerHTML = `
-      <div class="form-grid">
-        <div class="form-group"><label>Usuario *</label><input id="f-user_name" type="text" value="${e.user_name}"></div>
-        <div class="form-group"><label>Nombre Tienda *</label><input id="f-nombre_tienda" type="text" value="${e.nombre_tienda}"></div>
-        <div class="form-group full-width"><label>Email *</label><input id="f-email" type="email" value="${e.email}"></div>
-        <div class="form-group"><label>País *</label><select id="f-codigo_pais">${PAISES.map(p => `<option value="${p.codigo}" ${e.codigo_pais === p.codigo ? 'selected' : ''}>${p.nombre}</option>`).join('')}</select></div>
-        <div class="form-group"><label>Moneda *</label><select id="f-moneda_local">${MONEDAS.map(m => `<option value="${m.codigo}" ${e.moneda_local === m.codigo ? 'selected' : ''}>${m.nombre}</option>`).join('')}</select></div>
-        <div class="form-group"><label>Plan *</label><select id="f-tipo_plan">${MOCK_PLANES.map(p => `<option value="${p.id}" ${e.tipo_plan === p.id ? 'selected' : ''}>${p.nombre_plan}</option>`).join('')}</select></div>
-        <div class="form-group"><div class="checkbox-wrap"><input id="f-esta_activo" type="checkbox" ${e.esta_activo ? 'checked' : ''}><label style="text-transform:none;letter-spacing:0;cursor:pointer">Vendedor activo</label></div></div>
-      </div>`;
-    document.getElementById('modal-overlay').style.display = 'flex';
+    if (section === 'planes') { editingEntity = planes.find(p => p.id === id); openPlanForm(editingEntity); }
   }
 
   function openPlanForm(entity) {
@@ -491,36 +429,11 @@
   }
 
   function saveEntity() {
-    if (editingSection === 'vendedores') saveVendedor();
-    else if (editingSection === 'planes') savePlan();
+    if (editingSection === 'planes') savePlan();
     else if (editingSection === 'metricas') saveRango();
   }
 
-  function saveVendedor() {
-    const data = {
-      user_name: document.getElementById('f-user_name').value.trim(),
-      nombre_tienda: document.getElementById('f-nombre_tienda').value.trim(),
-      email: document.getElementById('f-email').value.trim(),
-      codigo_pais: document.getElementById('f-codigo_pais').value,
-      moneda_local: document.getElementById('f-moneda_local').value,
-      tipo_plan: parseInt(document.getElementById('f-tipo_plan').value),
-      esta_activo: document.getElementById('f-esta_activo').checked
-    };
-    if (!data.user_name || !data.nombre_tienda || !data.email) { showToast('Completa los campos obligatorios', 'error'); return; }
-    if (editingEntity) {
-      Object.assign(editingEntity, data);
-      showToast('Vendedor actualizado', 'success');
-    } else {
-      data.id = nextVendedorId++;
-      data.fecha_creacion = new Date().toISOString().split('T')[0];
-      MOCK_VENDEDORES.push(data);
-      showToast('Vendedor creado', 'success');
-    }
-    closeModal();
-    renderVendedores();
-  }
-
-  function savePlan() {
+  async function savePlan() {
     const data = {
       nombre_plan: document.getElementById('f-nombre_plan').value.trim(),
       precio_mensual: parseFloat(document.getElementById('f-precio_mensual').value) || 0,
@@ -529,16 +442,36 @@
       descripcion: document.getElementById('f-descripcion').value.trim()
     };
     if (!data.nombre_plan) { showToast('El nombre del plan es obligatorio', 'error'); return; }
-    if (editingEntity) {
-      Object.assign(editingEntity, data);
-      showToast('Plan actualizado', 'success');
-    } else {
-      data.id = nextPlanId++;
-      MOCK_PLANES.push(data);
-      showToast('Plan creado', 'success');
+
+    try {
+      let res;
+      if (editingEntity) {
+        res = await fetch(`${API_URL}/plans/${editingEntity.id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+      } else {
+        res = await fetch(`${API_URL}/plans`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(data)
+        });
+      }
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        showToast(err.detail || 'Error al guardar el plan', 'error');
+        return;
+      }
+
+      showToast(editingEntity ? 'Plan actualizado' : 'Plan creado', 'success');
+      closeModal();
+      await cargarPlanes();
+
+    } catch {
+      showToast('Error de conexión con el servidor', 'error');
     }
-    closeModal();
-    renderPlanes();
   }
 
   function saveRango() {
@@ -564,25 +497,26 @@
 
   function openDelete(section, id) {
     deleteTarget = { section, id };
-    const labels = { vendedores: 'vendedor', planes: 'plan' };
-    const name = section === 'vendedores' ? (MOCK_VENDEDORES.find(v => v.id === id) || {}).user_name : (MOCK_PLANES.find(p => p.id === id) || {}).nombre_plan;
-    document.getElementById('delete-msg').textContent = `¿Estás seguro de eliminar ${labels[section] || 'entidad'} "${name || id}"? Esta acción no se puede deshacer.`;
+    const name = (planes.find(p => p.id === id) || {}).nombre_plan;
+    document.getElementById('delete-msg').textContent = `¿Estás seguro de eliminar plan "${name || id}"? Esta acción no se puede deshacer.`;
     document.getElementById('delete-modal').style.display = 'flex';
   }
 
   function confirmDelete() {
     if (!deleteTarget) return;
     const { section, id } = deleteTarget;
-    if (section === 'vendedores') {
-      MOCK_VENDEDORES = MOCK_VENDEDORES.filter(v => v.id !== id);
-      showToast('Vendedor eliminado', 'success');
-      closeDeleteModal();
-      renderVendedores();
-    } else if (section === 'planes') {
-      MOCK_PLANES = MOCK_PLANES.filter(p => p.id !== id);
-      showToast('Plan eliminado', 'success');
-      closeDeleteModal();
-      renderPlanes();
+    if (section === 'planes') {
+      fetch(`${API_URL}/plans/${id}`, { method: 'DELETE' })
+        .then(res => {
+          if (!res.ok && res.status !== 204) throw new Error();
+          showToast('Plan eliminado', 'success');
+          closeDeleteModal();
+          cargarPlanes();
+        })
+        .catch(() => {
+          showToast('Error al eliminar el plan', 'error');
+          closeDeleteModal();
+        });
     }
     deleteTarget = null;
   }
@@ -605,7 +539,7 @@
     btn.addEventListener('click', function() { switchSection(this.dataset.section); });
   });
 
-  switchSection('vendedores');
+  cargarPlanes().then(() => switchSection('vendedores'));
 </script>
 </body>
 </html>

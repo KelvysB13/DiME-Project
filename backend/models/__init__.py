@@ -25,6 +25,7 @@ from models.hist_diagnostico_finanzas_model import HistDiagnosticoFinanzas
 from models.hist_diagnostico_publicaciones_model import HistDiagnosticoPublicaciones
 from models.hist_diagnostico_ads_model import HistDiagnosticoAds
 from models.hist_diagnostico_stock_model import HistDiagnosticoStock
+from models.admin_model import Admin
 
 __all__ = [
     "Base",
@@ -54,4 +55,5 @@ __all__ = [
     "HistDiagnosticoPublicaciones",
     "HistDiagnosticoAds",
     "HistDiagnosticoStock",
+    "Admin"
 ]

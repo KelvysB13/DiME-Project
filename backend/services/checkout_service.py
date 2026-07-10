@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from schemas.checkout_schema import CheckoutRequest, CheckoutResponse
 from models.tarjeta_model import Tarjeta
 from models.vendedor_model import Vendedor
+from models.admin_model import Admin
 from models.plan_model import Plan
 from auth.hash_handler import hash_data
 from auth.jwt_handler import ALGORITHM
@@ -81,6 +82,10 @@ def checkout(db: Session, payload: CheckoutRequest) -> CheckoutResponse:
 
     existing = db.query(Vendedor).filter(Vendedor.email == data["email"]).first()
     if existing:
+        raise CheckoutError("Este correo ya está registrado.")
+
+    existing_admin = db.query(Admin).filter(Admin.email == data["email"]).first()
+    if existing_admin:
         raise CheckoutError("Este correo ya está registrado.")
 
     if not _validate_luhn(payload.numero_tarjeta):
