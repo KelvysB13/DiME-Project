@@ -18,7 +18,7 @@ class Vendedor(Base):
 
     moneda_local = Column(String(3), ForeignKey("moneda.codigo_moneda"), nullable=False)
 
-    tipo_plan = Column(Integer, ForeignKey("plan.id"), nullable=True)
+    tipo_plan = Column(BigInteger, ForeignKey("plan.id"), nullable=True)
 
     email = Column(String(255), nullable=False, unique=True)
 
