@@ -1,4 +1,6 @@
+import json
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 from core.database import get_db
 from auth.deps import get_current_user
@@ -19,8 +21,18 @@ def _verify_admin(current_user: Admin = Depends(get_current_user)) -> Admin:
 def guardar_metricas(payload: MetricsRequest, db: Session = Depends(get_db), _admin: Admin = Depends(_verify_admin)):
 
     try:
-        return save_metrics(db, payload)
-    
+        save_metrics(db, payload)
+
+        payload_dict = payload.model_dump(exclude_none=True)
+        payload_json = json.dumps(payload_dict, default=str)
+        db.execute(text("CALL sp_simular_30_dias(:p_datos::jsonb)"), {"p_datos": payload_json})
+        db.commit()
+
+        return MetricsResponse(
+            status="success",
+            message="Datos inyectados y simulación de 30 días ejecutada exitosamente",
+        )
+
     except Exception as e:
 
         import traceback

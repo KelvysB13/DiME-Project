@@ -4,12 +4,12 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     
     supabase_url: str
-    supabase_key: str
-    supabase_project_url: str
+    supabase_key: str = ""
+    supabase_project_url: str = ""
 
     app_host: str = "0.0.0.0"
     app_port: int = 8000
-    app_secret_key: str
+    app_secret_key: str = "default_secret_change_me"
     app_debug: bool = True
 
     model_config = {
