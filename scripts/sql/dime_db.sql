@@ -1385,3 +1385,515 @@ FROM metricas_unificadas m
 JOIN kpis_maestro km ON m.nombre_kpi = km.nombre_kpi
 LEFT JOIN kpis_vendedor_personalizado kv ON km.id_kpi = kv.id_kpi AND m.id_vendedor = kv.id_vendedor;
     
+-- =================================================================
+-- PROCEDIMIENTO: sp_simular_30_dias
+--
+-- Propósito: Simula 30 días de actividad de un vendedor en las tablas
+-- físicas, propaga los cambios a través de las vistas materializadas
+-- de diagnóstico y persiste los snapshots diarios en el histórico.
+--
+-- Flujo por día:
+--   1. UPSERT en metrica_reputacion, metrica_negocio, metrica_costo,
+--      metrica_stock_full y metrica_mi_pagina con variación aleatoria
+--   2. REFRESH MATERIALIZED VIEW CONCURRENTLY de las 5 mv_diagnostico_*
+--   3. INSERT INTO hist_diagnostico_* (snapshot del día)
+--
+-- Parámetros:
+--   p_datos JSONB con la estructura:
+--     {
+--       "datos_basicos": {
+--         "user_name": "string", "nombre_tienda": "string",
+--         "codigo_pais": "MX", "moneda_local": "MXN",
+--         "tipo_plan": "1", "email": "string"
+--       },
+--       "metrica_negocio": { todos los campos },
+--       "metrica_costo": { todos los campos },
+--       "metrica_reputacion": { todos los campos },
+--       "metrica_stock_full": { todos los campos },
+--       "metrica_mi_pagina": { todos los campos }
+--     }
+--
+-- Uso: CALL sp_simular_30_dias('{
+--   "datos_basicos": {
+--     "user_name": "test_vendedor",
+--     "nombre_tienda": "Tienda Test MX",
+--     "codigo_pais": "MX",
+--     "moneda_local": "MXN",
+--     "tipo_plan": "1",
+--     "email": "test@example.com"
+--   },
+--   "metrica_negocio": {
+--     "ventas_totales_periodo": 1000,
+--     "fecha_inicio_periodo": "2026-05-01",
+--     "fecha_final_periodo": "2026-05-31",
+--     "ventas_brutas_moneda_local": 500000.00,
+--     "ventas_brutas_usd": 28000.00,
+--     "unidades_vendidas": 500,
+--     "visitas_totales": 30000,
+--     "intencion_compra": 1200,
+--     "ventas_concretadas": 1000,
+--     "precio_promedio_unidad": 1000.00,
+--     "precio_promedio_venta": 500.00
+--   },
+--   "metrica_costo": {
+--     "ventas_cobradas_total": 500000.00,
+--     "neto_recibido": 380000.00,
+--     "cargos_por_venta": 75000.00,
+--     "costos_envio": 30000.00,
+--     "inversion_ads": 2000.00,
+--     "otros_cargos": 5000.00,
+--     "cargos_envio_full": 8000.00,
+--     "descuento_reputacion": 0.00
+--   },
+--   "metrica_reputacion": {
+--     "total_reclamos": 5,
+--     "total_mediaciones": 1,
+--     "total_canceladas": 3,
+--     "total_envios_incorrectos": 1,
+--     "nivel_reputacion": "green",
+--     "insignia": "platinum"
+--   },
+--   "metrica_stock_full": {
+--     "espacios_p_asignados": 150,
+--     "espacios_g_asignados": 30,
+--     "puntaje_calidad": 92,
+--     "productos_no_aptos_venta": 3,
+--     "productos_sin_rotacion": 10,
+--     "productos_antiguedad": 2,
+--     "productos_exceso_proyeccion": 15
+--   },
+--   "metrica_mi_pagina": {
+--     "tiene_banner": true,
+--     "tiene_logo": true,
+--     "tiene_carruseles": true,
+--     "categorias_organizadas": true
+--   }
+-- }'::jsonb);
+-- =================================================================
+
+CREATE OR REPLACE PROCEDURE sp_simular_30_dias(
+    IN p_datos JSONB
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE
+    -- -----------------------------------------------------------------
+    -- Variables extraídas del JSON
+    -- -----------------------------------------------------------------
+    v_user_name              VARCHAR(50);
+    v_nombre_tienda          VARCHAR(100);
+    v_codigo_pais            VARCHAR(2);
+    v_moneda_local           VARCHAR(3);
+    v_tipo_plan              INTEGER;
+    v_email                  VARCHAR(255);
+    v_id_vendedor            BIGINT;
+
+    -- metrica_negocio (del JSON, pero ventas_totales_periodo va a metrica_reputacion en DB)
+    v_ventas_totales_periodo_base    INTEGER;
+    v_fecha_inicio_periodo           DATE;
+    v_fecha_final_periodo            DATE;
+    v_ventas_brutas_moneda_local_base NUMERIC(15,2);
+    v_ventas_brutas_usd_base         NUMERIC(15,2);
+    v_unidades_vendidas_base         INTEGER;
+    v_visitas_totales_base           INTEGER;
+    v_intencion_compra_base          INTEGER;
+    v_ventas_concretadas_base        INTEGER;
+    v_precio_promedio_unidad_base    NUMERIC(15,2);
+    v_precio_promedio_venta_base     NUMERIC(15,2);
+
+    -- metrica_costo
+    v_ventas_cobradas_total_base     NUMERIC(15,2);
+    v_neto_recibido_base             NUMERIC(15,2);
+    v_cargos_por_venta_base          NUMERIC(15,2);
+    v_costos_envio_base              NUMERIC(15,2);
+    v_inversion_ads_base             NUMERIC(15,2);
+    v_otros_cargos_base              NUMERIC(15,2);
+    v_cargos_envio_full_base         NUMERIC(15,2);
+    v_descuento_reputacion_base      NUMERIC(15,2);
+
+    -- metrica_reputacion
+    v_total_reclamos_base            INTEGER;
+    v_total_mediaciones_base         INTEGER;
+    v_total_canceladas_base          INTEGER;
+    v_total_envios_incorrectos_base  INTEGER;
+    v_nivel_reputacion               VARCHAR(20);
+    v_insignia                       VARCHAR(20);
+
+    -- metrica_stock_full
+    v_espacios_p_asignados_base      INTEGER;
+    v_espacios_g_asignados_base      INTEGER;
+    v_puntaje_calidad_base           INTEGER;
+    v_productos_no_aptos_venta_base  INTEGER;
+    v_productos_sin_rotacion_base    INTEGER;
+    v_productos_antiguedad_base      INTEGER;
+    v_productos_exceso_proyeccion_base INTEGER;
+
+    -- metrica_mi_pagina
+    v_tiene_banner                   BOOLEAN;
+    v_tiene_logo                     BOOLEAN;
+    v_tiene_carruseles               BOOLEAN;
+    v_categorias_organizadas         BOOLEAN;
+
+    -- -----------------------------------------------------------------
+    -- Variables del loop
+    -- -----------------------------------------------------------------
+    v_dia                      INTEGER;
+    v_fecha_captura            TIMESTAMPTZ;
+
+    -- Factor de variación para cada grupo de métricas
+    v_factor                   NUMERIC(6,4);
+    v_factor2                  NUMERIC(6,4);
+    v_factor3                  NUMERIC(6,4);
+
+    -- Contadores
+    v_total_hist               INTEGER := 0;
+
+BEGIN
+    -- =================================================================
+    -- PASO 1: Extraer datos del JSON de entrada
+    -- =================================================================
+
+    -- datos_basicos
+    v_user_name     := p_datos->'datos_basicos'->>'user_name';
+    v_nombre_tienda := p_datos->'datos_basicos'->>'nombre_tienda';
+    v_codigo_pais   := p_datos->'datos_basicos'->>'codigo_pais';
+    v_moneda_local  := p_datos->'datos_basicos'->>'moneda_local';
+    v_tipo_plan     := (p_datos->'datos_basicos'->>'tipo_plan')::INTEGER;
+    v_email         := p_datos->'datos_basicos'->>'email';
+
+    IF v_user_name IS NULL OR v_email IS NULL THEN
+        RAISE EXCEPTION 'datos_basicos.user_name y datos_basicos.email son obligatorios';
+    END IF;
+
+    -- metrica_negocio (ventas_totales_periodo se mapea a metrica_reputacion en DB)
+    v_ventas_totales_periodo_base    := (p_datos->'metrica_negocio'->>'ventas_totales_periodo')::INTEGER;
+    v_fecha_inicio_periodo           := (p_datos->'metrica_negocio'->>'fecha_inicio_periodo')::DATE;
+    v_fecha_final_periodo            := (p_datos->'metrica_negocio'->>'fecha_final_periodo')::DATE;
+    v_ventas_brutas_moneda_local_base := COALESCE((p_datos->'metrica_negocio'->>'ventas_brutas_moneda_local')::NUMERIC(15,2), 0);
+    v_ventas_brutas_usd_base         := COALESCE((p_datos->'metrica_negocio'->>'ventas_brutas_usd')::NUMERIC(15,2), 0);
+    v_unidades_vendidas_base         := COALESCE((p_datos->'metrica_negocio'->>'unidades_vendidas')::INTEGER, 0);
+    v_visitas_totales_base           := COALESCE((p_datos->'metrica_negocio'->>'visitas_totales')::INTEGER, 0);
+    v_intencion_compra_base          := COALESCE((p_datos->'metrica_negocio'->>'intencion_compra')::INTEGER, 0);
+    v_ventas_concretadas_base        := COALESCE((p_datos->'metrica_negocio'->>'ventas_concretadas')::INTEGER, 0);
+    v_precio_promedio_unidad_base    := COALESCE((p_datos->'metrica_negocio'->>'precio_promedio_unidad')::NUMERIC(15,2), 0);
+    v_precio_promedio_venta_base     := COALESCE((p_datos->'metrica_negocio'->>'precio_promedio_venta')::NUMERIC(15,2), 0);
+
+    -- metrica_costo
+    v_ventas_cobradas_total_base     := COALESCE((p_datos->'metrica_costo'->>'ventas_cobradas_total')::NUMERIC(15,2), 0);
+    v_neto_recibido_base             := COALESCE((p_datos->'metrica_costo'->>'neto_recibido')::NUMERIC(15,2), 0);
+    v_cargos_por_venta_base          := COALESCE((p_datos->'metrica_costo'->>'cargos_por_venta')::NUMERIC(15,2), 0);
+    v_costos_envio_base              := COALESCE((p_datos->'metrica_costo'->>'costos_envio')::NUMERIC(15,2), 0);
+    v_inversion_ads_base             := COALESCE((p_datos->'metrica_costo'->>'inversion_ads')::NUMERIC(15,2), 0);
+    v_otros_cargos_base              := COALESCE((p_datos->'metrica_costo'->>'otros_cargos')::NUMERIC(15,2), 0);
+    v_cargos_envio_full_base         := COALESCE((p_datos->'metrica_costo'->>'cargos_envio_full')::NUMERIC(15,2), 0);
+    v_descuento_reputacion_base      := COALESCE((p_datos->'metrica_costo'->>'descuento_reputacion')::NUMERIC(15,2), 0);
+
+    -- metrica_reputacion
+    v_total_reclamos_base            := COALESCE((p_datos->'metrica_reputacion'->>'total_reclamos')::INTEGER, 0);
+    v_total_mediaciones_base         := COALESCE((p_datos->'metrica_reputacion'->>'total_mediaciones')::INTEGER, 0);
+    v_total_canceladas_base          := COALESCE((p_datos->'metrica_reputacion'->>'total_canceladas')::INTEGER, 0);
+    v_total_envios_incorrectos_base  := COALESCE((p_datos->'metrica_reputacion'->>'total_envios_incorrectos')::INTEGER, 0);
+    v_nivel_reputacion               := p_datos->'metrica_reputacion'->>'nivel_reputacion';
+    v_insignia                       := p_datos->'metrica_reputacion'->>'insignia';
+
+    IF v_nivel_reputacion IS NULL THEN
+        v_nivel_reputacion := 'green';
+    END IF;
+    IF v_insignia IS NULL OR v_insignia = 'string' THEN
+        v_insignia := NULL;
+    END IF;
+
+    -- metrica_stock_full
+    v_espacios_p_asignados_base       := COALESCE((p_datos->'metrica_stock_full'->>'espacios_p_asignados')::INTEGER, 0);
+    v_espacios_g_asignados_base       := COALESCE((p_datos->'metrica_stock_full'->>'espacios_g_asignados')::INTEGER, 0);
+    v_puntaje_calidad_base            := COALESCE((p_datos->'metrica_stock_full'->>'puntaje_calidad')::INTEGER, 100);
+    v_productos_no_aptos_venta_base   := COALESCE((p_datos->'metrica_stock_full'->>'productos_no_aptos_venta')::INTEGER, 0);
+    v_productos_sin_rotacion_base     := COALESCE((p_datos->'metrica_stock_full'->>'productos_sin_rotacion')::INTEGER, 0);
+    v_productos_antiguedad_base       := COALESCE((p_datos->'metrica_stock_full'->>'productos_antiguedad')::INTEGER, 0);
+    v_productos_exceso_proyeccion_base := COALESCE((p_datos->'metrica_stock_full'->>'productos_exceso_proyeccion')::INTEGER, 0);
+
+    -- metrica_mi_pagina (valores default si el objeto viene vacío)
+    v_tiene_banner             := COALESCE((p_datos->'metrica_mi_pagina'->>'tiene_banner')::BOOLEAN, false);
+    v_tiene_logo               := COALESCE((p_datos->'metrica_mi_pagina'->>'tiene_logo')::BOOLEAN, false);
+    v_tiene_carruseles         := COALESCE((p_datos->'metrica_mi_pagina'->>'tiene_carruseles')::BOOLEAN, false);
+    v_categorias_organizadas   := COALESCE((p_datos->'metrica_mi_pagina'->>'categorias_organizadas')::BOOLEAN, false);
+
+
+    -- =================================================================
+    -- PASO 2: Validar plan y crear o recuperar vendedor
+    -- =================================================================
+
+    -- Si el plan indicado no existe en la tabla plan, se asigna NULL
+    IF NOT EXISTS (SELECT 1 FROM plan WHERE id = v_tipo_plan) THEN
+        v_tipo_plan := NULL;
+    END IF;
+
+    INSERT INTO vendedor (
+        user_name, nombre_tienda, codigo_pais, moneda_local,
+        tipo_plan, email, password
+    ) VALUES (
+        v_user_name, v_nombre_tienda, v_codigo_pais, v_moneda_local,
+        v_tipo_plan, v_email,
+        '$2b$12$simulacion.password.dummy.30dias.2026'
+    )
+    ON CONFLICT (user_name) DO UPDATE SET
+        nombre_tienda = EXCLUDED.nombre_tienda,
+        email         = EXCLUDED.email
+    RETURNING id_vendedor INTO v_id_vendedor;
+
+    RAISE NOTICE 'Vendedor "%" (ID: %) listo.', v_user_name, v_id_vendedor;
+
+
+    -- =================================================================
+    -- PASO 3: Loop de 30 días
+    -- =================================================================
+
+    FOR v_dia IN 1..30 LOOP
+
+        -- Fecha de captura del día simulado
+        v_fecha_captura := (v_fecha_inicio_periodo + (v_dia - 1))::TIMESTAMPTZ;
+
+        -- Factores de variación independientes para cada grupo de métricas
+        v_factor  := 0.80 + random() * 0.40;   -- 0.80 – 1.20
+        v_factor2 := 0.80 + random() * 0.40;
+        v_factor3 := 0.80 + random() * 0.40;
+
+        -- -----------------------------------------------------------------
+        -- 3a. UPSERT metrica_reputacion
+        -- -----------------------------------------------------------------
+        INSERT INTO metrica_reputacion (
+            id_vendedor, fecha_captura,
+            ventas_totales_periodo,
+            total_reclamos, total_mediaciones,
+            total_canceladas, total_envios_incorrectos,
+            nivel_reputacion, insignia
+        ) VALUES (
+            v_id_vendedor, v_fecha_captura,
+            GREATEST(1, ROUND(v_ventas_totales_periodo_base * v_factor)::INTEGER),
+            GREATEST(0, ROUND(v_total_reclamos_base * v_factor)::INTEGER),
+            GREATEST(0, ROUND(v_total_mediaciones_base * v_factor)::INTEGER),
+            GREATEST(0, ROUND(v_total_canceladas_base * v_factor)::INTEGER),
+            GREATEST(0, ROUND(v_total_envios_incorrectos_base * v_factor)::INTEGER),
+            v_nivel_reputacion,
+            v_insignia
+        )
+        ON CONFLICT (id_vendedor) DO UPDATE SET
+            fecha_captura              = EXCLUDED.fecha_captura,
+            ventas_totales_periodo     = EXCLUDED.ventas_totales_periodo,
+            total_reclamos             = EXCLUDED.total_reclamos,
+            total_mediaciones          = EXCLUDED.total_mediaciones,
+            total_canceladas           = EXCLUDED.total_canceladas,
+            total_envios_incorrectos   = EXCLUDED.total_envios_incorrectos,
+            nivel_reputacion           = EXCLUDED.nivel_reputacion,
+            insignia                   = EXCLUDED.insignia;
+
+        -- -----------------------------------------------------------------
+        -- 3b. UPSERT metrica_negocio
+        -- -----------------------------------------------------------------
+        INSERT INTO metrica_negocio (
+            id_vendedor, fecha_captura,
+            fecha_inicio_periodo, fecha_fin_periodo,
+            ventas_brutas_moneda_local, ventas_brutas_usd,
+            unidades_vendidas, visitas_totales,
+            intencion_compra, ventas_concretadas,
+            precio_promedio_unidad, precio_promedio_venta
+        ) VALUES (
+            v_id_vendedor, v_fecha_captura,
+            v_fecha_inicio_periodo, (v_fecha_inicio_periodo + (v_dia - 1))::DATE,
+            GREATEST(0, ROUND(v_ventas_brutas_moneda_local_base * v_factor, 2)),
+            GREATEST(0, ROUND(v_ventas_brutas_usd_base * v_factor, 2)),
+            GREATEST(0, ROUND(v_unidades_vendidas_base * v_factor)::INTEGER),
+            GREATEST(0, ROUND(v_visitas_totales_base * v_factor)::INTEGER),
+            GREATEST(0, ROUND(v_intencion_compra_base * v_factor)::INTEGER),
+            GREATEST(0, ROUND(v_ventas_concretadas_base * v_factor)::INTEGER),
+            GREATEST(0, ROUND(v_precio_promedio_unidad_base * v_factor2, 2)),
+            GREATEST(0, ROUND(v_precio_promedio_venta_base * v_factor2, 2))
+        )
+        ON CONFLICT (id_vendedor) DO UPDATE SET
+            fecha_captura              = EXCLUDED.fecha_captura,
+            fecha_inicio_periodo       = EXCLUDED.fecha_inicio_periodo,
+            fecha_fin_periodo          = EXCLUDED.fecha_fin_periodo,
+            ventas_brutas_moneda_local = EXCLUDED.ventas_brutas_moneda_local,
+            ventas_brutas_usd          = EXCLUDED.ventas_brutas_usd,
+            unidades_vendidas          = EXCLUDED.unidades_vendidas,
+            visitas_totales            = EXCLUDED.visitas_totales,
+            intencion_compra           = EXCLUDED.intencion_compra,
+            ventas_concretadas         = EXCLUDED.ventas_concretadas,
+            precio_promedio_unidad     = EXCLUDED.precio_promedio_unidad,
+            precio_promedio_venta      = EXCLUDED.precio_promedio_venta;
+
+        -- -----------------------------------------------------------------
+        -- 3c. UPSERT metrica_costo
+        -- -----------------------------------------------------------------
+        INSERT INTO metrica_costo (
+            id_vendedor, fecha_captura,
+            ventas_cobradas_total, neto_recibido,
+            cargos_por_venta, costos_envio,
+            inversion_ads, otros_cargos,
+            cargos_envio_full, descuento_reputacion
+        ) VALUES (
+            v_id_vendedor, v_fecha_captura,
+            GREATEST(0, ROUND(v_ventas_cobradas_total_base * v_factor, 2)),
+            GREATEST(0, ROUND(v_neto_recibido_base * v_factor, 2)),
+            GREATEST(0, ROUND(v_cargos_por_venta_base * v_factor, 2)),
+            GREATEST(0, ROUND(v_costos_envio_base * v_factor, 2)),
+            GREATEST(0, ROUND(v_inversion_ads_base * v_factor, 2)),
+            GREATEST(0, ROUND(v_otros_cargos_base * v_factor, 2)),
+            GREATEST(0, ROUND(v_cargos_envio_full_base * v_factor, 2)),
+            GREATEST(0, ROUND(v_descuento_reputacion_base * v_factor, 2))
+        )
+        ON CONFLICT (id_vendedor) DO UPDATE SET
+            fecha_captura            = EXCLUDED.fecha_captura,
+            ventas_cobradas_total    = EXCLUDED.ventas_cobradas_total,
+            neto_recibido            = EXCLUDED.neto_recibido,
+            cargos_por_venta         = EXCLUDED.cargos_por_venta,
+            costos_envio             = EXCLUDED.costos_envio,
+            inversion_ads            = EXCLUDED.inversion_ads,
+            otros_cargos             = EXCLUDED.otros_cargos,
+            cargos_envio_full        = EXCLUDED.cargos_envio_full,
+            descuento_reputacion     = EXCLUDED.descuento_reputacion;
+
+        -- -----------------------------------------------------------------
+        -- 3d. UPSERT metrica_stock_full
+        -- -----------------------------------------------------------------
+        INSERT INTO metrica_stock_full (
+            id_vendedor, fecha_captura,
+            espacios_p_asignados, espacios_g_asignados,
+            puntaje_calidad,
+            productos_no_aptos_venta, productos_sin_rotacion,
+            productos_antiguedad, productos_exceso_proyeccion
+        ) VALUES (
+            v_id_vendedor, v_fecha_captura,
+            GREATEST(0, ROUND(v_espacios_p_asignados_base * v_factor)::INTEGER),
+            GREATEST(0, ROUND(v_espacios_g_asignados_base * v_factor)::INTEGER),
+            LEAST(100, GREATEST(0, ROUND(v_puntaje_calidad_base * v_factor3)::INTEGER)),
+            GREATEST(0, ROUND(v_productos_no_aptos_venta_base * v_factor)::INTEGER),
+            GREATEST(0, ROUND(v_productos_sin_rotacion_base * v_factor)::INTEGER),
+            GREATEST(0, ROUND(v_productos_antiguedad_base * v_factor)::INTEGER),
+            GREATEST(0, ROUND(v_productos_exceso_proyeccion_base * v_factor)::INTEGER)
+        )
+        ON CONFLICT (id_vendedor) DO UPDATE SET
+            fecha_captura               = EXCLUDED.fecha_captura,
+            espacios_p_asignados        = EXCLUDED.espacios_p_asignados,
+            espacios_g_asignados        = EXCLUDED.espacios_g_asignados,
+            puntaje_calidad             = EXCLUDED.puntaje_calidad,
+            productos_no_aptos_venta    = EXCLUDED.productos_no_aptos_venta,
+            productos_sin_rotacion      = EXCLUDED.productos_sin_rotacion,
+            productos_antiguedad        = EXCLUDED.productos_antiguedad,
+            productos_exceso_proyeccion = EXCLUDED.productos_exceso_proyeccion;
+
+        -- -----------------------------------------------------------------
+        -- 3e. UPSERT metrica_mi_pagina
+        -- -----------------------------------------------------------------
+        INSERT INTO metrica_mi_pagina (
+            id_vendedor, fecha_captura,
+            tiene_banner, tiene_logo,
+            tiene_carruseles, categorias_organizadas
+        ) VALUES (
+            v_id_vendedor, v_fecha_captura,
+            v_tiene_banner, v_tiene_logo,
+            v_tiene_carruseles, v_categorias_organizadas
+        )
+        ON CONFLICT (id_vendedor) DO UPDATE SET
+            fecha_captura          = EXCLUDED.fecha_captura,
+            tiene_banner           = EXCLUDED.tiene_banner,
+            tiene_logo             = EXCLUDED.tiene_logo,
+            tiene_carruseles       = EXCLUDED.tiene_carruseles,
+            categorias_organizadas = EXCLUDED.categorias_organizadas;
+
+        -- -----------------------------------------------------------------
+        -- 3f. REFRESH MATERIALIZED VIEW CONCURRENTLY (5 vistas)
+        -- -----------------------------------------------------------------
+        REFRESH MATERIALIZED VIEW CONCURRENTLY mv_diagnostico_reputacion;
+        REFRESH MATERIALIZED VIEW CONCURRENTLY mv_diagnostico_finanzas;
+        REFRESH MATERIALIZED VIEW CONCURRENTLY mv_diagnostico_publicaciones;
+        REFRESH MATERIALIZED VIEW CONCURRENTLY mv_diagnostico_ads;
+        REFRESH MATERIALIZED VIEW CONCURRENTLY mv_diagnostico_stock;
+
+        -- -----------------------------------------------------------------
+        -- 3g. INSERT INTO hist_diagnostico_* (snapshot diario)
+        -- -----------------------------------------------------------------
+
+        -- Reputación
+        INSERT INTO hist_diagnostico_reputacion (
+            id_vendedor, tasa_reclamos, tasa_cancelaciones,
+            tasa_mediaciones, tasa_envios_incorrectos,
+            nivel_reputacion, insignia, fecha_captura
+        )
+        SELECT id, tasa_reclamos, tasa_cancelaciones,
+               tasa_mediaciones, tasa_envios_incorrectos,
+               nivel_reputacion, insignia, fecha_captura::DATE
+        FROM mv_diagnostico_reputacion
+        WHERE id = v_id_vendedor;
+
+        -- Finanzas
+        INSERT INTO hist_diagnostico_finanzas (
+            id_vendedor, cvr_global, margen_neto_real,
+            ticket_promedio, carga_total_costos,
+            ratio_intencion_compra, descuento_reputacion,
+            tasa_cobro_efectivo, crecimiento_mom,
+            ventas_periodo_actual,
+            fecha_inicio_periodo, fecha_fin_periodo
+        )
+        SELECT id, cvr_global, margen_neto_real,
+               ticket_promedio, carga_total_costos,
+               ratio_intencion_compra, descuento_reputacion,
+               tasa_cobro_efectivo, crecimiento_mom,
+               ventas_periodo_actual,
+               fecha_inicio_periodo, fecha_fin_periodo
+        FROM mv_diagnostico_finanzas
+        WHERE id = v_id_vendedor;
+
+        -- Publicaciones
+        INSERT INTO hist_diagnostico_publicaciones (
+            id_vendedor, total_publicaciones,
+            cvr_publicacion,
+            pct_catalogo_completo, pct_publicaciones_con_video
+        )
+        SELECT id, total_publicaciones,
+               cvr_publicacion,
+               pct_catalogo_completo, pct_publicaciones_con_video
+        FROM mv_diagnostico_publicaciones
+        WHERE id = v_id_vendedor;
+
+        -- Publicidad (Ads)
+        INSERT INTO hist_diagnostico_ads (
+            id_vendedor, roas, acos,
+            inversion_ads_sobre_ventas, inversion_ads
+        )
+        SELECT id, roas, acos,
+               inversion_ads_sobre_ventas, inversion_ads
+        FROM mv_diagnostico_ads
+        WHERE id = v_id_vendedor;
+
+        -- Stock Full
+        INSERT INTO hist_diagnostico_stock (
+            id_vendedor, dead_stock_rate, antiguedad_riesgo,
+            productos_no_aptos, overstock_rate,
+            utilizacion_espacios, puntaje_calidad
+        )
+        SELECT id, dead_stock_rate, antiguedad_riesgo,
+               productos_no_aptos, overstock_rate,
+               utilizacion_espacios, puntaje_calidad
+        FROM mv_diagnostico_stock
+        WHERE id = v_id_vendedor;
+
+        -- Contador y log
+        v_total_hist := v_total_hist + 5;
+        RAISE NOTICE 'Día % (%): snapshots insertados.', v_dia, v_fecha_captura::DATE;
+
+    END LOOP;
+
+    -- =================================================================
+    -- FIN: Resumen final
+    -- =================================================================
+    RAISE NOTICE '=========================================================';
+    RAISE NOTICE 'SIMULACIÓN COMPLETADA:';
+    RAISE NOTICE '  Vendedor    : % (ID: %)', v_user_name, v_id_vendedor;
+    RAISE NOTICE '  Período     : %  –  %', v_fecha_inicio_periodo, v_fecha_final_periodo;
+    RAISE NOTICE '  Días        : 30';
+    RAISE NOTICE '  Registros históricos generados: %', v_total_hist;
+    RAISE NOTICE '=========================================================';
+
+END;
+$$;
