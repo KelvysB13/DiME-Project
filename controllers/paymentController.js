@@ -75,6 +75,10 @@ document.addEventListener('DOMContentLoaded', () => {
             mensajeDiv.style.display = 'none';
             step2.style.display = 'none';
             step3.style.display = 'block';
+
+            setTimeout(() => {
+                window.location.href = '/auth/login';
+            }, 2500);
         } 
         
         catch (error) 

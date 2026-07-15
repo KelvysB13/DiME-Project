@@ -25,7 +25,7 @@ def guardar_metricas(payload: MetricsRequest, db: Session = Depends(get_db), _ad
 
         payload_dict = payload.model_dump(exclude_none=True)
         payload_json = json.dumps(payload_dict, default=str)
-        db.execute(text("CALL sp_simular_30_dias(:p_datos::jsonb)"), {"p_datos": payload_json})
+        db.execute(text("CALL sp_simular_30_dias(CAST(:p_datos AS jsonb))"), {"p_datos": payload_json})
         db.commit()
 
         return MetricsResponse(
