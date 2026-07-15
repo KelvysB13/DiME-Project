@@ -10,7 +10,7 @@ from models.vendedor_model import Vendedor
 from models.admin_model import Admin
 from models.plan_model import Plan
 from auth.hash_handler import hash_data
-from auth.jwt_handler import ALGORITHM
+from auth.jwt_handler import ALGORITHM, create_access_token
 from core.config import settings
 
 logger = logging.getLogger(__name__)
@@ -198,9 +198,16 @@ def checkout(db: Session, payload: CheckoutRequest) -> CheckoutResponse:
     db.commit()
     db.refresh(vendedor)
 
+    access_token = create_access_token(data={"sub": str(vendedor.id_vendedor), "role": "vendedor"})
+
     _run_simulation(vendedor, db)
 
     return CheckoutResponse(
         success=True,
         message=f"Pago procesado. Plan {plan.nombre_plan} activado. Bienvenido {vendedor.user_name}.",
+        access_token=access_token,
+        token_type="bearer",
+        expires_in=3600,
+        role="vendedor",
+        id_vendedor=vendedor.id_vendedor,
     )
