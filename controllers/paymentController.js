@@ -80,7 +80,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (data.id_vendedor) {
                     localStorage.setItem('vendedor_id', data.id_vendedor);
                 }
-                window.location.href = '/me/dashboard';
+
+                mensajeDiv.style.display = 'none';
+                step2.style.display = 'none';
+                step3.style.display = 'block';
+
+                setTimeout(() => {
+                    window.location.href = '/me/dashboard';
+                }, 8000);
                 return;
             }
 
