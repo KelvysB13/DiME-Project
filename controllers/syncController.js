@@ -76,7 +76,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btnConnectML.style.pointerEvents = 'none';
 
             showMessage('Redirigiendo a tu Dashboard...', 'green');
-            setTimeout(() => (window.location.href = '/auth/login'), 1500);
+            setTimeout(() => (window.location.href = '/me/dashboard'), 1500);
         } catch (error) {
             if (!syncCanceled) {
                 console.error('Error de sincronización:', error);

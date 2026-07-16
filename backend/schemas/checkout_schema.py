@@ -15,3 +15,8 @@ class CheckoutResponse(BaseModel):
 
     success: bool = Field(..., description="Indica si el pago fue procesado exitosamente")
     message: Optional[str] = Field(None, description="Mensaje adicional sobre el resultado")
+    access_token: Optional[str] = Field(None, description="Token de acceso JWT para auto-login")
+    token_type: Optional[str] = Field(None, description="Tipo de token (bearer)")
+    expires_in: Optional[int] = Field(None, description="Tiempo de expiración en segundos")
+    role: Optional[str] = Field(None, description="Rol del usuario (vendedor)")
+    id_vendedor: Optional[int] = Field(None, description="ID del vendedor creado")

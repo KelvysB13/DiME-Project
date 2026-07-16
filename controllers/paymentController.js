@@ -72,11 +72,30 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(errorData.detail || 'Tarjeta rechazada.');
             }
 
+            const data = await response.json();
+
+            if (data && data.access_token) {
+                localStorage.setItem('access_token', data.access_token);
+                localStorage.setItem('role', data.role || 'vendedor');
+                if (data.id_vendedor) {
+                    localStorage.setItem('vendedor_id', data.id_vendedor);
+                }
+
+                mensajeDiv.style.display = 'none';
+                step2.style.display = 'none';
+                step3.style.display = 'block';
+
+                setTimeout(() => {
+                    window.location.href = '/me/dashboard';
+                }, 8000);
+                return;
+            }
+
             mensajeDiv.style.display = 'none';
             step2.style.display = 'none';
             step3.style.display = 'block';
         } 
-        
+
         catch (error) 
         {
             showMessage(error.message, 'red');
