@@ -20,6 +20,12 @@ from models.mv_diagnostico_publicaciones import DiagnosticoPublicaciones
 from models.tarjeta_model import Tarjeta
 from models.kpis_maestro_model import KpiMaestro
 from models.v_diagnostico_vendedores_semaforo import DiagnosticoVendedoresSemaforo
+from models.hist_diagnostico_reputacion_model import HistDiagnosticoReputacion
+from models.hist_diagnostico_finanzas_model import HistDiagnosticoFinanzas
+from models.hist_diagnostico_publicaciones_model import HistDiagnosticoPublicaciones
+from models.hist_diagnostico_ads_model import HistDiagnosticoAds
+from models.hist_diagnostico_stock_model import HistDiagnosticoStock
+from models.admin_model import Admin
 
 __all__ = [
     "Base",
@@ -44,4 +50,10 @@ __all__ = [
     "Tarjeta",
     "KpiMaestro",
     "DiagnosticoVendedoresSemaforo",
+    "HistDiagnosticoReputacion",
+    "HistDiagnosticoFinanzas",
+    "HistDiagnosticoPublicaciones",
+    "HistDiagnosticoAds",
+    "HistDiagnosticoStock",
+    "Admin"
 ]

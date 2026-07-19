@@ -10,20 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="/assets/styles/user_dashboard_style.css">
-
-  <style>
-    /* Estilos mínimos de apoyo para el funcionamiento de las vistas y formularios */
-    .content-view { display: none; animation: fadeIn 0.3s ease; }
-    .content-view.active { display: block; }
-    
-    .form-group { margin-bottom: 16px; }
-    .form-label { display: block; font-size: 11px; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; margin-bottom: 6px; letter-spacing: 0.05em; }
-    
-    .danger-zone { border: 1px solid var(--danger); background-color: rgba(239, 68, 68, 0.05); border-radius: var(--radius-md); padding: 20px; margin-top: 24px; }
-    .danger-zone h4 { color: var(--danger); font-size: 14px; font-weight: 700; margin-bottom: 8px; }
-    .btn-danger { background-color: var(--danger); color: #fff; border: none; padding: 10px 16px; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; font-size: 12px; transition: background-color 0.2s; }
-    .btn-danger:hover { background-color: #dc2626; }
-  </style>
+  <link rel="stylesheet" href="/assets/styles/user_settings_style.css">
 </head>
 <body>
 
@@ -70,8 +57,8 @@
         </div>
         
         <div class="flex items-center gap-4">
-          <button class="btn-retry" onclick="window.location.href='user_dashboard.html'">
-      <span>←</span> Volver al tablero
+          <button class="btn-retry" onclick="window.location.href='/me/dashboard'">
+            <span>←</span> Volver al tablero
           </button>
         </div>
       </header>
@@ -81,35 +68,32 @@
         <div id="view-perfil" class="content-view active">
           <div class="section-card">
             <h3 class="widget-title" style="font-size: 16px; margin-bottom: 6px;">Información General</h3>
-            <p class="widget-desc" style="margin-bottom: 24px;">Actualiza los datos básicos de tu cuenta y la información visible de tu e-commerce.</p>
+            <p class="widget-desc" style="margin-bottom: 24px;">Información básica de tu cuenta y de tu e-commerce sincronizado.</p>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <!-- Campo 1: Username -->
               <div class="form-group">
-                <label class="form-label">Nombre del Responsable</label>
-                <input type="text" class="input-dime" value="Mariam Quintero">
+                <label class="form-label">Username</label>
+                <input type="text" id="username" class="input-dime" readonly style="background-color: var(--bg); opacity: 0.7;">
               </div>
+              
+              <!-- Campo 2: Nombre de la Tienda -->
               <div class="form-group">
                 <label class="form-label">Nombre de la Tienda (E-commerce)</label>
-                <input type="text" class="input-dime" value="GK Fullcommerce">
+                <input type="text" id="nombre_tienda" class="input-dime" readonly style="background-color: var(--bg); opacity: 0.7;">
               </div>
+              
+              <!-- Campo 3: Correo -->
               <div class="form-group">
                 <label class="form-label">Correo Electrónico</label>
-                <input type="email" class="input-dime" value="admin@gkfullcommerce.com" disabled style="background-color: var(--bg); opacity: 0.7;">
+                <input type="email" id="email" class="input-dime" readonly style="background-color: var(--bg); opacity: 0.7;">
               </div>
-              <div class="form-group">
-                <label class="form-label">País de Operación</label>
-                <div class="relative select-wrapper">
-                  <select class="select-dime">
-                    <option value="CL" selected>Chile</option>
-                    <option value="VE">Venezuela</option>
-                    <option value="AR">Argentina</option>
-                  </select>
-                </div>
-              </div>
-            </div>
 
-            <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border-light); text-align: right;">
-              <button class="btn-retry">Guardar Cambios</button>
+              <!-- Campo 4: Pais -->
+              <div class="form-group">
+                <label class="form-label">País de operación</label>
+                <input type="text" id="pais" class="input-dime" readonly style="background-color: var(--bg); opacity: 0.7;">
+              </div>
             </div>
           </div>
         </div>
@@ -121,16 +105,19 @@
             
             <div class="widget-card" style="background-color: var(--primary); color: #fff; border: none; display: flex; flex-direction: row; justify-content: space-between; align-items: center; margin-bottom: 16px;">
               <div>
-                <h4 style="font-size: 18px; color: var(--accent); font-weight: 800;">Plan Premium</h4>
+                <!-- Le agregamos el ID 'nombre_del_plan' para inyectarlo desde JS -->
+                <h4 id="nombre_del_plan" style="font-size: 18px; color: var(--accent); font-weight: 800;">Cargando plan...</h4>
                 <p style="font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 4px;">Métricas avanzadas e inteligencia de negocio</p>
               </div>
               <div class="text-right">
-                <span style="font-size: 24px; font-weight: 800;">$80 USD</span><br>
+                <span id="precio_del_plan" style="font-size: 24px; font-weight: 800;">--</span><br>
                 <span style="font-size: 11px; color: rgba(255,255,255,0.7);">/ mes</span>
               </div>
             </div>
-            <p class="text-xs text-secondary">Tu plan se renovará automáticamente el <strong>24 de Julio de 2026</strong>.</p>
+            <p class="text-xs text-secondary">Tu plan se renovará automáticamente en el próximo ciclo.</p>
           </div>
+
+
 
           <div class="section-card">
             <h3 class="widget-title" style="font-size: 14px; margin-bottom: 16px;">💳 Métodos de Pago</h3>
@@ -144,7 +131,32 @@
               </div>
               <button class="btn-ghost" style="color: var(--danger); border-color: var(--danger);">Eliminar</button>
             </div>
-            <button class="btn-ghost">+ Añadir nuevo método</button>
+            
+            <!-- Botón original para desplegar formulario -->
+            <button id="btn-show-form" class="btn-ghost" style="width: 100%;">+ Añadir nuevo método</button>
+
+            <!-- Nuevo formulario oculto para la tarjeta -->
+            <div id="form-nueva-tarjeta" style="display: none; border: 1px solid var(--border); padding: 16px; border-radius: 8px; margin-top: 16px; background-color: var(--bg);">
+              <h4 style="font-size: 13px; font-weight: 700; margin-bottom: 12px;">Datos de la nueva tarjeta</h4>
+              
+              <div class="form-group">
+                <input type="text" id="titular_tarjeta" class="input-dime" placeholder="Nombre del Titular">
+              </div>
+              <div class="form-group">
+                <input type="text" id="num_tarjeta" class="input-dime" placeholder="Número de Tarjeta (16 dígitos sin espacios)" maxlength="16">
+              </div>
+              
+              <div class="grid grid-cols-3 gap-2" style="margin-bottom: 16px;">
+                <input type="number" id="mes_tarjeta" class="input-dime" placeholder="Mes (MM)" min="1" max="12">
+                <input type="number" id="anio_tarjeta" class="input-dime" placeholder="Año (YY)" min="24" max="99">
+                <input type="text" id="cvv_tarjeta" class="input-dime" placeholder="CVV" maxlength="4">
+              </div>
+              
+              <div class="flex gap-2">
+                <button id="btn-cancel-card" class="btn-ghost" style="flex: 1;">Cancelar</button>
+                <button id="btn-save-card" class="btn-retry" style="flex: 1;">Guardar Tarjeta</button>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -156,23 +168,23 @@
             <div class="grid grid-cols-1 gap-4" style="max-width: 400px;">
               <div class="form-group">
                 <label class="form-label">Contraseña Actual</label>
-                <input type="password" class="input-dime" placeholder="••••••••">
+                <input type="password" id="current_password" class="input-dime" placeholder="••••••••">
               </div>
               <div class="form-group">
                 <label class="form-label">Nueva Contraseña</label>
-                <input type="password" class="input-dime" placeholder="••••••••">
+                <input type="password" id="new_password" class="input-dime" placeholder="••••••••">
               </div>
               <div class="form-group">
                 <label class="form-label">Confirmar Nueva Contraseña</label>
-                <input type="password" class="input-dime" placeholder="••••••••">
+                <input type="password" id="confirm_new_password" class="input-dime" placeholder="••••••••">
               </div>
-              <button class="btn-retry" style="width: 100%;">Actualizar Contraseña</button>
+              <button id="btn-update-password" class="btn-retry" style="width: 100%;">Actualizar Contraseña</button>
             </div>
 
             <div class="danger-zone">
               <h4>Zona de Peligro</h4>
               <p class="widget-desc" style="color: var(--text-secondary); margin-bottom: 16px;">Al eliminar tu cuenta perderás permanentemente todo el historial de métricas y acceso a los tableros. Esta acción no se puede deshacer.</p>
-              <button class="btn-danger">Eliminar mi cuenta de DiME</button>
+              <button id="btn-delete-account" class="btn-danger">Eliminar mi cuenta de DiME</button>
             </div>
           </div>
         </div>
@@ -181,26 +193,6 @@
     </main>
   </div>
 
-  <script>
-    document.addEventListener('DOMContentLoaded', () => {
-      const navButtons = document.querySelectorAll('.sidebar nav .nav-btn');
-      const views = document.querySelectorAll('.content-view');
-
-      navButtons.forEach(btn => {
-        btn.addEventListener('click', function() {
-          // Remover clase 'active' de todos los botones
-          navButtons.forEach(b => b.classList.remove('active'));
-          // Añadir clase 'active' al botón clickeado
-          this.classList.add('active');
-
-          // Ocultar todas las vistas
-          views.forEach(v => v.classList.remove('active'));
-          // Mostrar la vista que corresponde
-          const targetView = this.getAttribute('data-view');
-          document.getElementById(targetView).classList.add('active');
-        });
-      });
-    });
-  </script>
+  <script src="/controllers/settingsController.js"></script> 
 </body>
 </html>

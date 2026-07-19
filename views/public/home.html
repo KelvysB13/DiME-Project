@@ -45,6 +45,7 @@
             <div class="nav-links">
                 <a href="#about">¿Quiénes somos?</a>
                 <a href="#pricing">Planes</a>
+                <a href="/faq">FAQ</a>
                 <span class="nav-btn-group">
                     <a href="/auth/login" class="nav-btn">Login</a>
                     <a href="/auth/register" class="nav-btn">Register</a>
@@ -101,39 +102,8 @@
     <!-- ===== PLANES DE PRECIO ===== -->
     <section class="pricing-section" id="pricing">
         <h2>Elige el plan ideal para ti</h2>
-        <div class="pricing-grid">
-            <div class="pricing-card">
-                <div class="pricing-card-header">
-                    <h3>Free</h3>
-                    <p class="pricing-desc">Perfecto para empezar</p>
-                </div>
-                <div class="price">$0<span>/mes</span></div>
-                <ul>
-                    <li>Auditoría básica de métricas</li>
-                    <li>Reportes manuales</li>
-                    <li>Acceso a la comunidad</li>
-                    <li>Soporte estándar</li>
-                    <li>1 tienda</li>
-                </ul>
-                <a href="/auth/login" class="btn">Comenzar gratis</a>
-            </div>
-            <div class="pricing-card pricing-card--featured">
-                <div class="pricing-badge">Más popular</div>
-                <div class="pricing-card-header">
-                    <h3>Basic</h3>
-                    <p class="pricing-desc">Para negocios en crecimiento</p>
-                </div>
-                <div class="price">$29<span>/mes</span></div>
-                <ul>
-                    <li>Todo lo del plan Free</li>
-                    <li>Auditoría automatizada</li>
-                    <li>Integración API</li>
-                    <li>Soporte por correo prioritario</li>
-                    <li>Hasta 5 tiendas</li>
-                    <li>Reportes programados</li>
-                </ul>
-                <a href="/auth/login" class="btn">Adquirir Basic</a>
-            </div>
+        <div class="pricing-grid" id="pricing-grid">
+            <p style="text-align:center;color:var(--text-muted);grid-column:1/-1;">Cargando planes...</p>
         </div>
     </section>
 
@@ -252,6 +222,8 @@
     </footer>
 
     <!-- ===== SCRIPTS ===== -->
+    <script src="/controllers/homeController.js"></script>
+
     <script>
     // --- Typewriter con highlight amarillo ---
     const text = "Convierte información en \ninteligencia de negocio.";

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Boolean, Text, DateTime, ForeignKey
+from sqlalchemy import Column, String, BigInteger, Boolean, Text, DateTime, ForeignKey
 
 from models.base import Base
 
@@ -8,7 +8,7 @@ class Vendedor(Base):
 
     __tablename__ = "vendedor"
 
-    id_vendedor = Column(Integer, primary_key=True, autoincrement=True)
+    id_vendedor = Column(BigInteger, primary_key=True, autoincrement=True)
 
     user_name = Column(String(50), nullable=False, unique=True)
 
@@ -18,7 +18,7 @@ class Vendedor(Base):
 
     moneda_local = Column(String(3), ForeignKey("moneda.codigo_moneda"), nullable=False)
 
-    tipo_plan = Column(Integer, ForeignKey("plan.id"), nullable=True)
+    tipo_plan = Column(BigInteger, ForeignKey("plan.id"), nullable=True)
 
     email = Column(String(255), nullable=False, unique=True)
 

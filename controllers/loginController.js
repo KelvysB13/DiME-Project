@@ -1,4 +1,4 @@
-const API_URL = "http://127.0.0.1:8000/api";
+const API_URL = "/api";
 
 function clearErrors() 
 {
@@ -52,26 +52,22 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
         if (response.ok)
         {
             const data = await response.json().catch(() => ({}));
-            if (data && data.access_token) localStorage.setItem('access_token', data.access_token);
+            
+            if (data && data.access_token) {
+                localStorage.setItem('access_token', data.access_token);
+                localStorage.setItem('role', data.role || 'vendedor');
 
-            let esAdmin = false;
-            try
-            {
-                const infoResponse = await fetch(`${API_URL}/general-information`, {
-                    headers: { 'Authorization': `Bearer ${data.access_token}` }
-                });
-                if (infoResponse.ok)
-                {
-                    const info = await infoResponse.json();
-                    esAdmin = !!info.es_admin;
+                const idDetectado = data.vendedor_id || data.id_vendedor || data.id || data.user_id;
+                
+                if (idDetectado) {
+                    localStorage.setItem('vendedor_id', idDetectado);
+                } else {
+                    console.warn("⚠️ Atención: El backend no envió el ID del vendedor en el JSON de login.");
                 }
             }
-            catch (e)
-            {
-                console.warn('No se pudo obtener el rol del usuario:', e.message);
-            }
 
-            window.location.href = esAdmin ? '/admin/dashboard' : '/me/dashboard';
+            const redirectUrl = data.role === 'admin' ? '/admin/dashboard' : '/me/dashboard';
+            window.location.href = redirectUrl;
         }
         
         else 

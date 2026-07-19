@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 from core.database import get_db
 from auth.deps import get_current_user
 from models.vendedor_model import Vendedor
 from schemas.mv_refresh_schema import RefreshMvResponse
-from services.mv_refresh_service import refresh_materialized_views
 
 router = APIRouter()
 
@@ -14,11 +14,11 @@ def refresh_views(
     current_user: Vendedor = Depends(get_current_user),
 ):
     try:
-        refreshed = refresh_materialized_views(db)
-        names = ", ".join(refreshed)
-        return RefreshMvResponse(message=f"Vistas materializadas actualizadas: {names}")
+        db.execute(text("CALL sp_sincronizar_diagnostico_dime()"))
+        db.commit()
+        return RefreshMvResponse(message="Sincronización completada exitosamente")
     except Exception as e:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Error al refrescar vistas materializadas: {str(e)}",
+            detail=f"Error al sincronizar: {str(e)}",
         )

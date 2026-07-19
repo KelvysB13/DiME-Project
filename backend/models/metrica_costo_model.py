@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, Numeric, DateTime, ForeignKey
+from sqlalchemy import Column, BigInteger, Numeric, DateTime, ForeignKey
 
 from models.base import Base
 
@@ -8,9 +8,9 @@ class Costo(Base):
 
     __tablename__ = "metrica_costo"
 
-    id_metrica_costo = Column(Integer, primary_key=True, autoincrement=True)
+    id_metrica_costo = Column(BigInteger, primary_key=True, autoincrement=True)
 
-    id_vendedor = Column(Integer, ForeignKey("vendedor.id_vendedor"), nullable=False, unique=True)
+    id_vendedor = Column(BigInteger, ForeignKey("vendedor.id_vendedor"), nullable=False, unique=True)
 
     fecha_captura = Column(DateTime(timezone=True), nullable=False, server_default="CURRENT_TIMESTAMP")
 

@@ -3,6 +3,7 @@ import jwt
 from datetime import timedelta
 from sqlalchemy.orm import Session
 from models.vendedor_model import Vendedor
+from models.admin_model import Admin
 from auth.hash_handler import hash_data
 from auth.jwt_handler import create_access_token, ALGORITHM
 from core.config import settings
@@ -30,7 +31,6 @@ def request_password_recovery(db: Session, email: str) -> str | None:
         expires_delta=timedelta(minutes=RESET_TOKEN_EXPIRE_MINUTES),
     )
 
-    print(f"\n>>> Token de recuperacion para {email}: {token}\n")
     return token
 
 def reset_password(db: Session, token: str, new_password: str) -> None:
