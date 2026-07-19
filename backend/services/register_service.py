@@ -23,6 +23,7 @@ def register(db: Session, payload: RegisterRequest) -> str:
         "email": payload.email,
         "password": payload.password.get_secret_value(),
         "nombre_tienda": payload.nombre_tienda,
+        "usuario_ml": payload.usuario_ml,
     })
 
     return pre_token

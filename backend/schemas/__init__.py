@@ -5,7 +5,7 @@ from schemas.token_schema import TokenRequest, TokenResponse
 from schemas.logout_schema import LogoutRequest, LogoutResponse
 from schemas.password_recovery_schema import PasswordRecoveryRequest, PasswordRecoveryResponse, ResetPasswordRequest, ResetPasswordResponse
 from schemas.payment_method_schema import PaymentMethodRequest, PaymentMethodResponse
-from schemas.checkout_schema import CheckoutRequest, CheckoutResponse
+from schemas.checkout_schema import CheckoutRequest, CheckoutResponse, SyncMockoonRequest, SyncMockoonResponse
 
 from schemas.dashboard_schema import (DashboardResponse, 
     ReputacionInfo, 
@@ -82,6 +82,8 @@ __all__ = [
     "PaymentMethodResponse",
     "CheckoutRequest",
     "CheckoutResponse",
+    "SyncMockoonRequest",
+    "SyncMockoonResponse",
     "MvDiagnosticoReputacion",
     "MvDiagnosticoFinanzas",
     "MvDiagnosticoAds",

@@ -1,7 +1,9 @@
 import json
 import logging
+import random
 from datetime import date, timedelta
 import jwt
+import httpx
 from sqlalchemy import text
 from sqlalchemy.orm import Session
 from schemas.checkout_schema import CheckoutRequest, CheckoutResponse
@@ -60,94 +62,6 @@ def _decode_pre_token(token: str) -> dict:
         raise CheckoutError("Token de pre-registro inválido.")
 
 
-def _generate_user_name(nombre_tienda: str, db: Session) -> str:
-    import re
-    import unicodedata
-    name = unicodedata.normalize("NFKD", nombre_tienda)
-    name = name.encode("ascii", "ignore").decode("ascii")
-    name = re.sub(r"[^a-zA-Z0-9\s]", "", name)
-    name = re.sub(r"\s+", "_", name.strip().lower())
-    name = name[:50]
-    base_name = name
-    counter = 1
-    while db.query(Vendedor).filter(Vendedor.user_name == name).first():
-        suffix = f"_{counter}"
-        name = f"{base_name[:50 - len(suffix)]}{suffix}"
-        counter += 1
-    return name
-
-
-def _run_simulation(vendedor: Vendedor, db: Session) -> None:
-    today = date.today()
-    start_date = today - timedelta(days=29)
-
-    payload = {
-        "datos_basicos": {
-            "user_name": vendedor.user_name,
-            "nombre_tienda": vendedor.nombre_tienda,
-            "codigo_pais": vendedor.codigo_pais or "MX",
-            "moneda_local": vendedor.moneda_local or "MXN",
-            "tipo_plan": str(vendedor.tipo_plan or 2),
-            "email": vendedor.email,
-        },
-        "metrica_negocio": {
-            "ventas_totales_periodo": 50,
-            "fecha_inicio_periodo": start_date.isoformat(),
-            "fecha_final_periodo": today.isoformat(),
-            "ventas_brutas_moneda_local": 15000.00,
-            "ventas_brutas_usd": 750.00,
-            "unidades_vendidas": 80,
-            "visitas_totales": 2500,
-            "intencion_compra": 200,
-            "ventas_concretadas": 60,
-            "precio_promedio_unidad": 187.50,
-            "precio_promedio_venta": 250.00,
-        },
-        "metrica_costo": {
-            "ventas_cobradas_total": 14250.00,
-            "neto_recibido": 12000.00,
-            "cargos_por_venta": 1500.00,
-            "costos_envio": 750.00,
-            "inversion_ads": 500.00,
-            "otros_cargos": 100.00,
-            "cargos_envio_full": 200.00,
-            "descuento_reputacion": 0.00,
-        },
-        "metrica_reputacion": {
-            "total_reclamos": 2,
-            "total_mediaciones": 0,
-            "total_canceladas": 1,
-            "total_envios_incorrectos": 0,
-            "nivel_reputacion": "green",
-            "insignia": None,
-        },
-        "metrica_stock_full": {
-            "espacios_p_asignados": 10,
-            "espacios_g_asignados": 5,
-            "puntaje_calidad": 95,
-            "productos_no_aptos_venta": 1,
-            "productos_sin_rotacion": 2,
-            "productos_antiguedad": 0,
-            "productos_exceso_proyeccion": 0,
-        },
-        "metrica_mi_pagina": {
-            "tiene_banner": False,
-            "tiene_logo": False,
-            "tiene_carruseles": False,
-            "categorias_organizadas": False,
-        },
-    }
-
-    try:
-        payload_json = json.dumps(payload, default=str)
-        db.execute(text("CALL sp_simular_30_dias(CAST(:p_datos AS jsonb))"), {"p_datos": payload_json})
-        db.commit()
-        logger.info("Simulación de 30 días completada para vendedor %s", vendedor.user_name)
-    except Exception as e:
-        db.rollback()
-        logger.error("Error al ejecutar simulación de 30 días para %s: %s", vendedor.user_name, e)
-
-
 def checkout(db: Session, payload: CheckoutRequest) -> CheckoutResponse:
 
     data = _decode_pre_token(payload.pre_token)
@@ -170,7 +84,11 @@ def checkout(db: Session, payload: CheckoutRequest) -> CheckoutResponse:
     card_type = _detect_card_type(payload.numero_tarjeta)
     expiry_date = _build_expiry_date(payload.mes_caducidad, payload.anio_caducidad)
 
-    user_name = _generate_user_name(data["nombre_tienda"], db)
+    user_name = data.get("usuario_ml", _generate_user_name(data["nombre_tienda"], db))
+
+    existing_user = db.query(Vendedor).filter(Vendedor.user_name == user_name).first()
+    if existing_user:
+        raise CheckoutError(f"El usuario de Mercado Libre '{user_name}' ya está registrado. Inicia sesión o usa otro nombre de usuario.")
 
     vendedor = Vendedor(
         user_name=user_name,
@@ -200,8 +118,6 @@ def checkout(db: Session, payload: CheckoutRequest) -> CheckoutResponse:
 
     access_token = create_access_token(data={"sub": str(vendedor.id_vendedor), "role": "vendedor"})
 
-    _run_simulation(vendedor, db)
-
     return CheckoutResponse(
         success=True,
         message=f"Pago procesado. Plan {plan.nombre_plan} activado. Bienvenido {vendedor.user_name}.",
@@ -211,3 +127,94 @@ def checkout(db: Session, payload: CheckoutRequest) -> CheckoutResponse:
         role="vendedor",
         id_vendedor=vendedor.id_vendedor,
     )
+
+
+def _generate_user_name(nombre_tienda: str, db: Session) -> str:
+    import re
+    import unicodedata
+    name = unicodedata.normalize("NFKD", nombre_tienda)
+    name = name.encode("ascii", "ignore").decode("ascii")
+    name = re.sub(r"[^a-zA-Z0-9\s]", "", name)
+    name = re.sub(r"\s+", "_", name.strip().lower())
+    name = name[:50]
+    base_name = name
+    counter = 1
+    while db.query(Vendedor).filter(Vendedor.user_name == name).first():
+        suffix = f"_{counter}"
+        name = f"{base_name[:50 - len(suffix)]}{suffix}"
+        counter += 1
+    return name
+
+
+def _fetch_from_mockoon() -> dict:
+    mock_id = random.randint(16, 22)
+    path = settings.mockoon_endpoint.replace("{id}", str(mock_id))
+    url = f"{settings.mockoon_url.rstrip('/')}{path}"
+    logger.info("Obteniendo datos desde Mockoon: GET %s", url)
+    with httpx.Client(timeout=5) as client:
+        resp = client.get(url)
+        resp.raise_for_status()
+        data = resp.json()
+    logger.info("Mockoon respondió OK para vendedor ID %s", mock_id)
+    return data
+
+
+def sync_with_mockoon(db: Session, vendedor: Vendedor, usuario_ml: str | None = None) -> dict:
+    try:
+        mockoon_data = _fetch_from_mockoon()
+    except (httpx.RequestError, httpx.HTTPStatusError) as e:
+        logger.error("Error al conectar con Mockoon: %s", e)
+        raise CheckoutError(f"No se pudo conectar con Mockoon: {e}")
+
+    datos_basicos_mock = mockoon_data.get("datos_basicos", {})
+
+    if usuario_ml:
+        vendedor.user_name = usuario_ml
+    vendedor.codigo_pais = datos_basicos_mock.get("codigo_pais", vendedor.codigo_pais)
+    vendedor.moneda_local = datos_basicos_mock.get("moneda_local", vendedor.moneda_local)
+    if datos_basicos_mock.get("acces_token"):
+        vendedor.access_token = datos_basicos_mock["acces_token"]
+    if datos_basicos_mock.get("refresh_token"):
+        vendedor.refresh_token = datos_basicos_mock["refresh_token"]
+
+    db.commit()
+    db.refresh(vendedor)
+
+    today = date.today()
+    start_date = today - timedelta(days=29)
+
+    plan_map = {"Clasico": "1", "Premium": "2", "Básico": "1"}
+    raw_plan = str(datos_basicos_mock.get("tipo_plan", ""))
+    tipo_plan_str = plan_map.get(raw_plan, str(vendedor.tipo_plan or 2))
+
+    payload = {
+        "datos_basicos": {
+            "user_name": vendedor.user_name,
+            "nombre_tienda": vendedor.nombre_tienda,
+            "codigo_pais": vendedor.codigo_pais or "MX",
+            "moneda_local": vendedor.moneda_local or "MXN",
+            "tipo_plan": tipo_plan_str,
+            "email": vendedor.email,
+        },
+        "metrica_negocio": mockoon_data.get("metricas_negocio", mockoon_data.get("metrica_negocio", {})),
+        "metrica_costo": mockoon_data.get("metricas_costo", mockoon_data.get("metrica_costo", {})),
+        "metrica_reputacion": mockoon_data.get("metricas_reputacion", mockoon_data.get("metrica_reputacion", {})),
+        "metrica_stock_full": mockoon_data.get("metricas_stock_full", mockoon_data.get("metrica_stock_full", {})),
+        "metrica_mi_pagina": mockoon_data.get("metricas_mi_pagina", mockoon_data.get("metrica_mi_pagina", {})),
+    }
+
+    payload["datos_basicos"]["tipo_plan"] = tipo_plan_str
+    payload["metrica_negocio"]["fecha_inicio_periodo"] = start_date.isoformat()
+    payload["metrica_negocio"]["fecha_final_periodo"] = today.isoformat()
+
+    try:
+        payload_json = json.dumps(payload, default=str)
+        db.execute(text("CALL sp_simular_30_dias(CAST(:p_datos AS jsonb))"), {"p_datos": payload_json})
+        db.commit()
+        logger.info("Simulación de 30 días completada para vendedor %s", vendedor.user_name)
+    except Exception as e:
+        db.rollback()
+        logger.error("Error al ejecutar simulación de 30 días para %s: %s", vendedor.user_name, e)
+        raise CheckoutError(f"Error en la simulación de datos: {e}")
+
+    return {"status": "success", "message": "Datos sincronizados con Mockoon y simulación de 30 días completada."}

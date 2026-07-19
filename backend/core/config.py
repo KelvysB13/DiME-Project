@@ -7,6 +7,9 @@ class Settings(BaseSettings):
     supabase_key: str
     supabase_project_url: str
 
+    mockoon_url: str = "http://localhost:3001"
+    mockoon_endpoint: str = "/api/vendedor/{id}"
+
     app_host: str = "0.0.0.0"
     app_port: int = 8000
     app_secret_key: str

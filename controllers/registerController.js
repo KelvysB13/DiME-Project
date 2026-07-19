@@ -95,12 +95,15 @@ document.addEventListener('DOMContentLoaded', () => {
             const response = await fetch(`${API_FASTAPI}/auth/register`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ nombre_tienda, email, password }),
+                body: JSON.stringify({ nombre_tienda, email, password, usuario_ml: usuarioML }),
             });
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.detail || 'Error en el registro.');
+                const detail = Array.isArray(errorData.detail)
+                    ? errorData.detail.map((e) => e.msg).join('; ')
+                    : errorData.detail || 'Error en el registro.';
+                throw new Error(detail);
             }
 
             const data = await response.json();

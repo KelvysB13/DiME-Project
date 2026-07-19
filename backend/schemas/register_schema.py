@@ -8,6 +8,7 @@ class RegisterRequest(BaseModel):
     email: EmailStr = Field(..., description="Correo electrónico del vendedor")
     password: SecretStr = Field(..., min_length=12, max_length=72, description="Contraseña del vendedor")
     nombre_tienda: str = Field(..., min_length=1, max_length=100, description="Nombre de la tienda")
+    usuario_ml: str = Field(..., min_length=1, max_length=50, description="Usuario de Mercado Libre")
 
 
 class PreRegisterResponse(BaseModel):
