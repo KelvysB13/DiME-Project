@@ -96,9 +96,20 @@
 
       <div class="flex-1 p-5" style="max-width:1280px;margin:0 auto;width:100%">
 
-        <div id="loadingSpinner" class="loading-spinner">
-          <div class="spinner-ring"></div>
-          <p style="color:var(--text-muted);font-size:12px;font-family:'JetBrains Mono',monospace">Cargando métricas del vendedor...</p>
+        <div id="loadingSpinner" class="skeleton-wrapper">
+          <div class="skeleton-block" style="height:28px;max-width:320px"></div>
+          <div class="skeleton-block" style="height:44px"></div>
+          <div class="skeleton-group">
+            <div class="skeleton-block" style="height:100px"></div>
+            <div class="skeleton-block" style="height:100px"></div>
+            <div class="skeleton-block" style="height:100px"></div>
+          </div>
+          <div class="skeleton-group">
+            <div class="skeleton-block" style="height:200px"></div>
+            <div class="skeleton-block" style="height:200px"></div>
+          </div>
+          <div class="skeleton-block" style="height:200px"></div>
+          <div class="skeleton-block" style="height:160px"></div>
         </div>
 
         <div id="dashboardContent" style="display:none">
