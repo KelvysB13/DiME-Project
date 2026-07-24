@@ -399,7 +399,8 @@ a {
     width: 100%;
     font-size: 0.75rem;
     font-weight: 700;
-    padding: 0.875rem 0;
+    padding: 1rem 0;
+    margin-top: 3rem;
     border-radius: 0.375rem;
     display: flex;
     align-items: center;
@@ -448,6 +449,7 @@ a {
     text-align: center;
     font-size: 0.75rem;
     font-weight: 500;
+    padding-top: 1.25rem;
     color: #737373;
 }
 .forgot-row a {
@@ -547,17 +549,18 @@ a {
 .modal-header {
 
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 8px;
     margin-bottom: 16px;
     border-bottom: 1px solid #eee;
     padding-bottom: 12px;
 }
 
 .ml-logo {
-    width: 28px;
-    height: 28px;
+    width: 48px;
+    height: 48px;
     flex-shrink: 0;
 }
 
@@ -676,6 +679,10 @@ a {
     width: 100%;
     padding: 0;
     margin: 0;
+    -webkit-text-security: disc;
+}
+#cvv::-ms-reveal {
+    display: none;
 }
 
 /* Compensación geométrica para MM y AA debido al espacio que ocupan las flechas a la derecha */

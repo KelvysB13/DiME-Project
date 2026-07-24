@@ -525,9 +525,6 @@ function updateDashboard(sellerId) {
     document.getElementById('profile-plan').textContent = PLAN_MAP[seller.tipo_plan] || 'Gratuito';
     document.getElementById('dropdown-name').textContent = seller.nombre_tienda;
     document.getElementById('dropdown-email').textContent = seller.email;
-    document.getElementById('dash-user-name').textContent = seller.user_name;
-    document.getElementById('dash-user-email').textContent = seller.email;
-    document.getElementById('dash-user-avatar').textContent = seller.user_name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || 'DM';
     document.getElementById('profile-avatar-letter').textContent = seller.user_name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || 'DM';
 
     document.getElementById('topbar-title').textContent = 'Dashboard: ' + seller.user_name;

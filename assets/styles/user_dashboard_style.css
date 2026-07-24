@@ -441,6 +441,8 @@ to {
     overflow: hidden;
     z-index: 10;
     box-shadow: 4px 0 20px rgba(3, 28, 60, 0.3);
+    overflow: hidden;
+    transition: width 0.3s ease;
 }
 @keyframes gradientShift {
 
@@ -460,11 +462,26 @@ to {
 
 .sidebar .logo-area {
 
-    padding: 20px 16px;
+    padding: 24px 16px 16px;
     border-bottom: 1px solid rgba(255,255,255,0.08);
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
+    cursor: pointer;
+}
+.sidebar-logo {
+
+    height: 36px;
+    width: auto;
+    object-fit: contain;
+}
+.sidebar-isotipo {
+
+    height: 36px;
+    width: auto;
+    object-fit: contain;
+    display: none;
 }
 .sidebar .logo-area h2 {
 
@@ -484,6 +501,7 @@ to {
 
     flex: 1;
     padding: 12px 8px;
+    margin-top: 0.75rem;
 }
 .sidebar nav button {
 
@@ -606,13 +624,43 @@ to {
     font-size: 10px;
     color: rgba(255,255,255,0.5);
 }
+/* NAV ICONS */
+.nav-icon {
+
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+/* COLLAPSED SIDEBAR */
+.sidebar.collapsed {
+
+    width: 64px;
+}
+.sidebar.collapsed .sidebar-logo {
+
+    display: none;
+}
+.sidebar.collapsed .sidebar-isotipo {
+
+    display: block;
+}
+.sidebar.collapsed nav button {
+
+    justify-content: center;
+    padding: 10px 0;
+    gap: 0;
+}
+.sidebar.collapsed nav button span {
+
+    display: none;
+}
 /* --- 7. TOPBAR --- */
 .topbar {
 
-    height: var(--topbar-height);
+    height: 77px;
     background-color: #fff;
     border-bottom: 1px solid var(--border-light);
-    padding: 0 24px;
+    padding: 0 48px;
     display: flex;
     align-items: center;
     justify-content: space-between;

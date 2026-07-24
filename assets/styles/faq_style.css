@@ -7,7 +7,7 @@
     --bg-card: #0F172A;
     --primary: #031c3c;
     /* El azul que ya manejas */  --primary-hover: #031c3c;
-    --accent: #10B981;
+    --accent: #fcd703;
     --text-main: #F8FAFC;
     --text-secondary: #94A3B8;
     --text-muted: #64748B;
@@ -23,69 +23,80 @@
 }
 body {
 
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     background-color: var(--bg-dark);
     color: var(--text-main);
     line-height: 1.6;
 }
-/* ==========================================   Cabecera (Topbar) MODIFICADA   ========================================== */
+/* ==========================================   Cabecera (Topbar) ========================================== */
 .topbar {
 
+    padding: 0 2rem;
+    position: relative;
+    z-index: 10;
+}
+.topbar-inner {
+
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    padding: 20px 40px;
-    background-color: var(--topbar-yellow);
-    /* Fondo amarillo */  position: sticky;
-    top: 0;
-    z-index: 100;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    /* Ligera sombra para separar del fondo oscuro */
+    align-items: center;
+    max-width: 1200px;
+    margin: 0 auto 2rem auto;
+    padding-top: 2rem;
 }
-.brand {
+.topbar .logo {
 
     display: flex;
     align-items: center;
-    gap: 12px;
 }
-.brand h1 {
+.logo-img {
 
-    font-size: 20px;
-    font-weight: 800;
-    color: var(--primary);
-    /* Letras azules */  letter-spacing: -0.5px;
+    height: 42px;
+    width: auto;
+    object-fit: contain;
 }
-.brand span {
+.brand-badge {
 
-    font-size: 12px;
-    color: var(--primary);
-    /* Texto azul */  font-family: 'JetBrains Mono', monospace;
-    background: rgba(59, 130, 246, 0.15);
-    /* Fondo azul semitransparente para hacer contraste en el amarillo */  padding: 4px 8px;
-    border-radius: 4px;
-    font-weight: 600;
+    margin-left: 20px;
+    margin-bottom: 8px;
+    padding: 3px 7px;
+    border: 1px solid rgba(247, 246, 244, 0.25);
+    border-radius: 5px;
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    line-height: 1;
 }
 .btn-back {
 
-    background-color: transparent;
-    color: var(--primary);
-    /* Texto azul */  border: 2px solid var(--primary);
-    /* Borde azul */  padding: 8px 16px;
+    border: 2px solid var(--text-main);
     border-radius: 6px;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 14px;
-    font-weight: 700;
+    padding: 0.4rem 1.2rem;
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
     cursor: pointer;
-    transition: all 0.2s ease;
-    display: flex;
+    transition: background-color 0.2s, color 0.2s;
+    background: transparent;
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    align-self: center;
+}
+
+.btn-back-content {
+
+    display: inline-flex;
+    margin-left: -6px;
+    align-items: center;
+    gap: 6px;
 }
 .btn-back:hover {
 
-    background-color: var(--primary);
-    /* Fondo azul al pasar el mouse */  color: var(--topbar-yellow);
-    /* Texto amarillo al pasar el mouse */
+    background: var(--text-main);
+    color: var(--bg-dark);
 }
 /* ==========================================   Contenedor Principal   ========================================== */
 .container {
@@ -101,9 +112,22 @@ body {
 }
 .page-header h2 {
 
-    font-size: 28px;
-    color: #F8FAFC;
-    margin-bottom: 10px;
+    font-size: 2.5rem;
+    color: var(--text-main);
+    margin-bottom: 16px;
+    font-weight: 700;
+    text-transform: uppercase;
+    position: relative;
+    display: inline-block;
+}
+.page-header h2::after {
+
+    content: '';
+    display: block;
+    width: 600px;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--accent) 15%, var(--accent) 85%, transparent);
+    margin: 6px auto 0;
 }
 .page-header p {
 
@@ -136,7 +160,7 @@ body {
     background: none;
     border: none;
     padding: 20px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 15px;
     font-weight: 600;
     color: var(--text-main);
@@ -152,7 +176,7 @@ body {
 }
 .faq-icon {
 
-    color: ##F8FAFC;
+    color: var(--text-secondary);
     font-size: 18px;
     transition: transform 0.3s ease;
 }
@@ -196,13 +220,152 @@ body {
 }
 .highlight-box {
 
-    background-color: rgba(16, 185, 129, 0.1);
+    background-color: rgba(252, 215, 3, 0.08);
     border-left: 3px solid var(--accent);
     padding: 10px 15px;
     margin-top: 15px;
     border-radius: 0 4px 4px 0;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: 'Inter', sans-serif;
     font-size: 12px;
     color: var(--accent);
 }
+/* ==========================================   Footer   ========================================== */
+.faq-footer {
 
+    background: var(--bg-dark);
+    color: var(--text-main);
+    padding: 3rem 2rem 1.5rem 2rem;
+    margin-top: 60px;
+}
+.faq-footer-content {
+
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 2rem;
+    flex-wrap: wrap;
+    max-width: 1200px;
+    margin: 0 auto 2rem auto;
+}
+.faq-footer-left {
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+}
+.faq-github-link {
+
+    display: inline-block;
+    color: rgba(247, 246, 244, 0.4);
+    transition: color 0.15s;
+}
+.faq-github-link:hover {
+
+    color: var(--text-main);
+}
+.faq-github-link svg {
+
+    width: 1.75rem;
+    height: 1.75rem;
+}
+.faq-footer-contact {
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+.faq-contact-label {
+
+    font-size: 0.85rem;
+    color: rgba(247, 246, 244, 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+.faq-contact-phone {
+
+    color: var(--text-main);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+.faq-contact-phone:hover {
+
+    opacity: 0.7;
+}
+.faq-footer-right {
+
+    display: flex;
+    flex-direction: column;
+}
+.faq-newsletter-form {
+
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.faq-newsletter-label {
+
+    font-size: 0.85rem;
+    color: rgba(247, 246, 244, 0.7);
+    font-weight: 500;
+}
+.faq-newsletter-input-group {
+
+    display: flex;
+    gap: 0.5rem;
+}
+.faq-newsletter-input-group input {
+
+    padding: 0.6rem 1rem;
+    border: 1px solid rgba(247, 246, 244, 0.25);
+    border-radius: 6px;
+    background: rgba(247, 246, 244, 0.06);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.3s;
+    min-width: 200px;
+}
+.faq-newsletter-input-group input::placeholder {
+
+    color: rgba(247, 246, 244, 0.35);
+}
+.faq-newsletter-input-group input:focus {
+
+    border-color: var(--accent);
+}
+.faq-newsletter-input-group button {
+
+    padding: 0.6rem 1.25rem;
+    background: var(--accent);
+    color: var(--primary);
+    border: none;
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: opacity 0.3s;
+    white-space: nowrap;
+}
+.faq-newsletter-input-group button:hover {
+
+    opacity: 0.85;
+}
+.faq-footer-copy {
+
+    color: rgba(247, 246, 244, 0.4);
+    font-size: 0.85rem;
+    text-align: center;
+    border-top: 1px solid rgba(247, 246, 244, 0.1);
+    padding-top: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+}
