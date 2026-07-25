@@ -10,6 +10,9 @@ class Settings(BaseSettings):
     mockoon_url: str = "http://localhost:3001"
     mockoon_endpoint: str = "/api/vendedor/{id}"
 
+    metabase_url: str = "http://localhost:3000"
+    metabase_embedding_secret: str = ""
+
     app_host: str = "0.0.0.0"
     app_port: int = 8000
     app_secret_key: str

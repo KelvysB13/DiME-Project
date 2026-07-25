@@ -7,7 +7,7 @@
   <link rel="icon" type="image/x-icon" href="../../assets/icons/favicon.ico">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../assets/styles/user_dashboard_style.css">
   <style>
     .admin-layout { display: flex; min-height: 100vh; }
@@ -15,15 +15,15 @@
     .admin-main { flex: 1; padding: 20px; max-width: 1280px; margin: 0 auto; width: 100%; overflow-y: auto; }
     .crud-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px; }
     .crud-header h2 { font-size: 18px; font-weight: 700; color: var(--primary); }
-    .btn-create { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background-color: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: background 0.15s ease; }
+    .btn-create { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; background-color: var(--primary); color: #fff; border: none; border-radius: var(--radius-sm); font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.15s ease; }
     .btn-create:hover { background-color: var(--primary-light); }
-    .btn-edit { padding: 4px 10px; background: none; border: 1px solid var(--border); border-radius: 4px; font-size: 11px; cursor: pointer; color: var(--primary); font-family: 'Montserrat', sans-serif; font-weight: 500; transition: all 0.1s ease; }
+    .btn-edit { padding: 4px 10px; background: none; border: 1px solid var(--border); border-radius: 4px; font-size: 11px; cursor: pointer; color: var(--primary); font-family: 'Inter', sans-serif; font-weight: 500; transition: all 0.1s ease; }
     .btn-edit:hover { border-color: var(--primary); background-color: rgba(3,28,60,0.04); }
-    .btn-delete { padding: 4px 10px; background: none; border: 1px solid var(--border); border-radius: 4px; font-size: 11px; cursor: pointer; color: var(--danger); font-family: 'Montserrat', sans-serif; font-weight: 500; transition: all 0.1s ease; }
+    .btn-delete { padding: 4px 10px; background: none; border: 1px solid var(--border); border-radius: 4px; font-size: 11px; cursor: pointer; color: var(--danger); font-family: 'Inter', sans-serif; font-weight: 500; transition: all 0.1s ease; }
     .btn-delete:hover { border-color: var(--danger); background-color: rgba(239,68,68,0.06); }
     .table-actions { display: flex; gap: 4px; justify-content: center; }
     .admin-table-wrap { overflow-x: auto; }
-    .search-bar { padding: 8px 12px; background-color: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 12px; color: var(--text); outline: none; font-family: 'Montserrat', sans-serif; transition: border-color 0.15s ease; width: 220px; }
+    .search-bar { padding: 8px 12px; background-color: var(--bg); border: 1px solid var(--border); border-radius: var(--radius-md); font-size: 12px; color: var(--text); outline: none; font-family: 'Inter', sans-serif; transition: border-color 0.15s ease; width: 220px; }
     .search-bar:focus { border-color: var(--primary); }
     .crud-toolbar { display: flex; align-items: center; gap: 12px; }
 
@@ -36,16 +36,16 @@
     .modal-close:hover { background-color: var(--bg); color: var(--text); }
     .modal-body { padding: 20px; overflow-y: auto; flex: 1; }
     .modal-footer { display: flex; justify-content: flex-end; gap: 8px; padding: 14px 20px; border-top: 1px solid var(--border-light); }
-    .modal-footer .btn-cancel { padding: 8px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: none; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-secondary); font-family: 'Montserrat', sans-serif; transition: all 0.1s ease; }
+    .modal-footer .btn-cancel { padding: 8px 16px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: none; font-size: 12px; font-weight: 600; cursor: pointer; color: var(--text-secondary); font-family: 'Inter', sans-serif; transition: all 0.1s ease; }
     .modal-footer .btn-cancel:hover { border-color: var(--text-muted); color: var(--text); }
-    .modal-footer .btn-save { padding: 8px 16px; border-radius: var(--radius-sm); border: none; background-color: var(--primary); color: #fff; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Montserrat', sans-serif; transition: background 0.15s ease; }
+    .modal-footer .btn-save { padding: 8px 16px; border-radius: var(--radius-sm); border: none; background-color: var(--primary); color: #fff; font-size: 12px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: background 0.15s ease; }
     .modal-footer .btn-save:hover { background-color: var(--primary-light); }
 
     .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .form-grid .full-width { grid-column: 1 / -1; }
     .form-group { display: flex; flex-direction: column; gap: 4px; }
     .form-group label { font-size: 11px; font-weight: 600; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.04em; }
-    .form-group input, .form-group select, .form-group textarea { padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 12px; color: var(--text); outline: none; font-family: 'Montserrat', sans-serif; transition: border-color 0.15s ease; background-color: #fff; }
+    .form-group input, .form-group select, .form-group textarea { padding: 8px 10px; border: 1px solid var(--border); border-radius: var(--radius-sm); font-size: 12px; color: var(--text); outline: none; font-family: 'Inter', sans-serif; transition: border-color 0.15s ease; background-color: #fff; }
     .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--primary); }
     .form-group textarea { resize: vertical; min-height: 60px; }
     .form-group input[type="checkbox"] { width: 18px; height: 18px; cursor: pointer; }

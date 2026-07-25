@@ -93,10 +93,22 @@ def get_dashboard(db: Session, vendedor_id: int) -> DashboardResponse:
     publicaciones = db.query(Publicacion).filter(Publicacion.id_vendedor == vendedor_id).all()
     publicaciones_data = []
 
+    pub_ids = [pub.id_publicacion for pub in publicaciones]
+
+    rendimientos_por_pub = {}
+    calidades_por_pub = {}
+
+    if pub_ids:
+        for rend in db.query(Rendimiento).filter(Rendimiento.id_publicacion.in_(pub_ids)).all():
+            rendimientos_por_pub[rend.id_publicacion] = rend
+
+        for cal in db.query(Calidad).filter(Calidad.id_publicacion.in_(pub_ids)).all():
+            calidades_por_pub[cal.id_publicacion] = cal
+
     for pub in publicaciones:
 
-        rend = db.query(Rendimiento).filter(Rendimiento.id_publicacion == pub.id_publicacion).first()
-        cal = db.query(Calidad).filter(Calidad.id_publicacion == pub.id_publicacion).first()
+        rend = rendimientos_por_pub.get(pub.id_publicacion)
+        cal = calidades_por_pub.get(pub.id_publicacion)
         visitas = rend.visitas if rend else 0
         ventas = rend.ventas if rend else 0
 

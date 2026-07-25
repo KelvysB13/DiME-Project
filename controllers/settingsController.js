@@ -5,6 +5,22 @@ function getToken() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Theme toggle
+    var themeToggle = document.getElementById('theme-toggle');
+    if (themeToggle) {
+      themeToggle.addEventListener('click', function() {
+        var current = document.documentElement.getAttribute('data-theme');
+        var next = current === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        localStorage.setItem('theme', next);
+      });
+    }
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+      if (!localStorage.getItem('theme')) {
+        document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+      }
+    });
+
     const navButtons = document.querySelectorAll(".sidebar nav .nav-btn");
     const views = document.querySelectorAll(".content-view");
 
@@ -287,8 +303,8 @@ function abrirModalPlanes() {
             `).join("")}
         </div>
         <div style="display:flex;justify-content:flex-end;gap:8px;padding:14px 20px;border-top:1px solid var(--border-light)">
-            <button id="btn-cancelar-plan-modal" style="padding:8px 16px;border-radius:6px;border:1px solid var(--border);background:none;font-size:12px;font-weight:600;cursor:pointer;color:var(--text-secondary);font-family:'Montserrat',sans-serif">Cancelar</button>
-            <button id="btn-confirmar-plan-modal" style="padding:8px 16px;border-radius:6px;border:none;background-color:var(--primary);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:'Montserrat',sans-serif">Confirmar Cambio</button>
+            <button id="btn-cancelar-plan-modal" style="padding:8px 16px;border-radius:6px;border:1px solid var(--border);background:none;font-size:12px;font-weight:600;cursor:pointer;color:var(--text-secondary);font-family:'Inter',sans-serif">Cancelar</button>
+            <button id="btn-confirmar-plan-modal" style="padding:8px 16px;border-radius:6px;border:none;background-color:var(--primary);color:#fff;font-size:12px;font-weight:600;cursor:pointer;font-family:'Inter',sans-serif">Confirmar Cambio</button>
         </div>
     `;
 
