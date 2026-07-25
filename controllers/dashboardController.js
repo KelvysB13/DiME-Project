@@ -642,7 +642,6 @@ function updateDashboard(sellerId) {
 
   renderSellerRibbon(seller);
   renderKpiCards(seller);
-  renderReputationDial(seller);
   renderAlerts(seller);
   renderCategoryPerformance(seller);
   renderPublicationsTable(seller);
