@@ -133,7 +133,7 @@ function crearAccordionItem(titulo, texto, semaforo) {
   div.innerHTML = `
     <button type="button" class="diag-insight-toggle">
       <span class="diag-insight-title"></span>
-      <span class="diag-insight-caret">▾</span>
+      <svg class="diag-insight-caret" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
     </button>
     <p class="diag-insight-text"></p>
   `;
@@ -386,23 +386,23 @@ function renderKpiCards(seller) {
   if (!seller) { grid.innerHTML = ''; return; }
   const r = seller.reputacion, n = seller.negocio, c = seller.costos, s = seller.stock_full, p = seller.mi_pagina;
   const cards = [
-    { label: 'Reputación', icon: '★', iconClass: 'accent', value: r.insignia || 'Sin datos', trend: formatNumber(r.total_reclamos) + ' reclamos', trendClass: r.total_reclamos > 15 ? 'warning' : 'positive', detail: 'Canceladas: ' + formatNumber(r.total_canceladas) + ' · Mediaciones: ' + formatNumber(r.total_mediaciones) },
-    { label: 'Negocio', icon: '📈', iconClass: 'primary', value: formatCurrency(n.ventas_brutas_moneda_local), trend: formatNumber(n.unidades_vendidas) + ' uds vendidas', trendClass: 'positive', detail: formatNumber(n.visitas_totales) + ' visitas · ' + formatNumber(n.ventas_concretadas) + ' ventas' },
-    { label: 'Costos', icon: '📉', iconClass: 'accent', value: formatCurrency(c.neto_recibido), trend: 'Comisiones: ' + formatCurrency(c.cargos_por_venta), trendClass: 'neutral', detail: 'Envíos: ' + formatCurrency(c.costos_envio) + ' · Ads: ' + formatCurrency(c.inversion_ads) },
-    { label: 'Stock Full', icon: '📦', iconClass: 'primary', value: s.puntaje_calidad + '/100', trend: formatNumber(s.espacios_p_asignados) + ' espacios P', trendClass: s.puntaje_calidad >= 80 ? 'positive' : 'warning', detail: formatNumber(s.productos_no_aptos_venta) + ' no aptos · ' + formatNumber(s.productos_sin_rotacion) + ' sin rotación' },
-    { label: 'Mi Página', icon: '🛒', iconClass: 'accent', value: formatBool(p.tiene_banner), trend: formatBool(p.tiene_logo), trendClass: 'positive', detail: 'Carruseles: ' + formatBool(p.tiene_carruseles) + ' · Cats: ' + formatBool(p.categories_organizadas) },
-    { label: 'Cuenta', icon: '👤', iconClass: 'primary', value: seller.user_name || '-', trend: seller.email || '-', trendClass: 'neutral', detail: seller.codigo_pais + ' · ' + (PLAN_MAP[seller.tipo_plan] || 'Gratuito') }
+    { label: 'Reputación', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>', colorClass: 'icon-yellow', barColor: '#FCD703', value: r.insignia || 'Sin datos', trend: formatNumber(r.total_reclamos) + ' reclamos', trendClass: r.total_reclamos > 15 ? 'warning' : 'positive', detail: 'Canceladas: ' + formatNumber(r.total_canceladas) + ' · Mediaciones: ' + formatNumber(r.total_mediaciones) },
+    { label: 'Negocio', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>', colorClass: 'icon-green', barColor: '#12AA78', value: formatCurrency(n.ventas_brutas_moneda_local), trend: formatNumber(n.unidades_vendidas) + ' uds vendidas', trendClass: 'positive', detail: formatNumber(n.visitas_totales) + ' visitas · ' + formatNumber(n.ventas_concretadas) + ' ventas' },
+    { label: 'Costos', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 18 13.5 8.5 8.5 13.5 1 6"/><polyline points="17 18 23 18 23 12"/></svg>', colorClass: 'icon-red', barColor: '#EF4444', value: formatCurrency(c.neto_recibido), trend: 'Comisiones: ' + formatCurrency(c.cargos_por_venta), trendClass: 'neutral', detail: 'Envíos: ' + formatCurrency(c.costos_envio) + ' · Ads: ' + formatCurrency(c.inversion_ads) },
+    { label: 'Stock Full', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>', colorClass: 'icon-orange', barColor: '#DB730F', value: s.puntaje_calidad + '/100', trend: formatNumber(s.espacios_p_asignados) + ' espacios P', trendClass: s.puntaje_calidad >= 80 ? 'positive' : 'warning', detail: formatNumber(s.productos_no_aptos_venta) + ' no aptos · ' + formatNumber(s.productos_sin_rotacion) + ' sin rotación' },
+    { label: 'Mi Página', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>', colorClass: 'icon-yellow', barColor: '#FCD703', value: formatBool(p.tiene_banner), trend: formatBool(p.tiene_logo), trendClass: 'positive', detail: 'Carruseles: ' + formatBool(p.tiene_carruseles) + ' · Cats: ' + formatBool(p.categories_organizadas) },
+    { label: 'Cuenta', icon: '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>', colorClass: 'icon-green', barColor: '#12AA78', value: seller.user_name || '-', trend: seller.email || '-', trendClass: 'neutral', detail: seller.codigo_pais + ' · ' + (PLAN_MAP[seller.tipo_plan] || 'Gratuito') }
   ];
   grid.innerHTML = cards.map(k => `
     <div class="kpi-card">
       <div class="kpi-header">
         <span class="kpi-label">${k.label}</span>
-        <div class="kpi-icon-box ${k.iconClass}">${k.icon}</div>
+        <div class="kpi-icon-box ${k.colorClass}">${k.icon}</div>
       </div>
       <div class="kpi-value">${k.value}</div>
       <div class="kpi-trend ${k.trendClass}">${k.trend}</div>
       <div class="kpi-mini-chart">
-        ${Array.from({length:12}, (_,i) => '<div class="bar" style="height:' + (Math.floor(Math.random()*16)+6) + 'px;background:' + (k.iconClass==='accent' ? 'rgba(252,215,3,0.3)' : 'rgba(3,28,60,0.12)') + '"></div>').join('')}
+        ${Array.from({length:12}, (_,i) => '<div class="bar" style="height:' + (Math.floor(Math.random()*16)+6) + 'px;background:' + k.barColor + '"></div>').join('')}
       </div>
       <div style="font-size:10px;color:var(--text-secondary);font-family:'JetBrains Mono',monospace;margin-top:6px">${k.detail}</div>
     </div>
@@ -728,10 +728,12 @@ document.getElementById('pub-category-filter').addEventListener('change', applyF
 
 document.querySelectorAll('.sidebar nav .nav-btn').forEach(btn => {
   btn.addEventListener('click', function() {
+    const viewTarget = this.getAttribute('data-view');
+    if (!viewTarget) return;
+
     document.querySelectorAll('.sidebar nav .nav-btn').forEach(b => b.classList.remove('active'));
     this.classList.add('active');
 
-    const viewTarget = this.getAttribute('data-view');
     document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active'));
     document.getElementById(viewTarget)?.classList.add('active');
 
@@ -772,4 +774,22 @@ document.addEventListener('DOMContentLoaded', () => {
   loadDiagnosticoEmbeds();
   loadDiagnosticoInsights();
   loadPlanAccionList();
+});
+
+// Theme toggle
+var themeToggle = document.getElementById('theme-toggle');
+if (themeToggle) {
+  themeToggle.addEventListener('click', function() {
+    var current = document.documentElement.getAttribute('data-theme');
+    var next = current === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next);
+    localStorage.setItem('theme', next);
+  });
+}
+
+// Listen for system theme changes
+window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', function(e) {
+  if (!localStorage.getItem('theme')) {
+    document.documentElement.setAttribute('data-theme', e.matches ? 'dark' : 'light');
+  }
 });

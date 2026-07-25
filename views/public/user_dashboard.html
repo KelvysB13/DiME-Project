@@ -8,10 +8,19 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="/assets/styles/user_dashboard_style.css">
 
+  <script>
+    (function() {
+      var saved = localStorage.getItem('theme');
+      if (!saved) {
+        saved = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', saved);
+    })();
+  </script>
   <script defer src="http://localhost:3000/app/embed.js"></script>
   <script>
     function defineMetabaseConfig(config) {
@@ -45,7 +54,7 @@
         <button class="nav-btn" data-view="view-diagnostico" id="nav-diagnostico-parent">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
           <span>Diagnóstico</span>
-          <span class="nav-caret" id="nav-diagnostico-caret">▾</span>
+          <svg class="nav-caret" id="nav-diagnostico-caret" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"/></svg>
         </button>
         <div class="nav-subgroup" id="nav-diagnostico-subgroup">
           <button class="nav-subbtn active" data-view="view-diagnostico" data-tab="tab-reputacion">
@@ -71,11 +80,11 @@
         </div>
         <button class="nav-btn" data-view="view-plan">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-          <span>Plan de acción</span>
+          <span>Plan de Acción</span>
         </button>
-        <button class="nav-btn" data-view="view-dudas">
+        <button class="nav-btn" onclick="window.location.href='/faq'">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-          <span>Dudas frecuentes</span>
+          <span>Dudas Frecuentes</span>
         </button>
       </nav>
     </aside>
@@ -83,34 +92,64 @@
     <main class="flex-1 flex flex-col min-w-0 overflow-y-auto">
 
       <header class="topbar">
-        <div>
-          <h1 class="topbar-title" id="topbar-title">Tablero de Diagnóstico</h1>
-          <p class="topbar-subtitle">Consola Estratégica Mercado Libre</p>
-        </div>
-        <div class="flex items-center gap-4">
+        <div class="topbar-inner">
+          <div>
+            <h1 class="topbar-title" id="topbar-title">Tablero de Diagnóstico</h1>
+            <p class="topbar-subtitle">Consola Estratégica Mercado Libre</p>
+          </div>
+          <div class="flex items-center gap-4">
 
-          <div class="profile-dropdown-wrapper">
-            <button id="user-profile-button" class="profile-btn">
-              <div class="profile-avatar" id="profile-avatar-letter">TH</div>
-              <div class="text-left md:block" style="display:none">
-                <p class="profile-name" id="profile-name">TECNOHOGAR_AR</p>
-                <p class="profile-plan" id="profile-plan">Vendedor Platinum</p>
-              </div>
-              <span style="color:var(--text-muted);font-size:10px">▾</span>
+            <button id="theme-toggle" class="theme-toggle-btn" title="Cambiar tema">
+              <svg class="theme-toggle-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path class="theme-moon" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                <g class="theme-sun">
+                  <circle cx="12" cy="12" r="5"/>
+                  <line x1="12" y1="1" x2="12" y2="3"/>
+                  <line x1="12" y1="21" x2="12" y2="23"/>
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                  <line x1="1" y1="12" x2="3" y2="12"/>
+                  <line x1="21" y1="12" x2="23" y2="12"/>
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                </g>
+              </svg>
             </button>
 
-            <div id="profile-dropdown-menu" class="dropdown-menu" style="display:none">
-              <div class="dropdown-header">
-                <p id="dropdown-name">Tecnohogar S.A.</p>
-                <p id="dropdown-email">ventas@tecnohogar.com.ar</p>
-              </div>
-              <div style="padding:4px 0">
-                <button class="dropdown-item" onclick="window.location.href='/me/settings'">
-                  <span>⚙</span> User Settings
-                </button>
-              </div>
-              <div style="border-top:1px solid var(--border-light);padding-top:4px;margin-top:4px">
-                <button id="btn-signout" class="dropdown-item danger"><span>✕</span> Cerrar Sesión DiME</button>
+            <div class="profile-dropdown-wrapper">
+              <button id="user-profile-button" class="profile-btn">
+                <div class="profile-avatar" id="profile-avatar-letter">...</div>
+                <div class="text-left md:block" style="display:none">
+                  <p class="profile-name" id="profile-name">USER</p>
+                  <p class="profile-plan" id="profile-plan">Vendedor Platinum</p>
+                </div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--text-muted)"><polyline points="6 9 12 15 18 9"/></svg>
+              </button>
+
+              <div id="profile-dropdown-menu" class="dropdown-menu" style="display:none">
+                <div class="dropdown-header">
+                  <p id="dropdown-name">Tecnohogar S.A.</p>
+                  <p id="dropdown-email">ventas@tecnohogar.com.ar</p>
+                </div>
+                <div style="padding:4px 0">
+                  <button class="dropdown-item" onclick="window.location.href='/me/settings'">
+                    <svg class="dropdown-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="12" cy="12" r="3"/>
+                      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                    </svg>
+                    <span>Configuración</span>
+                  </button>
+                </div>
+                <div style="border-top:1px solid var(--border-light);padding-top:4px;margin-top:4px">
+                  <button id="btn-signout" class="dropdown-item danger">
+                    <svg class="dropdown-item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                      <polyline points="16 17 21 12 16 7"/>
+                      <line x1="21" y1="12" x2="9" y2="12"/>
+                    </svg>
+                    <span>Cerrar Sesión</span>
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -139,7 +178,7 @@
 
           <div id="view-inicio" class="content-view active">
             
-            <h2 id="view-inicio-greeting" style="font-size: 20px; font-weight: 700; color: var(--primary); margin-bottom: 20px;">
+            <h2 id="view-inicio-greeting" style="font-size: 20px; font-weight: 700; color: var(--primary-text); margin-bottom: 20px;">
               Hola, <span id="welcome-store-name" style="color: var(--accent);">Vendedor</span>. Estas son tus métricas de hoy.
             </h2>
 
@@ -179,7 +218,7 @@
             <div class="section-card" style="margin-bottom:20px">
               <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between pb-3 gap-3" style="border-bottom:1px solid var(--border-light)">
                 <div>
-                  <h3 style="font-size:14px;font-weight:700;color:var(--primary)">Publicaciones en Monitoreo</h3>
+                  <h3 style="font-size:14px;font-weight:700;color:var(--primary-text)">Publicaciones en Monitoreo</h3>
                   <p style="font-size:11px;color:var(--text-secondary);margin-top:2px">Controles de stock, precios y relevancia algorítmica.</p>
                 </div>
                 <div class="flex flex-wrap items-center gap-2">
@@ -227,7 +266,7 @@
           <div id="view-diagnostico" class="content-view">
             <div id="tab-reputacion" class="diag-sub-view active">
               <div class="section-card">
-                <h3 style="font-size:14px; font-weight:700; color:var(--primary); margin-bottom:6px;">Reputación</h3>
+                <h3 style="font-size:14px; font-weight:700; color:var(--primary-text); margin-bottom:6px;">Reputación</h3>
                 <p style="font-size:12px; color:var(--text-secondary); line-height: 1.5;">Estado del termómetro de reputación y fricción operativa (reclamos, cancelaciones, mediaciones, envíos incorrectos).</p>
                 <div id="diag-reputacion-empty" class="metabase-placeholder">Inicia sesión para ver tu diagnóstico de reputación.</div>
                 <div class="diag-content-row">
@@ -241,7 +280,7 @@
 
             <div id="tab-ventas" class="diag-sub-view">
               <div class="section-card">
-                <h3 style="font-size:14px; font-weight:700; color:var(--primary); margin-bottom:6px;">Análisis de Ventas y Rentabilidad</h3>
+                <h3 style="font-size:14px; font-weight:700; color:var(--primary-text); margin-bottom:6px;">Análisis de Ventas y Rentabilidad</h3>
                 <p style="font-size:12px; color:var(--text-secondary); line-height: 1.5;">Evaluación de márgenes brutos, netos y balance financiero del canal.</p>
                 <div id="diag-ventas-empty" class="metabase-placeholder">Inicia sesión para ver tu diagnóstico de ventas y rentabilidad.</div>
                 <div class="diag-content-row">
@@ -255,7 +294,7 @@
 
             <div id="tab-calidad" class="diag-sub-view">
               <div class="section-card">
-                <h3 style="font-size:14px; font-weight:700; color:var(--primary); margin-bottom:6px;">Calidad y Rendimiento de Publicaciones</h3>
+                <h3 style="font-size:14px; font-weight:700; color:var(--primary-text); margin-bottom:6px;">Calidad y Rendimiento de Publicaciones</h3>
                 <p style="font-size:12px; color:var(--text-secondary); line-height: 1.5;">Auditoría de optimización de listados, conversión técnica e imágenes.</p>
                 <div id="diag-calidad-empty" class="metabase-placeholder">Inicia sesión para ver tu diagnóstico de publicaciones.</div>
                 <div class="diag-content-row">
@@ -269,7 +308,7 @@
 
             <div id="tab-inventario" class="diag-sub-view">
               <div class="section-card">
-                <h3 style="font-size:14px; font-weight:700; color:var(--primary); margin-bottom:6px;">Eficiencia de Inventario</h3>
+                <h3 style="font-size:14px; font-weight:700; color:var(--primary-text); margin-bottom:6px;">Eficiencia de Inventario</h3>
                 <p style="font-size:12px; color:var(--text-secondary); line-height: 1.5;">Monitoreo de almacenamiento Full, rotación de SKU y prevención de penalizaciones.</p>
                 <div id="diag-inventario-empty" class="metabase-placeholder">Inicia sesión para ver tu diagnóstico de inventario.</div>
                 <div class="diag-content-row">
@@ -283,7 +322,7 @@
 
             <div id="tab-publicidad" class="diag-sub-view">
               <div class="section-card">
-                <h3 style="font-size:14px; font-weight:700; color:var(--primary); margin-bottom:6px;">Publicidad e Inversiones</h3>
+                <h3 style="font-size:14px; font-weight:700; color:var(--primary-text); margin-bottom:6px;">Publicidad e Inversiones</h3>
                 <p style="font-size:12px; color:var(--text-secondary); line-height: 1.5;">Retorno de inversión publicitaria (ROAS) y dependencia estructural de Ads sobre las ventas.</p>
                 <div id="diag-publicidad-empty" class="metabase-placeholder">Inicia sesión para ver tu diagnóstico de publicidad.</div>
                 <div class="diag-content-row">
@@ -298,34 +337,22 @@
 
           <div id="view-plan" class="content-view">
             <div class="section-card">
-              <div class="plan-header-row">
-                <div>
-                  <h2 style="font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">Plan de Acción Estratégico</h2>
-                  <p style="font-size: 13px; color: var(--text-secondary);">
-                    Nuestro algoritmo auditará tu salud de reputación, rendimiento de publicaciones e inventario para generar tu hoja de ruta priorizada.
-                  </p>
-                </div>
-                <button id="btn-generate-plan" class="btn-retry" style="background-color: var(--primary); color: #fff;">
-                  📥 Descargar Plan de Acción
+              <div>
+                <h2 style="font-size: 16px; font-weight: 700; color: var(--primary-text); margin-bottom: 8px;">Plan de Acción Estratégico</h2>
+                <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+                  Nuestro algoritmo auditará tu salud de reputación, rendimiento de publicaciones e inventario para generar tu hoja de ruta priorizada.
+                </p>
+                <button id="btn-generate-plan" class="btn-retry" style="display:inline-flex;align-items:center;gap:8px">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="7 10 12 15 17 10"/>
+                    <line x1="12" y1="15" x2="12" y2="3"/>
+                  </svg>
+                  Descargar Plan de Acción
                 </button>
               </div>
 
               <div id="action-plan-list" class="plan-insights"></div>
-            </div>
-          </div>
-
-          <div id="view-dudas" class="content-view">
-            <div class="section-card">
-              <h2 style="font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">Dudas Frecuentes</h2>
-              <p style="font-size: 13px; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px;">
-                ¿Tienes problemas técnicos o necesitas soporte para interpretar tus diagnósticos avanzados? Revisa nuestro portal de ayuda.
-              </p>
-    
-              <button class="btn-retry" 
-                style="background-color: var(--primary); color: #fff;" 
-                onclick="window.location.href='/faq'">
-                  Ver Dudas Frecuentes
-              </button>
             </div>
           </div>
 

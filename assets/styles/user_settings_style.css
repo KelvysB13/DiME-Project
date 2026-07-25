@@ -92,7 +92,7 @@ to {
     color: var(--text-main);
     padding: 12px 14px;
     border-radius: 6px;
-    font-family: 'Montserrat', sans-serif;
+    font-family: 'Inter', sans-serif;
     font-size: 14px;
     transition: border-color 0.2s, box-shadow 0.2s;
     width: 100%;
@@ -113,7 +113,7 @@ to {
 .btn-save {
 
     background-color: var(--topbar-yellow);
-    color: var(--primary);
+    color: #0D1117;
     border: none;
     padding: 12px 24px;
     border-radius: 6px;
