@@ -417,10 +417,6 @@ to {
 }
 }
 
-.animate-fadeIn {
-
-    animation: fadeIn 0.2s ease-out;
-}
 .animate-ping {
 
     animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite;
@@ -441,6 +437,8 @@ to {
     overflow: hidden;
     z-index: 10;
     box-shadow: 4px 0 20px rgba(3, 28, 60, 0.3);
+    overflow: hidden;
+    transition: width 0.3s ease;
 }
 @keyframes gradientShift {
 
@@ -460,11 +458,26 @@ to {
 
 .sidebar .logo-area {
 
-    padding: 20px 16px;
+    padding: 24px 16px 16px;
     border-bottom: 1px solid rgba(255,255,255,0.08);
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
+    cursor: pointer;
+}
+.sidebar-logo {
+
+    height: 36px;
+    width: auto;
+    object-fit: contain;
+}
+.sidebar-isotipo {
+
+    height: 36px;
+    width: auto;
+    object-fit: contain;
+    display: none;
 }
 .sidebar .logo-area h2 {
 
@@ -484,6 +497,7 @@ to {
 
     flex: 1;
     padding: 12px 8px;
+    margin-top: 0.75rem;
 }
 .sidebar nav button {
 
@@ -640,13 +654,43 @@ to {
     font-size: 10px;
     color: rgba(255,255,255,0.5);
 }
+/* NAV ICONS */
+.nav-icon {
+
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+}
+/* COLLAPSED SIDEBAR */
+.sidebar.collapsed {
+
+    width: 64px;
+}
+.sidebar.collapsed .sidebar-logo {
+
+    display: none;
+}
+.sidebar.collapsed .sidebar-isotipo {
+
+    display: block;
+}
+.sidebar.collapsed nav button {
+
+    justify-content: center;
+    padding: 10px 0;
+    gap: 0;
+}
+.sidebar.collapsed nav button span {
+
+    display: none;
+}
 /* --- 7. TOPBAR --- */
 .topbar {
 
-    height: var(--topbar-height);
+    height: 77px;
     background-color: #fff;
     border-bottom: 1px solid var(--border-light);
-    padding: 0 24px;
+    padding: 0 48px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -1280,24 +1324,48 @@ to {
     color: var(--text-muted);
     font-size: 12px;
 }
-/* --- 20. LOADING SPINNER --- */
-.loading-spinner {
+/* --- 20. SKELETON SCREEN --- */
+.skeleton-wrapper {
+
+    display: block;
+}
+.skeleton-block {
+
+    background: #e8e8e8;
+    border-radius: var(--radius-lg);
+    margin-bottom: 20px;
+    animation: skeleton-pulse 1.5s ease-in-out infinite;
+}
+.skeleton-block:last-child {
+
+    margin-bottom: 0;
+}
+.skeleton-group {
 
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    height: 50vh;
-    gap: 16px;
+    margin-bottom: 20px;
 }
-.spinner-ring {
+.skeleton-group > .skeleton-block {
 
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 3px solid var(--border-light);
-    border-top-color: var(--primary);
-    animation: spin 0.8s linear infinite;
+    flex: 1;
+    margin: 0 8px;
+}
+.skeleton-group > .skeleton-block:first-child {
+
+    margin-left: 0;
+}
+.skeleton-group > .skeleton-block:last-child {
+
+    margin-right: 0;
+}
+.skeleton-group:last-child {
+
+    margin-bottom: 0;
+}
+@keyframes skeleton-pulse {
+
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
 }
 /* --- 21. ERROR MESSAGE --- */
 .error-message {
@@ -1399,7 +1467,6 @@ to {
 .content-view {
 
     display: none;
-    animation: fadeIn 0.2s ease-out;
 }
 .content-view.active {
 
@@ -1442,7 +1509,6 @@ to {
 .diag-sub-view {
 
     display: none;
-    animation: fadeIn 0.2s ease-out;
 }
 .diag-sub-view.active {
 

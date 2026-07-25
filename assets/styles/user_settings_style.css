@@ -1,19 +1,9 @@
-/* ============================================================   DiME Dashboard - Módulo de Configuración de Usuario   Paleta: Azul oscuro (#031c3c) + Amarillo (#fcd703) + Modo Oscuro   ============================================================ */
+/* ============================================================   DiME Dashboard - Módulo de Configuración de Usuario   Paleta: Azul oscuro (#031c3c) + Amarillo (#fcd703) + Modo Claro   ============================================================ */
 :root {
 
-    /* Se heredan y refuerzan las variables maestras */  --bg-dark: #0B1120;
-    --bg-panel: #1E293B;
-    --bg-card: #0F172A;
-    --primary: #031c3c;
-    /* Azul corporativo */  --primary-light: #0a356e;
-    --accent: #10B981;
-    --warning: #F59E0B;
-    --danger: #EF4444;
-    --danger-bg: rgba(239, 68, 68, 0.1);
-    --text-main: #F8FAFC;
-    --text-secondary: #94A3B8;
-    --border-light: #334155;
+    --accent: #fcd703;
     --topbar-yellow: #fcd703;
+    --danger-bg: rgba(239, 68, 68, 0.1);
 }
 /* ==========================================   Contenedores Generales de Configuración   ========================================== */
 .settings-container {
