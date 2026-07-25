@@ -43,7 +43,7 @@ async function cargarPlanes() {
                         </div>
                         <div class="price">${p.precio_mensual === 0 ? "$0" : `$${p.precio_mensual.toFixed(0)}`}<span>/mes</span></div>
                         <ul>${features}</ul>
-                        <a href="/auth/login" class="btn">${btnText}</a>
+                        <a href="/auth/register" class="btn">${btnText}</a>
                     </div>
                 `;
             })

@@ -1,6 +1,11 @@
 const apiBase = '/api';
+
 const METABASE_DIAG_DASHBOARDS = {
-  ventas: 'http://localhost:3000/public/dashboard/63e3a3e8-395f-4f79-af4c-1010793fc00d'
+  reputacion: 'http://localhost:3000/public/dashboard/84be547b-038e-4eae-9f8f-dae56602fc5c',
+  ventas: 'http://localhost:3000/public/dashboard/0f0e0420-ee1d-4e8c-80d3-95bfbf36bbe4',
+  calidad: 'http://localhost:3000/public/dashboard/c07a4389-569e-4e95-a092-a629e18bcb7a',
+  inventario: 'http://localhost:3000/public/dashboard/fa23a2c9-9465-4267-97b2-9f11f355e4c2',
+  publicidad: 'http://localhost:3000/public/dashboard/1dacde31-5443-4d7b-aa61-340c4799434c'
 };
 const PLAN_MAP = { 1: 'Gratuito', 2: 'Pro', 3: 'Enterprise' };
 const REPUTATION_COLORS = {
@@ -46,17 +51,33 @@ function getVendedorId() {
 
 function loadDiagnosticoEmbeds() {
   const vendedorId = getVendedorId();
-  const emptyEl = document.getElementById('diag-ventas-empty');
-  const embedEl = document.getElementById('diag-ventas-embed');
-  const iframe = document.getElementById('diag-ventas-iframe');
-  if (!vendedorId) {
-    emptyEl.style.display = 'block';
-    embedEl.style.display = 'none';
-    return;
-  }
-  iframe.src = `${METABASE_DIAG_DASHBOARDS.ventas}?idvendedor=${vendedorId}#bordered=true&titled=true`;
-  emptyEl.style.display = 'none';
-  embedEl.style.display = 'block';
+
+  Object.keys(METABASE_DIAG_DASHBOARDS).forEach((key) => {
+    const emptyEl = document.getElementById(`diag-${key}-empty`);
+    const embedEl = document.getElementById(`diag-${key}-embed`);
+    const iframe = document.getElementById(`diag-${key}-iframe`);
+    const dashboardUrl = METABASE_DIAG_DASHBOARDS[key];
+
+    if (!emptyEl || !embedEl || !iframe) return;
+
+    if (!vendedorId) {
+      emptyEl.textContent = 'Inicia sesión para ver este diagnóstico.';
+      emptyEl.style.display = 'block';
+      embedEl.style.display = 'none';
+      return;
+    }
+
+    if (!dashboardUrl) {
+      emptyEl.textContent = 'Este dashboard todavía no está configurado en Metabase.';
+      emptyEl.style.display = 'block';
+      embedEl.style.display = 'none';
+      return;
+    }
+
+    iframe.src = `${dashboardUrl}?id_vendedor=${vendedorId}#bordered=true&titled=true`;
+    emptyEl.style.display = 'none';
+    embedEl.style.display = 'block';
+  });
 }
 
 async function apiFetch(url, options = {}) {
@@ -504,9 +525,6 @@ function updateDashboard(sellerId) {
     document.getElementById('profile-plan').textContent = PLAN_MAP[seller.tipo_plan] || 'Gratuito';
     document.getElementById('dropdown-name').textContent = seller.nombre_tienda;
     document.getElementById('dropdown-email').textContent = seller.email;
-    document.getElementById('dash-user-name').textContent = seller.user_name;
-    document.getElementById('dash-user-email').textContent = seller.email;
-    document.getElementById('dash-user-avatar').textContent = seller.user_name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || 'DM';
     document.getElementById('profile-avatar-letter').textContent = seller.user_name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase() || 'DM';
 
     document.getElementById('topbar-title').textContent = 'Dashboard: ' + seller.user_name;

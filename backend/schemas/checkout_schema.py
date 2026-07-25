@@ -20,3 +20,12 @@ class CheckoutResponse(BaseModel):
     expires_in: Optional[int] = Field(None, description="Tiempo de expiración en segundos")
     role: Optional[str] = Field(None, description="Rol del usuario (vendedor)")
     id_vendedor: Optional[int] = Field(None, description="ID del vendedor creado")
+
+
+class SyncMockoonRequest(BaseModel):
+    usuario_ml: Optional[str] = Field(None, description="Usuario de Mercado Libre (si se quiere actualizar)")
+
+
+class SyncMockoonResponse(BaseModel):
+    success: bool
+    message: str

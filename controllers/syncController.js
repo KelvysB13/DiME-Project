@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     const API_FASTAPI = '/api';
-    const API_MOCKOON = 'http://localhost:3001/api';
 
     let syncCanceled = false;
 
@@ -35,39 +34,31 @@ document.addEventListener('DOMContentLoaded', () => {
         syncLoader.style.display = 'block';
         syncCanceled = false;
 
-        const usuarioML = document.getElementById('usuario_ml_hidden').value;
-        const nombreTienda = document.getElementById('nombre').value.trim();
-        const email = document.getElementById('email').value.trim();
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            showMessage('No hay sesión activa. Redirigiendo al login...', 'red');
+            setTimeout(() => (window.location.href = '/auth/login'), 2000);
+            return;
+        }
 
-        const templateId = Math.floor(Math.random() * (22 - 16 + 1)) + 16;
+        const usuarioML = document.getElementById('usuario_ml_hidden').value;
 
         try {
-            await new Promise((resolve) => setTimeout(resolve, 2500));
+            await new Promise((resolve) => setTimeout(resolve, 1500));
             if (syncCanceled) return;
 
-            const mockRes = await fetch(`${API_MOCKOON}/vendedor/${templateId}`);
-            if (!mockRes.ok) throw new Error('Mockoon respondió con HTTP ' + mockRes.status);
-
-            const template = await mockRes.json();
-
-            if (!template.datos_basicos) {
-                throw new Error('La plantilla de Mockoon no contiene datos_basicos.');
-            }
-
-            template.datos_basicos.user_name = usuarioML;
-            template.datos_basicos.nombre_tienda = nombreTienda;
-            template.datos_basicos.email = email;
-            delete template.datos_basicos.password;
-
-            const metricsRes = await fetch(`${API_FASTAPI}/mockoon-data`, {
+            const response = await fetch(`${API_FASTAPI}/payment/sync-mockoon`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(template),
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`,
+                },
+                body: JSON.stringify({ usuario_ml: usuarioML || undefined }),
             });
 
-            if (!metricsRes.ok) {
-                const errBody = await metricsRes.json().catch(() => ({}));
-                throw new Error('Backend respondió: ' + (errBody.detail || 'HTTP ' + metricsRes.status));
+            if (!response.ok) {
+                const errBody = await response.json().catch(() => ({}));
+                throw new Error(errBody.detail || 'Error al sincronizar con Mockoon');
             }
 
             modal.style.display = 'none';

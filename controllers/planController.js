@@ -31,16 +31,13 @@ const diccionarioAcciones = {
     "cvr_global_AMARILLO": "Diagnosticar si el cuello de botella está en precio, fotos o reputación antes de escalar inversión en tráfico, para no diluir el ROI agregando visitas a un funnel que aún no convierte óptimamente.",
     "cvr_global_VERDE": "Escalar inversión en tráfico (ads, eventos) con confianza, dado que el funnel ya demuestra capacidad de conversión sólida.",
 
-    "margen_neto_real_ROJO": "Desglosar de inmediato comisiones, envío, ads y descuento por reputación para identificar la fuga principal de margen.",
-    "margen_neto_real_AMARILLO": "Modelar el punto de equilibrio actual antes de tomar decisiones de pricing a la baja, dado el colchón limitado frente a shocks de costos.",
-    "margen_neto_real_VERDE": "Reinvertir en crecimiento (ads, stock) sobre una base de margen sólida, en lugar de bajar precios para ganar volumen adicional.",
+    "margen_neto_real_ROJO": "1) Revisa tu termómetro de reputación - si está en rojo, resuelve los reclamos abiertos urgentemente. 2) Audita tus costos de envío: ¿estás usando Full cuando podrías usar Flex? 3) Evalúa si ofrecer cuotas sin interés vale la pena para tu ticket promedio (si es bajo, estás regalando margen). 4) Sube precios mínimo un 5-10% en los productos con mayor rotación para recuperar parte del payout perdido. No tiene sentido escalar ventas si cada venta tiene este nivel de retención.",
+    "margen_neto_real_AMARILLO": "Revisa tu estructura de costos: ¿estás ofreciendo cuotas sin interés que no puedes absorber? ¿Tus envíos son más caros que el promedio de tu categoría? Considera ajustar precios un 3-5% para compensar la retención sin perder competitividad. También revisa que no tengas descuentos por reputación activos que estén aumentando tu comisión.",
+    "margen_neto_real_VERDE": "Tu eficiencia en costos de plataforma es óptima. Asegúrate de mantener el termómetro en verde para no activar descuentos por reputación que podrían reducir este porcentaje. Puedes usar este colchón para invertir en mejorar la calidad de tus publicaciones o probar nuevas categorías.",
+    
     "ticket_promedio_ROJO": "Pausar ads en los SKUs de ticket bajo o redirigir presupuesto hacia productos de mayor valor por transacción.",
     "ticket_promedio_AMARILLO": "Evaluar estrategias de cross-sell o bundles para elevar el ticket antes de escalar inversión adicional en publicidad.",
     "ticket_promedio_VERDE": "Usar el ticket alto como palanca para invertir en calidad de publicación y envío, evitando erosionarlo con descuentos masivos.",
-
-    "carga_total_costos_ROJO": "Desglosar cada componente de costo (comisión, envío, ads, Full) y atacar primero el de mayor peso individual sobre las ventas brutas.",
-    "carga_total_costos_AMARILLO": "Identificar el componente de costo con mayor peso antes de que el total cruce el umbral de 35% donde se vuelve insostenible.",
-    "carga_total_costos_VERDE": "Mantener la estructura de costos actual; usar el margen disponible para reinvertir en crecimiento.",
 
     "ratio_intencion_compra_ROJO": "Revisar si el tráfico que se está atrayendo (orgánico o pago) corresponde realmente al perfil de comprador del producto publicado.",
     "ratio_intencion_compra_AMARILLO": "Revisar competitividad de precio y estado de reputación antes de invertir más en atraer tráfico adicional.",
@@ -391,29 +388,29 @@ document.addEventListener('DOMContentLoaded', () => {
             // Evaluar KPIs Individuales
             dataKpis.items.forEach(kpi => {
                 const llaveBase = obtenerLlaveBase(kpi.nombre_kpi);
+
+                if (llaveBase === "carga_total_costos") {
+                    return; 
+                }
+
                 const semaforoReal = normalizarSemaforo(kpi.estado_semaforo);
-                
-                // Nos faltaba definir 'firma' aquí adentro para usarla en el diccionario
+            
                 const firma = `${llaveBase}_${semaforoReal}`; 
 
-                if (kpi.nombre_kpi.toLowerCase().includes("reput")) {
-                    console.log("🕵️ DETECTIVE DE REPUTACIÓN:", {
-                        nombreOriginal: kpi.nombre_kpi,
-                        semaforoOriginal: kpi.estado_semaforo,
-                        llaveTraducida: llaveBase,
-                        semaforoTraducido: semaforoReal,
-                        firmaResultante: firma,
-                        mensajeEncontrado: diccionarioAcciones[firma] || "NINGUNO (Mensaje Genérico)"
-                    });
-                }
                 
                 // Evaluamos que no esté en una combinación procesada
                 if ((semaforoReal === 'ROJO' || semaforoReal === 'AMARILLO' || semaforoReal === 'VERDE') && !kpisProcesadosEnCombinacion.has(firma)) {
                     
                     const accionRecomendada = diccionarioAcciones[firma] || `Requiere atención en el módulo de ${kpi.dimension || 'correspondiente'}.`;
                     
+                    let tituloMostrar = kpi.nombre_kpi;
+                    if (llaveBase === "margen_neto_real") {
+                        tituloMostrar = "Payout Rate";
+                    }
+
                     planFinal.push({
-                        titulo: kpi.nombre_kpi, 
+                        titulo: tituloMostrar,
+                       // titulo: kpi.nombre_kpi, 
                         prioridad: kpi.prioridad || "Atención", 
                         accion: accionRecomendada,
                         valorActual: kpi.valor_actual || "N/A",

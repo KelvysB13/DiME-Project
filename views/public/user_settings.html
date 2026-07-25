@@ -16,33 +16,24 @@
 
   <div class="flex min-h-screen">
 
-    <aside class="sidebar">
-      <div class="logo-area">
-        <div class="relative dime-logo" style="width:32px;height:32px">
-          <div class="dime-logo-dot"></div>
-          <div class="dime-logo-bars" style="width:16px;height:12px">
-            <div style="width:3px;height:4px"></div>
-            <div style="width:3px;height:8px"></div>
-            <div style="width:3px;height:6px"></div>
-          </div>
-        </div>
-        <div>
-          <h2>DiME</h2>
-          <p>Configuración</p>
-        </div>
+    <aside class="sidebar" id="sidebar">
+
+      <div class="logo-area" id="sidebar-toggle">
+        <img src="/assets/images/DiME_Logo_Inverso.png" alt="DiME" class="sidebar-logo">
+        <img src="/assets/images/DiME_Isotipo_Inverso.png" alt="DiME" class="sidebar-isotipo">
       </div>
 
       <nav>
         <button class="nav-btn active" data-view="view-perfil">
-          <span class="icon-placeholder">✎</span>
-          <span>Perfil de negocio</span>
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          <span>Perfil de Negocio</span>
         </button>
         <button class="nav-btn" data-view="view-billing">
-          <span class="icon-placeholder">⎙</span>
-          <span>Facturación y plan</span>
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+          <span>Planes y Facturación</span>
         </button>
         <button class="nav-btn" data-view="view-security">
-          <span class="icon-placeholder">🔒︎</span>
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
           <span>Seguridad</span>
         </button>
       </nav>
@@ -193,6 +184,11 @@
     </main>
   </div>
 
+  <script>
+    document.getElementById('sidebar-toggle')?.addEventListener('click', function() {
+      document.getElementById('sidebar').classList.toggle('collapsed');
+    });
+  </script>
   <script src="/controllers/settingsController.js"></script> 
 </body>
 </html>
