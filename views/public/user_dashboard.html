@@ -52,10 +52,18 @@
           <span class="icon-placeholder">⌂</span>
           <span>Inicio</span>
         </button>
-        <button class="nav-btn" data-view="view-diagnostico">
+        <button class="nav-btn" data-view="view-diagnostico" id="nav-diagnostico-parent">
           <span class="icon-placeholder">◉</span>
           <span>Diagnóstico</span>
+          <span class="nav-caret" id="nav-diagnostico-caret">▾</span>
         </button>
+        <div class="nav-subgroup" id="nav-diagnostico-subgroup">
+          <button class="nav-subbtn active" data-view="view-diagnostico" data-tab="tab-reputacion">Reputación</button>
+          <button class="nav-subbtn" data-view="view-diagnostico" data-tab="tab-ventas">Ventas y rentabilidad</button>
+          <button class="nav-subbtn" data-view="view-diagnostico" data-tab="tab-calidad">Calidad y rendimiento de publicaciones</button>
+          <button class="nav-subbtn" data-view="view-diagnostico" data-tab="tab-inventario">Eficiencia de inventario</button>
+          <button class="nav-subbtn" data-view="view-diagnostico" data-tab="tab-publicidad">Publicidad e inversiones</button>
+        </div>
         <button class="nav-btn" data-view="view-plan">
           <span class="icon-placeholder">↗</span>
           <span>Plan de acción</span>
@@ -218,23 +226,16 @@
           </div>
 
           <div id="view-diagnostico" class="content-view">
-            <h2 style="font-size: 20px; font-weight: 700; color: var(--primary); margin-bottom: 20px;">Módulo de Diagnóstico</h2>
-            
-            <div class="diag-tabs">
-              <button class="diag-tab-btn active" data-tab="tab-reputacion">Reputación</button>
-              <button class="diag-tab-btn" data-tab="tab-ventas">Ventas y rentabilidad</button>
-              <button class="diag-tab-btn" data-tab="tab-calidad">Calidad y rendimiento de publicaciones</button>
-              <button class="diag-tab-btn" data-tab="tab-inventario">Eficiencia de inventario</button>
-              <button class="diag-tab-btn" data-tab="tab-publicidad">Publicidad e inversiones</button>
-            </div>
-
             <div id="tab-reputacion" class="diag-sub-view active">
               <div class="section-card">
                 <h3 style="font-size:14px; font-weight:700; color:var(--primary); margin-bottom:6px;">Reputación</h3>
                 <p style="font-size:12px; color:var(--text-secondary); line-height: 1.5;">Estado del termómetro de reputación y fricción operativa (reclamos, cancelaciones, mediaciones, envíos incorrectos).</p>
                 <div id="diag-reputacion-empty" class="metabase-placeholder">Inicia sesión para ver tu diagnóstico de reputación.</div>
-                <div id="diag-reputacion-embed" class="metabase-diag-embed" style="display:none">
-                  <iframe id="diag-reputacion-iframe" src="" loading="lazy" allowtransparency></iframe>
+                <div class="diag-content-row">
+                  <div id="diag-reputacion-embed" class="metabase-diag-embed" style="display:none">
+                    <iframe id="diag-reputacion-iframe" src="" loading="lazy" allowtransparency></iframe>
+                  </div>
+                  <div id="diag-reputacion-insights" class="diag-insights"></div>
                 </div>
               </div>
             </div>
@@ -244,8 +245,11 @@
                 <h3 style="font-size:14px; font-weight:700; color:var(--primary); margin-bottom:6px;">Análisis de Ventas y Rentabilidad</h3>
                 <p style="font-size:12px; color:var(--text-secondary); line-height: 1.5;">Evaluación de márgenes brutos, netos y balance financiero del canal.</p>
                 <div id="diag-ventas-empty" class="metabase-placeholder">Inicia sesión para ver tu diagnóstico de ventas y rentabilidad.</div>
-                <div id="diag-ventas-embed" class="metabase-diag-embed" style="display:none">
-                  <iframe id="diag-ventas-iframe" src="" loading="lazy" allowtransparency></iframe>
+                <div class="diag-content-row">
+                  <div id="diag-ventas-embed" class="metabase-diag-embed" style="display:none">
+                    <iframe id="diag-ventas-iframe" src="" loading="lazy" allowtransparency></iframe>
+                  </div>
+                  <div id="diag-ventas-insights" class="diag-insights"></div>
                 </div>
               </div>
             </div>
@@ -255,8 +259,11 @@
                 <h3 style="font-size:14px; font-weight:700; color:var(--primary); margin-bottom:6px;">Calidad y Rendimiento de Publicaciones</h3>
                 <p style="font-size:12px; color:var(--text-secondary); line-height: 1.5;">Auditoría de optimización de listados, conversión técnica e imágenes.</p>
                 <div id="diag-calidad-empty" class="metabase-placeholder">Inicia sesión para ver tu diagnóstico de publicaciones.</div>
-                <div id="diag-calidad-embed" class="metabase-diag-embed" style="display:none">
-                  <iframe id="diag-calidad-iframe" src="" loading="lazy" allowtransparency></iframe>
+                <div class="diag-content-row">
+                  <div id="diag-calidad-embed" class="metabase-diag-embed" style="display:none">
+                    <iframe id="diag-calidad-iframe" src="" loading="lazy" allowtransparency></iframe>
+                  </div>
+                  <div id="diag-calidad-insights" class="diag-insights"></div>
                 </div>
               </div>
             </div>
@@ -266,8 +273,11 @@
                 <h3 style="font-size:14px; font-weight:700; color:var(--primary); margin-bottom:6px;">Eficiencia de Inventario</h3>
                 <p style="font-size:12px; color:var(--text-secondary); line-height: 1.5;">Monitoreo de almacenamiento Full, rotación de SKU y prevención de penalizaciones.</p>
                 <div id="diag-inventario-empty" class="metabase-placeholder">Inicia sesión para ver tu diagnóstico de inventario.</div>
-                <div id="diag-inventario-embed" class="metabase-diag-embed" style="display:none">
-                  <iframe id="diag-inventario-iframe" src="" loading="lazy" allowtransparency></iframe>
+                <div class="diag-content-row">
+                  <div id="diag-inventario-embed" class="metabase-diag-embed" style="display:none">
+                    <iframe id="diag-inventario-iframe" src="" loading="lazy" allowtransparency></iframe>
+                  </div>
+                  <div id="diag-inventario-insights" class="diag-insights"></div>
                 </div>
               </div>
             </div>
@@ -277,8 +287,11 @@
                 <h3 style="font-size:14px; font-weight:700; color:var(--primary); margin-bottom:6px;">Publicidad e Inversiones</h3>
                 <p style="font-size:12px; color:var(--text-secondary); line-height: 1.5;">Retorno de inversión publicitaria (ROAS) y dependencia estructural de Ads sobre las ventas.</p>
                 <div id="diag-publicidad-empty" class="metabase-placeholder">Inicia sesión para ver tu diagnóstico de publicidad.</div>
-                <div id="diag-publicidad-embed" class="metabase-diag-embed" style="display:none">
-                  <iframe id="diag-publicidad-iframe" src="" loading="lazy" allowtransparency></iframe>
+                <div class="diag-content-row">
+                  <div id="diag-publicidad-embed" class="metabase-diag-embed" style="display:none">
+                    <iframe id="diag-publicidad-iframe" src="" loading="lazy" allowtransparency></iframe>
+                  </div>
+                  <div id="diag-publicidad-insights" class="diag-insights"></div>
                 </div>
               </div>
             </div>
@@ -319,6 +332,7 @@
 
 
 
+  <script defer src="/controllers/kpiActionsService.js"></script>
   <script defer src="/controllers/dashboardController.js"></script>
   <script defer src="/controllers/planController.js"></script>
 </body>

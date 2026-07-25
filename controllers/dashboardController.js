@@ -1,12 +1,6 @@
 const apiBase = '/api';
 
-const METABASE_DIAG_DASHBOARDS = {
-  reputacion: 'http://localhost:3000/public/dashboard/84be547b-038e-4eae-9f8f-dae56602fc5c',
-  ventas: 'http://localhost:3000/public/dashboard/0f0e0420-ee1d-4e8c-80d3-95bfbf36bbe4',
-  calidad: 'http://localhost:3000/public/dashboard/c07a4389-569e-4e95-a092-a629e18bcb7a',
-  inventario: 'http://localhost:3000/public/dashboard/fa23a2c9-9465-4267-97b2-9f11f355e4c2',
-  publicidad: 'http://localhost:3000/public/dashboard/1dacde31-5443-4d7b-aa61-340c4799434c'
-};
+const DIAG_SECTIONS = ['reputacion', 'ventas', 'calidad', 'inventario', 'publicidad'];
 const PLAN_MAP = { 1: 'Gratuito', 2: 'Pro', 3: 'Enterprise' };
 const REPUTATION_COLORS = {
   green: { color: '#10B981', label: 'Excelente' },
@@ -49,34 +43,99 @@ function getVendedorId() {
   return payload ? payload.sub : null;
 }
 
-function loadDiagnosticoEmbeds() {
+async function loadDiagnosticoEmbeds() {
   const vendedorId = getVendedorId();
 
-  Object.keys(METABASE_DIAG_DASHBOARDS).forEach((key) => {
-    const emptyEl = document.getElementById(`diag-${key}-empty`);
-    const embedEl = document.getElementById(`diag-${key}-embed`);
-    const iframe = document.getElementById(`diag-${key}-iframe`);
-    const dashboardUrl = METABASE_DIAG_DASHBOARDS[key];
-
-    if (!emptyEl || !embedEl || !iframe) return;
-
-    if (!vendedorId) {
+  if (!vendedorId) {
+    DIAG_SECTIONS.forEach((key) => {
+      const emptyEl = document.getElementById(`diag-${key}-empty`);
+      const embedEl = document.getElementById(`diag-${key}-embed`);
+      if (!emptyEl || !embedEl) return;
       emptyEl.textContent = 'Inicia sesión para ver este diagnóstico.';
       emptyEl.style.display = 'block';
       embedEl.style.display = 'none';
-      return;
-    }
+    });
+    return;
+  }
+
+  let embedUrls = {};
+  try {
+    // El backend genera URLs firmadas con el id_vendedor de la sesión ya "bloqueado" —
+    // el visitante no puede verlo ni cambiarlo desde el navegador.
+    embedUrls = await apiFetch('/metabase/embed-urls');
+  } catch {
+    embedUrls = {};
+  }
+
+  DIAG_SECTIONS.forEach((key) => {
+    const emptyEl = document.getElementById(`diag-${key}-empty`);
+    const embedEl = document.getElementById(`diag-${key}-embed`);
+    const iframe = document.getElementById(`diag-${key}-iframe`);
+    const dashboardUrl = embedUrls[key];
+
+    if (!emptyEl || !embedEl || !iframe) return;
 
     if (!dashboardUrl) {
-      emptyEl.textContent = 'Este dashboard todavía no está configurado en Metabase.';
+      emptyEl.textContent = 'No se pudo cargar este diagnóstico. Intenta de nuevo más tarde.';
       emptyEl.style.display = 'block';
       embedEl.style.display = 'none';
       return;
     }
 
-    iframe.src = `${dashboardUrl}?id_vendedor=${vendedorId}#bordered=true&titled=true`;
+    iframe.src = dashboardUrl;
     emptyEl.style.display = 'none';
     embedEl.style.display = 'block';
+  });
+}
+
+// Traduce la "dimension" que manda /api/kpis-query (misma que usa el PDF del Plan
+// de Acción) a la sección del panel de Diagnóstico donde debe mostrarse el mensaje.
+const DIMENSION_TO_SECTION = {
+  'Reputación': 'reputacion',
+  'Finanzas': 'ventas',
+  'Publicaciones': 'calidad',
+  'Logística': 'inventario',
+  'Publicidad': 'publicidad'
+};
+
+async function loadDiagnosticoInsights() {
+  const vendedorId = getVendedorId();
+  if (!vendedorId) return;
+
+  DIAG_SECTIONS.forEach((key) => {
+    const container = document.getElementById(`diag-${key}-insights`);
+    if (container) container.innerHTML = '';
+  });
+
+  let items = [];
+  try {
+    const data = await apiFetch(`/kpis-query?vendedor_id=${vendedorId}`);
+    items = calcularPlanFinal(data.items || []);
+  } catch {
+    return;
+  }
+
+  items.forEach((item) => {
+    const sectionKey = DIMENSION_TO_SECTION[item.dimension];
+    const container = sectionKey && document.getElementById(`diag-${sectionKey}-insights`);
+    if (!container) return;
+
+    const div = document.createElement('div');
+    div.className = `diag-insight-item semaforo-${item.semaforo}`;
+    div.innerHTML = `
+      <button type="button" class="diag-insight-toggle">
+        <span class="diag-insight-dot"></span>
+        <span class="diag-insight-title"></span>
+        <span class="diag-insight-caret">▾</span>
+      </button>
+      <p class="diag-insight-text"></p>
+    `;
+    div.querySelector('.diag-insight-title').textContent = item.titulo;
+    div.querySelector('.diag-insight-text').textContent = item.accion;
+    div.querySelector('.diag-insight-toggle').addEventListener('click', () => {
+      div.classList.toggle('open');
+    });
+    container.appendChild(div);
   });
 }
 
@@ -621,12 +680,29 @@ document.querySelectorAll('.sidebar nav .nav-btn').forEach(btn => {
     const viewTarget = this.getAttribute('data-view');
     document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active'));
     document.getElementById(viewTarget).classList.add('active');
+
+    if (this.id !== 'nav-diagnostico-parent') {
+      document.getElementById('nav-diagnostico-subgroup').classList.remove('open');
+      document.getElementById('nav-diagnostico-caret').classList.remove('open');
+    }
   });
 });
 
-document.querySelectorAll('.diag-tab-btn').forEach(tabBtn => {
-  tabBtn.addEventListener('click', function() {
-    document.querySelectorAll('.diag-tab-btn').forEach(b => b.classList.remove('active'));
+document.getElementById('nav-diagnostico-parent').addEventListener('click', function() {
+  document.getElementById('nav-diagnostico-subgroup').classList.toggle('open');
+  document.getElementById('nav-diagnostico-caret').classList.toggle('open');
+});
+
+document.querySelectorAll('.nav-subbtn').forEach(subBtn => {
+  subBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+
+    document.querySelectorAll('.sidebar nav .nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('nav-diagnostico-parent').classList.add('active');
+    document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active'));
+    document.getElementById('view-diagnostico').classList.add('active');
+
+    document.querySelectorAll('.nav-subbtn').forEach(b => b.classList.remove('active'));
     this.classList.add('active');
 
     const tabTarget = this.getAttribute('data-tab');
@@ -640,4 +716,5 @@ document.addEventListener('DOMContentLoaded', () => {
   if (!token) console.warn('[DiME] Sin token — mostrando datos mock');
   loadDashboard();
   loadDiagnosticoEmbeds();
+  loadDiagnosticoInsights();
 });

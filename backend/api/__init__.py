@@ -17,6 +17,7 @@ from api.vendedor_router import router as vendedor_router
 from api.mockoon_router import router as guardar_metricas_router
 from api.historiales_routes import router as historiales_router
 from api.plan_change_router import router as plan_change_router
+from api.metabase_router import router as metabase_router
 
 api_router = APIRouter()
 
@@ -38,3 +39,4 @@ api_router.include_router(vendedor_router, prefix="", tags=["Admin Vendedores"])
 api_router.include_router(guardar_metricas_router, prefix="", tags=["Mockoon"])
 api_router.include_router(historiales_router, prefix="", tags=["Historial"])
 api_router.include_router(plan_change_router, prefix="", tags=["Plan del Vendedor"])
+api_router.include_router(metabase_router, prefix="", tags=["Metabase Embeds"])

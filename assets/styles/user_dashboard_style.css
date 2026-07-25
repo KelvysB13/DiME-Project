@@ -514,6 +514,40 @@ to {
     font-weight: 600;
     border-left: 3px solid var(--accent);
 }
+.nav-caret {
+
+    margin-left: auto;
+    font-size: 10px;
+    transition: transform 0.15s ease;
+}
+.nav-caret.open {
+
+    transform: rotate(180deg);
+}
+.nav-subgroup {
+
+    display: none;
+    flex-direction: column;
+    gap: 4px;
+    margin-top: 4px;
+    margin-bottom: 8px;
+}
+.nav-subgroup.open {
+
+    display: flex;
+}
+.sidebar nav .nav-subbtn {
+
+    padding: 9px 14px 9px 40px;
+    font-size: 12px;
+    font-weight: 400;
+    text-align: left;
+    line-height: 1.3;
+}
+.sidebar nav .nav-subbtn.active {
+
+    border-left: 3px solid var(--accent);
+}
 .sidebar nav button .live-badge {
 
     margin-left: auto;
@@ -1429,10 +1463,11 @@ to {
 }
 .metabase-diag-embed {
 
-    margin-top: 16px;
     border: 1px solid var(--border-light);
     border-radius: var(--radius-lg);
     overflow: hidden;
+    flex: 2;
+    min-width: 0;
 }
 .metabase-diag-embed iframe {
 
@@ -1440,6 +1475,110 @@ to {
     height: 600px;
     border: none;
     display: block;
+}
+/* Fila: gráfica de Metabase a la izquierda, hallazgos a la derecha */
+.diag-content-row {
+
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-top: 16px;
+}
+/* Mensajes/hallazgos del Plan de Acción, en formato acordeón */
+.diag-insights {
+
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    min-width: 220px;
+    max-height: 600px;
+    overflow-y: auto;
+}
+.diag-insight-item {
+
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-light);
+    background-color: #fafafa;
+    overflow: hidden;
+}
+.diag-insight-toggle {
+
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 12px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+}
+.diag-insight-dot {
+
+    flex-shrink: 0;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+.diag-insight-item.semaforo-ROJO .diag-insight-dot {
+
+    background-color: var(--danger);
+}
+.diag-insight-item.semaforo-AMARILLO .diag-insight-dot {
+
+    background-color: var(--warning);
+}
+.diag-insight-item.semaforo-VERDE .diag-insight-dot {
+
+    background-color: var(--success);
+}
+.diag-insight-item.semaforo-GRIS .diag-insight-dot {
+
+    background-color: var(--text-muted);
+}
+.diag-insight-title {
+
+    flex: 1;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.3;
+}
+.diag-insight-caret {
+
+    flex-shrink: 0;
+    font-size: 10px;
+    color: var(--text-muted);
+    transition: transform 0.15s ease;
+}
+.diag-insight-item.open .diag-insight-caret {
+
+    transform: rotate(180deg);
+}
+.diag-insight-text {
+
+    display: none;
+    padding: 0 14px 12px 30px;
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+.diag-insight-item.open .diag-insight-text {
+
+    display: block;
+}
+@media (max-width: 900px) {
+
+    .diag-content-row {
+
+        flex-direction: column;
+    }
+    .diag-insights {
+
+        max-height: none;
+        width: 100%;
+    }
 }
 /* Estilos para la vista de Plan de Acción */
 .alert-card {
