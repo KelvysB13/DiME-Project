@@ -110,7 +110,9 @@ async function loadDiagnosticoInsights() {
   let items = [];
   try {
     const data = await apiFetch(`/kpis-query?vendedor_id=${vendedorId}`);
-    items = calcularPlanFinal(data.items || []);
+    // Mensajes analíticos (sin acciones) para la barra de Diagnóstico — distintos
+    // de calcularPlanFinal(), que es exclusivo del PDF del Plan de Acción.
+    items = obtenerMensajesDiagnostico(data.items || []);
   } catch {
     return;
   }
@@ -124,14 +126,13 @@ async function loadDiagnosticoInsights() {
     div.className = `diag-insight-item semaforo-${item.semaforo}`;
     div.innerHTML = `
       <button type="button" class="diag-insight-toggle">
-        <span class="diag-insight-dot"></span>
         <span class="diag-insight-title"></span>
         <span class="diag-insight-caret">▾</span>
       </button>
       <p class="diag-insight-text"></p>
     `;
     div.querySelector('.diag-insight-title').textContent = item.titulo;
-    div.querySelector('.diag-insight-text').textContent = item.accion;
+    div.querySelector('.diag-insight-text').textContent = item.texto;
     div.querySelector('.diag-insight-toggle').addEventListener('click', () => {
       div.classList.toggle('open');
     });
