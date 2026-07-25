@@ -1658,13 +1658,16 @@ to {
     flex-shrink: 0;
     white-space: nowrap;
 }
-/* Lista de acordeón del Plan de Acción (ancho completo, agrupada por dimensión) */
+/* Lista de acordeón del Plan de Acción (angosta, agrupada por dimensión) */
 .plan-insights {
 
     display: flex;
     flex-direction: column;
     gap: 10px;
     margin-top: 24px;
+    max-width: 620px;
+    margin-left: auto;
+    margin-right: auto;
 }
 .plan-dimension-heading {
 
