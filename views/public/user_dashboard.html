@@ -42,7 +42,7 @@
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
           <span>Inicio</span>
         </button>
-        <button class="nav-btn" data-view="view-diagnostico">
+        <button class="nav-btn" data-view="view-diagnostico" id="nav-diagnostico-parent">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
           <span>Diagnóstico</span>
           <span class="nav-caret" id="nav-diagnostico-caret">▾</span>
@@ -292,16 +292,19 @@
 
           <div id="view-plan" class="content-view">
             <div class="section-card">
-              <h2 style="font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">Plan de Acción Estratégico</h2>
-    
-              <div id="action-plan-empty">
-                <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">
-                  Nuestro algoritmo auditará tu salud de reputación, rendimiento de publicaciones e inventario para generar tu hoja de ruta priorizada.
-                </p>
+              <div class="plan-header-row">
+                <div>
+                  <h2 style="font-size: 16px; font-weight: 700; color: var(--primary); margin-bottom: 8px;">Plan de Acción Estratégico</h2>
+                  <p style="font-size: 13px; color: var(--text-secondary);">
+                    Nuestro algoritmo auditará tu salud de reputación, rendimiento de publicaciones e inventario para generar tu hoja de ruta priorizada.
+                  </p>
+                </div>
                 <button id="btn-generate-plan" class="btn-retry" style="background-color: var(--primary); color: #fff;">
                   📥 Descargar Plan de Acción
                 </button>
               </div>
+
+              <div id="action-plan-list" class="plan-insights"></div>
             </div>
           </div>
 

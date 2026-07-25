@@ -1644,6 +1644,42 @@ to {
 
     display: block;
 }
+/* Encabezado del Plan de Acción: texto a la izquierda, botón de descarga a la derecha */
+.plan-header-row {
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+.plan-header-row #btn-generate-plan {
+
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+/* Lista de acordeón del Plan de Acción (ancho completo, agrupada por dimensión) */
+.plan-insights {
+
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 24px;
+}
+.plan-dimension-heading {
+
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 14px;
+    margin-bottom: 2px;
+}
+.plan-dimension-heading:first-child {
+
+    margin-top: 0;
+}
 @media (max-width: 900px) {
 
     .diag-content-row {

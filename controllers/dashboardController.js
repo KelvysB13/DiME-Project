@@ -121,22 +121,72 @@ async function loadDiagnosticoInsights() {
     const sectionKey = DIMENSION_TO_SECTION[item.dimension];
     const container = sectionKey && document.getElementById(`diag-${sectionKey}-insights`);
     if (!container) return;
+    container.appendChild(crearAccordionItem(item.titulo, item.texto, item.semaforo));
+  });
+}
 
-    const div = document.createElement('div');
-    div.className = `diag-insight-item semaforo-${item.semaforo}`;
-    div.innerHTML = `
-      <button type="button" class="diag-insight-toggle">
-        <span class="diag-insight-title"></span>
-        <span class="diag-insight-caret">▾</span>
-      </button>
-      <p class="diag-insight-text"></p>
-    `;
-    div.querySelector('.diag-insight-title').textContent = item.titulo;
-    div.querySelector('.diag-insight-text').textContent = item.texto;
-    div.querySelector('.diag-insight-toggle').addEventListener('click', () => {
-      div.classList.toggle('open');
+// Tarjeta de acordeón reutilizada por Diagnóstico y por la lista del Plan de Acción:
+// muestra solo el título, y al hacer clic despliega el texto completo debajo.
+function crearAccordionItem(titulo, texto, semaforo) {
+  const div = document.createElement('div');
+  div.className = `diag-insight-item semaforo-${semaforo}`;
+  div.innerHTML = `
+    <button type="button" class="diag-insight-toggle">
+      <span class="diag-insight-title"></span>
+      <span class="diag-insight-caret">▾</span>
+    </button>
+    <p class="diag-insight-text"></p>
+  `;
+  div.querySelector('.diag-insight-title').textContent = titulo;
+  div.querySelector('.diag-insight-text').textContent = texto;
+  div.querySelector('.diag-insight-toggle').addEventListener('click', () => {
+    div.classList.toggle('open');
+  });
+  return div;
+}
+
+async function loadPlanAccionList() {
+  const container = document.getElementById('action-plan-list');
+  if (!container) return;
+
+  const vendedorId = getVendedorId();
+  if (!vendedorId) return;
+
+  let planFinal = [];
+  try {
+    const data = await apiFetch(`/kpis-query?vendedor_id=${vendedorId}`);
+    // Misma fuente que usa el PDF (planController.js) — así la lista en pantalla
+    // y el PDF descargado siempre muestran exactamente lo mismo.
+    planFinal = calcularPlanFinal(data.items || []);
+  } catch {
+    return;
+  }
+
+  container.innerHTML = '';
+
+  if (planFinal.length === 0) {
+    const p = document.createElement('p');
+    p.style.cssText = 'font-size:13px;color:var(--text-secondary);margin-top:16px;';
+    p.textContent = '¡Felicidades! Todos tus indicadores están en niveles óptimos.';
+    container.appendChild(p);
+    return;
+  }
+
+  const agrupados = planFinal.reduce((acc, item) => {
+    if (!acc[item.dimension]) acc[item.dimension] = [];
+    acc[item.dimension].push(item);
+    return acc;
+  }, {});
+
+  Object.keys(agrupados).forEach((dimension) => {
+    const heading = document.createElement('h4');
+    heading.className = 'plan-dimension-heading';
+    heading.textContent = dimension;
+    container.appendChild(heading);
+
+    agrupados[dimension].forEach((item) => {
+      container.appendChild(crearAccordionItem(item.titulo, item.accion, item.semaforo));
     });
-    container.appendChild(div);
   });
 }
 
@@ -609,19 +659,26 @@ async function loadDashboard() {
     document.getElementById('loadingSpinner').style.display = 'block';
     document.getElementById('dashboardContent').style.display = 'none';
     
+    // general-information y dashboard son independientes entre sí — se piden en
+    // paralelo para no sumar sus tiempos de espera uno detrás del otro.
+    const [userInfoResult, dashDataResult] = await Promise.allSettled([
+      apiFetch('/general-information'),
+      apiFetch('/dashboard')
+    ]);
+
     let userInfo = null;
-    try {
-      userInfo = await apiFetch('/general-information');
+    if (userInfoResult.status === 'fulfilled') {
+      userInfo = userInfoResult.value;
       state.currentUser = userInfo;
-    } catch (e) {
-      console.warn('Error fetching general-information:', e.message);
+    } else {
+      console.warn('Error fetching general-information:', userInfoResult.reason?.message);
     }
-    
+
     let dashData = null;
-    try {
-      dashData = await apiFetch('/dashboard');
-    } catch (e) {
-      console.warn('Error fetching dashboard data, falling back to mock:', e.message);
+    if (dashDataResult.status === 'fulfilled') {
+      dashData = dashDataResult.value;
+    } else {
+      console.warn('Error fetching dashboard data, falling back to mock:', dashDataResult.reason?.message);
     }
     
     let activeSeller;
@@ -677,18 +734,18 @@ document.querySelectorAll('.sidebar nav .nav-btn').forEach(btn => {
 
     const viewTarget = this.getAttribute('data-view');
     document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active'));
-    document.getElementById(viewTarget).classList.add('active');
+    document.getElementById(viewTarget)?.classList.add('active');
 
     if (this.id !== 'nav-diagnostico-parent') {
-      document.getElementById('nav-diagnostico-subgroup').classList.remove('open');
-      document.getElementById('nav-diagnostico-caret').classList.remove('open');
+      document.getElementById('nav-diagnostico-subgroup')?.classList.remove('open');
+      document.getElementById('nav-diagnostico-caret')?.classList.remove('open');
     }
   });
 });
 
-document.getElementById('nav-diagnostico-parent').addEventListener('click', function() {
-  document.getElementById('nav-diagnostico-subgroup').classList.toggle('open');
-  document.getElementById('nav-diagnostico-caret').classList.toggle('open');
+document.getElementById('nav-diagnostico-parent')?.addEventListener('click', function() {
+  document.getElementById('nav-diagnostico-subgroup')?.classList.toggle('open');
+  document.getElementById('nav-diagnostico-caret')?.classList.toggle('open');
 });
 
 document.querySelectorAll('.nav-subbtn').forEach(subBtn => {
@@ -696,16 +753,16 @@ document.querySelectorAll('.nav-subbtn').forEach(subBtn => {
     e.stopPropagation();
 
     document.querySelectorAll('.sidebar nav .nav-btn').forEach(b => b.classList.remove('active'));
-    document.getElementById('nav-diagnostico-parent').classList.add('active');
+    document.getElementById('nav-diagnostico-parent')?.classList.add('active');
     document.querySelectorAll('.content-view').forEach(v => v.classList.remove('active'));
-    document.getElementById('view-diagnostico').classList.add('active');
+    document.getElementById('view-diagnostico')?.classList.add('active');
 
     document.querySelectorAll('.nav-subbtn').forEach(b => b.classList.remove('active'));
     this.classList.add('active');
 
     const tabTarget = this.getAttribute('data-tab');
     document.querySelectorAll('.diag-sub-view').forEach(content => content.classList.remove('active'));
-    document.getElementById(tabTarget).classList.add('active');
+    document.getElementById(tabTarget)?.classList.add('active');
   });
 });
 
@@ -715,4 +772,5 @@ document.addEventListener('DOMContentLoaded', () => {
   loadDashboard();
   loadDiagnosticoEmbeds();
   loadDiagnosticoInsights();
+  loadPlanAccionList();
 });
