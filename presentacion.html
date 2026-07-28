@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DiME · Hoja de Ruta · Presentación Final</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="icon" href="assets/icons/favicon.ico">
+<style>
+  :root {
+    --bg-dark: #0B1120; --bg-panel: #1E293B; --bg-card: #0F172A;
+    --accent: #fcd703; --accent-glow: rgba(252,215,3,0.08);
+    --accent-dim: rgba(252,215,3,0.15);
+    --accent-half: rgba(252,215,3,0.5);
+    --text-main: #F8FAFC; --text-secondary: #CBD5E1; --text-muted: #64748B;
+    --border-light: #334155; --border-card: #1E293B;
+    --success: #22c55e; --danger: #ef4444; --warning: #f59e0b; --info: #3b82f6; --purple: #a78bfa;
+    --radius-sm: 6px; --radius-md: 10px; --radius-lg: 16px;
+    --shadow-card: 0 8px 32px rgba(0,0,0,0.4);
+  }
+  @keyframes bgPulse { 0% { background:#0B1120; } 50% { background:#201540; } 100% { background:#0B1120; } }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',sans-serif; color:var(--text-main); overflow:hidden; height:100vh; animation:bgPulse 10s ease-in-out infinite; background:#0B1120; }
+  .slides-wrapper { position:relative; width:100vw; height:100vh; }
+
+  @keyframes slideIn { 0% { opacity:0; transform:scale(0.92) translateY(24px); filter:blur(8px); } 100% { opacity:1; transform:scale(1) translateY(0); filter:blur(0); } }
+  @keyframes slideOut { 0% { opacity:1; transform:scale(1) translateY(0); filter:blur(0); } 100% { opacity:0; transform:scale(1.03) translateY(-16px); filter:blur(6px); } }
+  @keyframes waveMove { 0% { background-position:0% 50%,100% 50%,50% 100%; } 100% { background-position:100% 50%,0% 50%,50% 0%; } }
+  @keyframes drift { 0% { transform:translate(0,0) rotate(0deg); } 33% { transform:translate(20px,-20px) rotate(5deg); } 66% { transform:translate(-10px,15px) rotate(-3deg); } 100% { transform:translate(0,0) rotate(0deg); } }
+  @keyframes gridMove { 0% { transform:translate(0,0); } 100% { transform:translate(50px,50px); } }
+  @keyframes floatUp { 0% { transform:translateY(0) scale(1); opacity:0; } 20% { opacity:0.6; } 80% { opacity:0.6; } 100% { transform:translateY(-120px) scale(0.5); opacity:0; } }
+
+  .slide { width:100vw; height:100vh; padding:44px max(64px, calc((100vw - 1000px) / 2)); position:absolute; top:0; left:0; overflow: hidden auto; opacity:0; transform:scale(0.96) translateY(12px); filter:blur(4px); pointer-events:none; transition:none; z-index:1; }
+  .slide[data-index]:not([data-index="0"]):not([data-index="10"]) { display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .slide[data-index]:not([data-index="0"]):not([data-index="10"]) > * { flex-shrink:0; }
+  .slide.active { opacity:1; transform:scale(1) translateY(0); filter:blur(0); pointer-events:auto; }
+  .slide.anim-enter { animation:slideIn .45s ease-out forwards; }
+  .slide.anim-leave { animation:slideOut .3s ease-in forwards; }
+
+  .progress-top { position:fixed; top:0; left:0; z-index:50; height:3px; background:rgba(255,255,255,0.05); width:100%; }
+  .progress-top .fill { height:100%; background:linear-gradient(90deg,var(--accent),#f472b6); transition:width .4s cubic-bezier(.16,1,.3,1); border-radius:0 2px 2px 0; position:relative; }
+  .progress-top .fill::after { content:''; position:absolute; right:0; top:-2px; width:8px; height:7px; border-radius:50%; background:var(--accent); filter:blur(2px); }
+
+  .nav { position:fixed; bottom:28px; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:100; align-items:center; }
+  .nav-dot { width:6px; height:6px; border-radius:50%; background:rgba(255,255,255,0.15); cursor:pointer; transition:all .35s cubic-bezier(.16,1,.3,1); border:none; padding:0; }
+  .nav-dot.active { background:var(--accent); width:22px; border-radius:4px; box-shadow:0 0 12px rgba(252,215,3,0.25); }
+  .nav-dot:hover { background:rgba(255,255,255,0.3); }
+  .slide-number { position:fixed; top:16px; right:24px; font-size:11px; color:var(--text-muted); z-index:100; font-weight:500; font-family:'JetBrains Mono',monospace; }
+
+  h2 { font-size:28px; font-weight:800; margin-bottom:20px; letter-spacing:-0.5px; position:relative; display:inline-block; color:var(--text-main); }
+  h2::after { content:''; display:block; height:3px; background:linear-gradient(90deg,transparent,var(--accent) 15%,var(--accent) 85%,transparent); margin:6px 0 0; width:100%; border-radius:2px; }
+
+  .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+  .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
+  .grid-4 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+
+  .card { background:linear-gradient(145deg,rgba(15,23,42,0.6),rgba(15,23,42,0.3)); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.06); border-radius:var(--radius-lg); padding:22px 24px; box-shadow:var(--shadow-card),inset 0 1px 0 rgba(255,255,255,0.04); transition:transform .3s cubic-bezier(.16,1,.3,1), border-color .3s; position:relative; overflow:hidden; }
+  .card:hover { transform:translateY(-3px) scale(1.005); border-color:rgba(255,255,255,0.1); }
+  .card h4 { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+  .card p { font-size:14px; line-height:1.7; color:var(--text-secondary); }
+  .card ul { list-style:none; }
+  .card ul li { padding:4px 0; display:flex; align-items:flex-start; gap:8px; font-size:14px; line-height:1.55; color:var(--text-secondary); }
+  .card ul li::before { content:'\25B8'; font-weight:700; flex-shrink:0; }
+
+  table { width:100%; border-collapse:collapse; font-size:13px; background:linear-gradient(145deg,rgba(15,23,42,0.6),rgba(15,23,42,0.3)); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-radius:var(--radius-lg); overflow:hidden; box-shadow:var(--shadow-card); border:1px solid rgba(255,255,255,0.06); }
+  th { text-align:left; padding:14px 18px; background:rgba(30,41,59,0.4); color:var(--accent); font-weight:600; font-size:11px; text-transform:uppercase; letter-spacing:0.5px; border-bottom:1px solid rgba(255,255,255,0.06); }
+  td { padding:14px 18px; border-bottom:1px solid rgba(255,255,255,0.04); color:var(--text-secondary); line-height:1.65; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:rgba(255,255,255,0.015); }
+
+  .foda-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  .foda-card { background:linear-gradient(145deg,rgba(15,23,42,0.6),rgba(15,23,42,0.3)); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border-radius:var(--radius-lg); padding:20px 22px; box-shadow:var(--shadow-card),inset 0 1px 0 rgba(255,255,255,0.04); border-top:4px solid; position:relative; overflow:hidden; border-left:1px solid rgba(255,255,255,0.06); border-right:1px solid rgba(255,255,255,0.06); border-bottom:1px solid rgba(255,255,255,0.06); }
+  .foda-card h4 { font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+  .foda-card ul { list-style:none; }
+  .foda-card ul li { padding:5px 0; font-size:13px; line-height:1.55; color:var(--text-secondary); display:flex; align-items:flex-start; gap:8px; }
+  .foda-card ul li::before { content:'\25B8'; font-weight:700; flex-shrink:0; }
+  .f-fort { border-top-color:var(--success); } .f-fort h4 { color:var(--success); } .f-fort li::before { color:var(--success); }
+  .f-deb { border-top-color:var(--danger); } .f-deb h4 { color:var(--danger); } .f-deb li::before { color:var(--danger); }
+  .f-opor { border-top-color:var(--info); } .f-opor h4 { color:var(--info); } .f-opor li::before { color:var(--info); }
+  .f-amen { border-top-color:var(--warning); } .f-amen h4 { color:var(--warning); } .f-amen li::before { color:var(--warning); }
+
+  .tl { display:flex; flex-direction:column; gap:10px; }
+  .tl-item { display:flex; align-items:center; gap:16px; background:linear-gradient(145deg,rgba(15,23,42,0.6),rgba(15,23,42,0.3)); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); padding:14px 20px; border-radius:var(--radius-md); box-shadow:var(--shadow-card),inset 0 1px 0 rgba(255,255,255,0.04); border-left:4px solid var(--accent); border-top:1px solid rgba(255,255,255,0.06); border-right:1px solid rgba(255,255,255,0.06); border-bottom:1px solid rgba(255,255,255,0.06); transition:transform .25s cubic-bezier(.16,1,.3,1); }
+  .tl-item:hover { transform:translateX(5px); }
+  .tl-month { min-width:82px; font-weight:700; color:var(--accent); font-size:13px; font-family:'JetBrains Mono',monospace; }
+  .tl-desc { flex:1; font-size:14px; color:var(--text-secondary); line-height:1.5; }
+  .tl-desc strong { color:var(--text-main); }
+  .tl-tag { font-size:10px; color:var(--text-muted); background:rgba(255,255,255,0.03); padding:3px 10px; border-radius:999px; border:1px solid rgba(255,255,255,0.06); font-weight:600; text-transform:uppercase; letter-spacing:0.3px; }
+
+  .stat-row { display:flex; gap:10px; margin-bottom:12px; flex-wrap:wrap; }
+  .stat-pill { background:rgba(30,41,59,0.4); border:1px solid rgba(255,255,255,0.06); border-radius:var(--radius-sm); padding:6px 14px; font-size:13px; color:var(--text-secondary); display:flex; align-items:center; gap:6px; }
+  .stat-pill strong { color:var(--accent); font-size:15px; }
+  .divider { border:none; height:1px; background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06),transparent); margin:16px 0; }
+  .highlight { color:var(--accent); font-weight:700; }
+
+  .bar-track { height:6px; background:rgba(30,41,59,0.4); border-radius:999px; overflow:hidden; margin:4px 0 10px; }
+  .bar-fill { height:100%; border-radius:999px; }
+  .bar-accent { background:linear-gradient(90deg,var(--accent),#f59e0b); }
+  .bar-success { background:linear-gradient(90deg,var(--success),#34d399); }
+  .bar-info { background:linear-gradient(90deg,var(--info),#60a5fa); }
+  .bar-purple { background:linear-gradient(90deg,var(--purple),#c4b5fd); }
+
+  .close-cta { background:linear-gradient(135deg,var(--accent),#f59e0b); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; font-weight:800; letter-spacing:-0.5px; }
+  .pct-label { display:flex; justify-content:space-between; font-size:12px; color:var(--text-muted); }
+
+  .num-lg { font-size:30px; font-weight:800; color:var(--accent); line-height:1; }
+  .num-label { font-size:10px; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.5px; margin-top:2px; }
+  .icon-circle { width:36px; height:36px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; flex-shrink:0; }
+  .flex { display:flex; } .flex-between { display:flex; justify-content:space-between; align-items:center; }
+  .gap-2 { gap:8px; } .gap-3 { gap:12px; } .gap-4 { gap:16px; } .flex-wrap { flex-wrap:wrap; } .items-center { align-items:center; }
+  .mb-2 { margin-bottom:8px; } .mt-2 { margin-top:8px; } .mt-3 { margin-top:12px; }
+
+  ::-webkit-scrollbar { width:4px; }
+  ::-webkit-scrollbar-track { background:transparent; }
+  ::-webkit-scrollbar-thumb { background:var(--border-light); border-radius:999px; }
+
+  @media (max-width:768px) {
+    .slide { padding:24px 16px; }
+    h2 { font-size:22px; }
+    .grid-2, .grid-3, .grid-4, .foda-grid { grid-template-columns:1fr; }
+    .tl-item { flex-direction:column; align-items:flex-start; gap:4px; }
+    .tl-month { min-width:auto; }
+  }
+</style>
+</head>
+<body>
+
+<div id="bgGrid" style="position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;"></div>
+<div id="bgPulse" style="position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,#0a1630 0%,transparent 70%),radial-gradient(ellipse at 50% 50%,#0f1e42 0%,transparent 60%),radial-gradient(ellipse at 50% 100%,#0B1120 0%,transparent 50%),#0B1120;background-size:200% 200%,200% 200%,200% 200%;animation:waveMove 8s ease-in-out infinite alternate;"></div>
+<div id="bgParticles" style="position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden;"></div>
+<canvas id="noiseCanvas" style="position:fixed;inset:0;z-index:2;pointer-events:none;opacity:0.035;width:100vw;height:100vh;"></canvas>
+
+<div class="progress-top"><div class="fill" id="progressFill" style="width:9.09%;"></div></div>
+<div class="slide-number" id="slideNumber">01 / 11</div>
+
+<div class="slides-wrapper" style="position:relative;z-index:3;">
+
+<div class="slide portada active" data-index="0" style="padding:0;">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;padding:44px 64px;position:relative;gap:10px;">
+    <div style="position:absolute;top:-80px;right:-80px;width:300px;height:300px;border:1px solid rgba(252,215,3,0.06);border-radius:50%;"></div>
+    <div style="position:absolute;top:-40px;right:-40px;width:200px;height:200px;border:1px solid rgba(252,215,3,0.04);border-radius:50%;"></div>
+    <div style="position:absolute;bottom:-60px;left:-60px;width:250px;height:250px;border:1px solid rgba(252,215,3,0.05);border-radius:50%;"></div>
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:400px;height:400px;background:radial-gradient(circle,rgba(252,215,3,0.03) 0%,transparent 70%);border-radius:50%;pointer-events:none;"></div>
+    <div style="position:relative;">
+      <div style="position:absolute;inset:-20px;background:radial-gradient(circle,rgba(252,215,3,0.1) 0%,transparent 70%);border-radius:50%;filter:blur(20px);"></div>
+      <img src="assets/images/DiME_Logo_Inverso.png" alt="DiME" style="height:64px;width:auto;opacity:0.95;position:relative;">
+    </div>
+    <div style="font-size:13px;font-weight:600;color:var(--text-muted);letter-spacing:6px;text-transform:uppercase;margin-top:4px;">Hoja de Ruta</div>
+    <div class="bar-sep" style="margin:8px auto;"></div>
+    <p class="sub" style="margin-top:2px;">Plataforma de Gesti&oacute;n Inteligente para Microempresas</p>
+    <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-top:8px;">
+      <div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-width:110px;padding:8px 16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);border-radius:var(--radius-md);">
+        <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;font-family:'JetBrains Mono',monospace;">Presentaci&oacute;n</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text-secondary);">Final &middot; Julio 2026</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-width:110px;padding:8px 16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);border-radius:var(--radius-md);">
+        <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;font-family:'JetBrains Mono',monospace;">Duraci&oacute;n</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text-secondary);">15 minutos</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-width:110px;padding:8px 16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);border-radius:var(--radius-md);">
+        <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;font-family:'JetBrains Mono',monospace;">Formato</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text-secondary);">Presencial</div>
+      </div>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px;margin-top:8px;">
+      <div style="width:60px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06));"></div>
+      <div style="font-size:10px;color:var(--text-muted);letter-spacing:3px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;">Equipo</div>
+      <div style="width:60px;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0.06),transparent);"></div>
+    </div>
+    <p class="integrantes" style="margin-top:4px;font-size:14px;color:var(--text-secondary);font-weight:500;line-height:1.8;text-align:center;">Mariam Quintero &middot; Patricia Avenda&ntilde;o &middot; Alejandro Brice&ntilde;o</p>
+    <p class="integrantes" style="font-size:13px;font-weight:400;color:var(--text-muted);line-height:1.6;text-align:center;">Gabriela Caraballo &middot; Rolannys Sanchez &middot; Kelvys Concepcion</p>
+    <div style="margin-top:10px;display:flex;gap:16px;flex-wrap:wrap;justify-content:center;">
+      <div class="stat-pill" style="padding:4px 16px;font-size:12px;">&#x1F4F1; Android / iOS / Web</div>
+      <div class="stat-pill" style="padding:4px 16px;font-size:12px;">&#x26A1; Offline-first</div>
+      <div class="stat-pill" style="padding:4px 16px;font-size:12px;">&#x1F4B0; Desde $5/mes</div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-index="1">
+  <div style="position:absolute;top:20%;right:-40px;width:180px;height:180px;border:1px solid rgba(239,68,68,0.08);border-radius:50%;pointer-events:none;"></div>
+  <h2>Problema &amp; Soluci&oacute;n</h2>
+  <div class="grid-2">
+    <div class="card" style="border-top:4px solid var(--danger);">
+      <div class="flex gap-3 items-center mb-2">
+        <div class="icon-circle" style="background:rgba(239,68,68,0.12);color:var(--danger);">&#x26A0;</div>
+        <h4 style="color:var(--danger);margin-bottom:0;">El Problema</h4>
+      </div>
+      <p style="margin-bottom:10px;font-size:13px;">Microempresas venezolanas sin herramientas digitales accesibles ni offline-first.</p>
+      <div class="stat-row">
+        <div class="stat-pill"><strong>85%</strong> sin sistema digital</div>
+        <div class="stat-pill"><strong>+2.5M</strong> microempresas afectadas</div>
+      </div>
+      <ul>
+        <li>Soluciones cloud fallan con cortes de luz/internet (<span style="color:var(--danger);">p&eacute;rdida de datos</span>).</li>
+        <li>Precios SaaS en USD (<span class="highlight">$20+/mes</span>) inaccesibles para el mercado local.</li>
+        <li>Alternativas: papel, Excel o apps gen&eacute;ricas no adaptadas al contexto venezolano.</li>
+      </ul>
+    </div>
+    <div class="card" style="border-top:4px solid var(--success);">
+      <div class="flex gap-3 items-center mb-2">
+        <div class="icon-circle" style="background:rgba(34,197,94,0.12);color:var(--success);">&#x1F4A1;</div>
+        <h4 style="color:var(--success);margin-bottom:0;">La Soluci&oacute;n</h4>
+      </div>
+      <p style="margin-bottom:10px;font-size:13px;">DiME: plataforma <strong style="color:var(--text-main);">offline-first</strong> y multiplataforma, 100% venezolana.</p>
+      <div class="stat-row">
+        <div class="stat-pill"><strong>Offline</strong> sin p&eacute;rdida de datos</div>
+        <div class="stat-pill"><strong>$5/mes</strong> desde</div>
+      </div>
+      <ul>
+        <li>Funciona <span class="highlight">sin conexi&oacute;n</span>, sincroniza autom&aacute;ticamente al reconectar.</li>
+        <li>Precio local: <span class="highlight">$5/mes</span> vs $20+ de la competencia internacional.</li>
+        <li>Interfaz simple con curva de aprendizaje m&iacute;nima, inspirada en el flujo del papel.</li>
+      </ul>
+    </div>
+  </div>
+  <hr class="divider">
+  <div class="flex gap-3 flex-wrap" style="justify-content:center;">
+    <div class="stat-pill"><strong>&#x1F4CA; Dato clave:</strong> 3 de cada 4 microempresas han perdido ventas por fallas tecnol&oacute;gicas</div>
+    <div class="stat-pill"><strong>&#x1F3AF; Enfoque:</strong> producto dise&ntilde;ado para la realidad venezolana, no adaptado de otro mercado</div>
+  </div>
+</div>
+
+<div class="slide" data-index="2">
+  <div style="position:absolute;bottom:10%;left:-50px;width:200px;height:200px;border:1px solid rgba(252,215,3,0.05);border-radius:50%;pointer-events:none;"></div>
+  <h2>An&aacute;lisis FODA</h2>
+  <div class="foda-grid">
+    <div class="foda-card f-fort">
+      <div class="flex gap-3 items-center mb-2">
+        <div class="icon-circle" style="background:rgba(34,197,94,0.12);color:var(--success);">&#11088;</div>
+        <h4 style="margin-bottom:0;">Fortalezas</h4>
+      </div>
+      <ul>
+        <li>Tecnolog&iacute;a <strong>offline-first</strong> &uacute;nica en el mercado local.</li>
+        <li>Equipo con conocimiento profundo del contexto venezolano.</li>
+        <li>Arquitectura modular y escalable (cloud h&iacute;brido).</li>
+        <li>Costos operativos bajos permiten precio competitivo.</li>
+      </ul>
+    </div>
+    <div class="foda-card f-deb">
+      <div class="flex gap-3 items-center mb-2">
+        <div class="icon-circle" style="background:rgba(239,68,68,0.12);color:var(--danger);">&#x1F6AB;</div>
+        <h4 style="margin-bottom:0;">Debilidades</h4>
+      </div>
+      <ul>
+        <li>Marca sin reconocimiento en el mercado.</li>
+        <li>Equipo peque&ntilde;o con recursos limitados.</li>
+        <li>Dependencia de dispositivos m&oacute;viles b&aacute;sicos.</li>
+        <li>Sin historial de ventas ni casos de &eacute;xito.</li>
+      </ul>
+    </div>
+    <div class="foda-card f-opor">
+      <div class="flex gap-3 items-center mb-2">
+        <div class="icon-circle" style="background:rgba(59,130,246,0.12);color:var(--info);">&#x1F4C8;</div>
+        <h4 style="margin-bottom:0;">Oportunidades</h4>
+      </div>
+      <ul>
+        <li><strong>+2.5M</strong> de microempresas no digitalizadas en Venezuela.</li>
+        <li>Crecimiento del pago m&oacute;vil y billeteras digitales.</li>
+        <li>Incentivos <strong>LOCTI</strong> para inversi&oacute;n en startups tecnol&oacute;gicas.</li>
+        <li>Poca competencia directa con soluci&oacute;n offline-first.</li>
+      </ul>
+    </div>
+    <div class="foda-card f-amen">
+      <div class="flex gap-3 items-center mb-2">
+        <div class="icon-circle" style="background:rgba(167,139,250,0.12);color:var(--purple);">&#x26A1;</div>
+        <h4 style="margin-bottom:0;">Amenazas</h4>
+      </div>
+      <ul>
+        <li>Inestabilidad cambiaria y regulaciones econ&oacute;micas.</li>
+        <li>Competidores grandes bajan precios agresivamente.</li>
+        <li>Empeoramiento de infraestructura el&eacute;ctrica/de red.</li>
+        <li>Barreras de entrada en pagos digitales.</li>
+      </ul>
+    </div>
+  </div>
+  <hr class="divider">
+  <div class="flex gap-3 flex-wrap" style="justify-content:center;">
+    <div class="stat-pill" style="background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.2);"><strong>Estrategia:</strong> apalancar fortalezas (offline-first) para capturar oportunidad (2.5M no digitalizados)</div>
+    <div class="stat-pill" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2);"><strong>Riesgo cr&iacute;tico:</strong> competidores establecidos podr&iacute;an copiar funcionalidad offline en 12-18 meses</div>
+  </div>
+</div>
+
+<div class="slide" data-index="3">
+  <div style="position:absolute;top:15%;right:-30px;width:140px;height:140px;border:1px solid rgba(59,130,246,0.08);border-radius:50%;pointer-events:none;"></div>
+  <h2>An&aacute;lisis PESTEL</h2>
+  <p style="margin-bottom:12px;color:var(--text-muted);font-size:13px;">Dimensiones del entorno que impactan directa o indirectamente a DiME en Venezuela</p>
+  <table>
+    <tr><th style="width:11%;">Dimensi&oacute;n</th><th style="width:22%;">Factor clave</th><th>Impacto en DiME</th><th style="width:10%;">Riesgo</th></tr>
+    <tr>
+      <td style="color:var(--accent);font-weight:600;">Pol&iacute;tico</td>
+      <td>Ley de Ciencia y Tecnolog&iacute;a (LOCTI)</td>
+      <td>Acceso a fondos de inversi&oacute;n para startups tecnol&oacute;gicas registradas.</td>
+      <td><span style="color:var(--success);font-weight:600;">Bajo</span></td>
+    </tr>
+    <tr>
+      <td style="color:var(--accent);font-weight:600;">Econ&oacute;mico</td>
+      <td>Tipo de cambio y dolarizaci&oacute;n de facto</td>
+      <td>Precios en USD, cobro en bol&iacute;vares al paralelo. Ajuste semanal de tarifas.</td>
+      <td><span style="color:var(--warning);font-weight:600;">Medio</span></td>
+    </tr>
+    <tr>
+      <td style="color:var(--accent);font-weight:600;">Social</td>
+      <td>Alta penetraci&oacute;n de smartphones Android</td>
+      <td>Base instalada enorme: &gt;90% de los tel&eacute;fonos en Venezuela son Android. No requiere PC.</td>
+      <td><span style="color:var(--success);font-weight:600;">Bajo</span></td>
+    </tr>
+    <tr>
+      <td style="color:var(--accent);font-weight:600;">Tecnol&oacute;gico</td>
+      <td>Cortes el&eacute;ctricos y de internet frecuentes</td>
+      <td>Ventaja diferencial: modo <strong style="color:var(--text-main);">offline-first</strong> es cr&iacute;tico para retenci&oacute;n de clientes.</td>
+      <td><span style="color:var(--danger);font-weight:600;">Alto</span></td>
+    </tr>
+    <tr>
+      <td style="color:var(--accent);font-weight:600;">Legal</td>
+      <td>Facturaci&oacute;n electr&oacute;nica SENIAT obligatoria</td>
+      <td>Requisito legal para negocios formales. DiME debe integrar facturaci&oacute;n en v2.0.</td>
+      <td><span style="color:var(--warning);font-weight:600;">Medio</span></td>
+    </tr>
+  </table>
+  <div class="flex gap-2 flex-wrap mt-3">
+    <div class="stat-pill" style="background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.2);">&#x2705; LOCTI = oportunidad de inversi&oacute;n directa</div>
+    <div class="stat-pill" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.2);">&#x1F4B1; Ajuste cambiario semanal necesario</div>
+    <div class="stat-pill" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2);">&#x26A1; Offline-first = ventaja competitiva sostenible</div>
+    <div class="stat-pill" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.2);">&#x1F4F1; 90%+ penetraci&oacute;n Android = mercado listo</div>
+  </div>
+</div>
+
+<div class="slide" data-index="4">
+  <h2>Benchmarking</h2>
+  <table>
+    <tr><th style="width:13%;">Competidor</th><th style="width:22%;">&iquest;Qu&eacute; hace bien?</th><th style="width:22%;">&iquest;Qu&eacute; hace mal?</th><th>&iquest;Qu&eacute; aprendemos?</th></tr>
+    <tr>
+      <td>
+        <span class="badge b-dir" style="margin-bottom:4px;">Directo</span><br>
+        <span style="font-weight:700;color:var(--text-main);font-size:14px;">Alegra</span>
+        <div style="font-size:10px;color:var(--text-muted);">Facturaci&oacute;n electr&oacute;nica</div>
+      </td>
+      <td>Marca establecida, facturaci&oacute;n SENIAT integrada, contabilidad completa.</td>
+      <td>Requiere internet constante, precio <span class="highlight">$20+/mes</span>, no orientado a microempresas.</td>
+      <td>Ofrecer facturaci&oacute;n electr&oacute;nica desde el d&iacute;a 1 con precio accesible y modo offline.</td>
+    </tr>
+    <tr>
+      <td>
+        <span class="badge b-dir" style="margin-bottom:4px;">Directo</span><br>
+        <span style="font-weight:700;color:var(--text-main);font-size:14px;">Siigo</span>
+        <div style="font-size:10px;color:var(--text-muted);">Contabilidad y facturaci&oacute;n</div>
+      </td>
+      <td>Presencia regional (Colombia, Venezuela), m&oacute;dulo de n&oacute;mina.</td>
+      <td>Interfaz compleja, requiere capacitaci&oacute;n, precio <span class="highlight">$25+/mes</span>.</td>
+      <td>Curva de aprendizaje debe ser casi cero. Enfoque en simplicidad radical.</td>
+    </tr>
+    <tr>
+      <td>
+        <span class="badge b-ind" style="margin-bottom:4px;">Indirecto</span><br>
+        <span style="font-weight:700;color:var(--text-main);font-size:14px;">Cuaderno / Papel</span>
+        <div style="font-size:10px;color:var(--text-muted);">Soluci&oacute;n sustituta</div>
+      </td>
+      <td>Cero costo, sin dependencia tecnol&oacute;gica, funciona en cualquier contexto.</td>
+      <td>No escala, no genera reportes, propenso a errores humanos, sin respaldo.</td>
+      <td>Migraci&oacute;n de papel a digital debe ser trivial. Interfaz que imite el flujo f&iacute;sico.</td>
+    </tr>
+  </table>
+  <hr class="divider">
+  <div class="grid-3">
+    <div class="card" style="text-align:center;padding:14px 16px;">
+      <div class="num-lg" style="font-size:20px;">&#x1F3AF;</div>
+      <p style="font-size:12px;margin-top:6px;"><strong>Ventaja clave:</strong> offline-first + precio local accesible ($5 vs $20+)</p>
+    </div>
+    <div class="card" style="text-align:center;padding:14px 16px;">
+      <div class="num-lg" style="font-size:20px;">&#x1F4A1;</div>
+      <p style="font-size:12px;margin-top:6px;"><strong>Diferenciador:</strong> interfaz inspirada en flujo de papel, sin curva de aprendizaje</p>
+    </div>
+    <div class="card" style="text-align:center;padding:14px 16px;">
+      <div class="num-lg" style="font-size:20px;">&#x1F4C8;</div>
+      <p style="font-size:12px;margin-top:6px;"><strong>Mercado:</strong> 2.5M microempresas sin digitalizar = oc&eacute;ano azul</p>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-index="5">
+  <div style="position:absolute;bottom:5%;right:-40px;width:160px;height:160px;border:1px solid rgba(252,215,3,0.06);border-radius:50%;pointer-events:none;"></div>
+  <h2>Mercado y Clientes</h2>
+  <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:20px;">
+    <div>
+      <table>
+        <tr><th style="width:30%;">Aspecto</th><th>Respuesta</th></tr>
+        <tr><td style="color:var(--accent);font-weight:600;">Mercado objetivo</td><td>B2B &mdash; Microempresas venezolanas de 1-10 empleados.</td></tr>
+        <tr><td style="color:var(--accent);font-weight:600;">TAM (mercado total)</td><td><span class="highlight">~2.5M</span> microempresas (INE, Conindustria).</td></tr>
+        <tr><td style="color:var(--accent);font-weight:600;">SAM (mercado alcanzable)</td><td><span class="highlight">~500K</span> microempresas con smartphone y deseos de digitalizarse.</td></tr>
+        <tr><td style="color:var(--accent);font-weight:600;">SOM (mercado obtenible a&ntilde;o 1)</td><td><span class="highlight">500</span> clientes de pago + 1,000 freemium.</td></tr>
+        <tr><td style="color:var(--accent);font-weight:600;">Cobertura inicial</td><td>Caracas, Miranda, Zulia &mdash; 3 principales estados.</td></tr>
+        <tr><td style="color:var(--accent);font-weight:600;">Clientes a&ntilde;o 3</td><td><span class="highlight">5,000</span> activos</td></tr>
+        <tr><td style="color:var(--accent);font-weight:600;">Clientes a&ntilde;o 5</td><td><span class="highlight">15,000</span> activos + expansi&oacute;n Colombia</td></tr>
+      </table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="card">
+        <div class="flex gap-3 items-center mb-2">
+          <div class="icon-circle" style="background:var(--accent-glow);color:var(--accent);">&#x1F9D1;</div>
+          <h4 style="color:var(--accent);margin-bottom:0;">Perfil del cliente ideal</h4>
+        </div>
+        <div class="flex gap-2 flex-wrap mb-2">
+          <span class="stat-pill">&#x1F3E0; Due&ntilde;o de comercio</span>
+          <span class="stat-pill">&#x1F4C5; 25-50 a&ntilde;os</span>
+          <span class="stat-pill">&#x1F4F1; Smartphone Android</span>
+          <span class="stat-pill">&#x1F4B5; Ingresos &lt;$1,500/mes</span>
+        </div>
+        <ul>
+          <li>Lleva su negocio en <strong>papel o Excel</strong> porque no ha encontrado algo mejor.</li>
+          <li>Ha intentado apps pero eran caras, requieren internet o son muy complejas.</li>
+          <li>Necesita algo simple: vender, controlar inventario, saber su ganancia del d&iacute;a.</li>
+          <li>Valora la confiabilidad por encima de funciones avanzadas.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <h4 style="color:var(--accent);margin-bottom:0;">Proyecci&oacute;n de crecimiento</h4>
+        <div class="pct-label"><span>A&ntilde;o 1</span><span style="color:var(--text-main);font-weight:600;">500 clientes</span></div>
+        <div class="bar-track"><div class="bar-fill bar-accent" style="width:3%;"></div></div>
+        <div class="pct-label mt-2"><span>A&ntilde;o 3</span><span style="color:var(--text-main);font-weight:600;">5,000 clientes</span></div>
+        <div class="bar-track"><div class="bar-fill bar-info" style="width:33%;"></div></div>
+        <div class="pct-label mt-2"><span>A&ntilde;o 5</span><span style="color:var(--text-main);font-weight:600;">15,000 clientes</span></div>
+        <div class="bar-track"><div class="bar-fill bar-success" style="width:100%;"></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-index="6">
+  <h2>Estrategias de Mercado</h2>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+    <div class="grid-2" style="grid-template-columns:1fr 1fr;gap:14px;">
+      <div class="card">
+        <div class="flex gap-3 items-center mb-2">
+          <div class="icon-circle" style="background:var(--accent-glow);color:var(--accent);">&#x1F50D;</div>
+          <h4 style="color:var(--accent);margin-bottom:0;">Captaci&oacute;n</h4>
+        </div>
+        <ul>
+          <li>Roadshows en mercados municipales y ferias comerciales.</li>
+          <li>Programa de referidos: <strong>1 mes gratis</strong> por cada amigo que se suscriba.</li>
+          <li>Prueba gratuita 14 d&iacute;as sin necesidad de tarjeta de cr&eacute;dito.</li>
+          <li>Aliados estrat&eacute;gicos: C&aacute;maras de comercio y asociaciones de microempresarios.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="flex gap-3 items-center mb-2">
+          <div class="icon-circle" style="background:rgba(34,197,94,0.12);color:var(--success);">&#x1F91D;</div>
+          <h4 style="color:var(--success);margin-bottom:0;">Fidelizaci&oacute;n</h4>
+        </div>
+        <ul>
+          <li>Soporte v&iacute;a WhatsApp con respuesta <strong>&lt;30 min</strong> en horario comercial.</li>
+          <li>Reportes semanales personalizados con indicadores clave del negocio.</li>
+          <li>Descuentos por pago anual: <strong>2 meses gratis</strong>.</li>
+          <li>Comunidad de usuarios en Telegram para feedback continuo y soporte entre pares.</li>
+        </ul>
+      </div>
+    </div>
+    <div class="grid-2" style="grid-template-columns:1fr 1fr;gap:14px;">
+      <div class="card">
+        <div class="flex gap-3 items-center mb-2">
+          <div class="icon-circle" style="background:rgba(59,130,246,0.12);color:var(--info);">&#x1F4E6;</div>
+          <h4 style="color:var(--info);margin-bottom:0;">Canales de venta</h4>
+        </div>
+        <ul>
+          <li><strong>Venta directa:</strong> fuerza comercial en terreno visitando comercios.</li>
+          <li><strong>Play Store:</strong> versi&oacute;n freemium con upgrade in-app.</li>
+          <li><strong>Web:</strong> suscripci&oacute;n autogestionada con pago via pago m&oacute;vil.</li>
+          <li><strong>Distribuidores:</strong> tiendas de tecnolog&iacute;a locales como punto de activaci&oacute;n.</li>
+        </ul>
+      </div>
+      <div class="card">
+        <div class="flex gap-3 items-center mb-2">
+          <div class="icon-circle" style="background:rgba(167,139,250,0.12);color:var(--purple);">&#x1F3AF;</div>
+          <h4 style="color:var(--purple);margin-bottom:0;">Posicionamiento</h4>
+        </div>
+        <ul>
+          <li><em>"Tu negocio, siempre contigo. Sin internet, sin excusas."</em></li>
+          <li>Marca cercana, confiable, <strong>hecha en Venezuela</strong> para venezolanos.</li>
+          <li>&Eacute;nfasis en ahorro de tiempo y reducci&oacute;n de p&eacute;rdidas por errores manuales.</li>
+          <li>Storytelling centrado en el emprendedor local que lucha d&iacute;a a d&iacute;a.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <hr class="divider">
+  <div class="flex gap-2 flex-wrap" style="justify-content:center;">
+    <div class="stat-pill"><strong>KPI captaci&oacute;n:</strong> CAC &lt; $10 por cliente de pago</div>
+    <div class="stat-pill"><strong>KPI fidelizaci&oacute;n:</strong> Churn &lt; 5% mensual</div>
+    <div class="stat-pill"><strong>KPI canales:</strong> 40% de adquisiciones v&iacute;a referidos</div>
+  </div>
+</div>
+
+<div class="slide" data-index="7">
+  <div style="position:absolute;top:30%;left:-50px;width:180px;height:180px;border:1px solid rgba(252,215,3,0.05);border-radius:50%;pointer-events:none;"></div>
+  <h2>Modelo de Monetizaci&oacute;n</h2>
+  <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:20px;">
+    <div>
+      <table>
+        <tr><th style="width:30%;">Plan</th><th style="width:15%;">Precio</th><th>Funcionalidades</th></tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text-main);">Freemium</td>
+          <td><span class="highlight">Gratis</span></td>
+          <td>Inventario hasta 50 productos, ventas diarias, dashboard b&aacute;sico.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text-main);">B&aacute;sico</td>
+          <td><span class="highlight">$5/mes</span></td>
+          <td>Inventario ilimitado, ventas, control de caja, reportes semanales.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text-main);">Pro</td>
+          <td><span class="highlight">$15/mes</span></td>
+          <td>+ Facturaci&oacute;n electr&oacute;nica SENIAT, reportes avanzados, m&uacute;ltiples usuarios.</td>
+        </tr>
+        <tr>
+          <td style="font-weight:700;color:var(--text-main);">Enterprise</td>
+          <td><span class="highlight">$30/mes</span></td>
+          <td>+ Multi-sucursal, API p&uacute;blica, soporte prioritario 24/7, datos ilimitados.</td>
+        </tr>
+      </table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px;">
+      <div class="card">
+        <div class="flex gap-3 items-center mb-2">
+          <div class="icon-circle" style="background:var(--accent-glow);color:var(--accent);">&#x1F4B0;</div>
+          <h4 style="color:var(--accent);margin-bottom:0;">Proyecci&oacute;n de ingresos</h4>
+        </div>
+        <div class="pct-label"><span>A&ntilde;o 1</span><span style="color:var(--text-main);font-weight:700;">$18,000</span></div>
+        <div class="bar-track"><div class="bar-fill bar-accent" style="width:4%;"></div></div>
+        <div class="pct-label mt-2"><span>A&ntilde;o 2</span><span style="color:var(--text-main);font-weight:700;">$90,000</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:12%;background:linear-gradient(90deg,#eab308,#fcd703);"></div></div>
+        <div class="pct-label mt-2"><span>A&ntilde;o 3</span><span style="color:var(--text-main);font-weight:700;">$270,000</span></div>
+        <div class="bar-track"><div class="bar-fill bar-info" style="width:18%;"></div></div>
+        <div class="pct-label mt-2"><span>A&ntilde;o 5</span><span style="color:var(--text-main);font-weight:700;">$1,500,000</span></div>
+        <div class="bar-track"><div class="bar-fill bar-success" style="width:100%;"></div></div>
+      </div>
+      <div class="flex gap-2 flex-wrap">
+        <div class="stat-pill">&#x1F504; Churn a&ntilde;o 1: <strong>5%</strong> mensual</div>
+        <div class="stat-pill">&#x1F4C9; Mix esperado: <strong>40%</strong> freemium / <strong>60%</strong> pago</div>
+        <div class="stat-pill">&#x1F4B5; Ticket promedio: <strong>$12</strong>/mes</div>
+        <div class="stat-pill">&#x1F4C8; ARPU a&ntilde;o 1: <strong>$10</strong>/mes</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-index="8">
+  <h2>Inversi&oacute;n y Presupuesto</h2>
+  <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:20px;">
+    <div>
+      <div class="flex gap-3 items-center flex-wrap" style="margin-bottom:14px;">
+        <div><div class="num-lg">$35,000</div><div class="num-label">Monto solicitado</div></div>
+        <div style="width:1px;height:36px;background:rgba(255,255,255,0.06);"></div>
+        <div><div class="num-lg" style="font-size:22px;color:var(--success);">320%</div><div class="num-label">ROI estimado 3 a&ntilde;os</div></div>
+        <div style="width:1px;height:36px;background:rgba(255,255,255,0.06);"></div>
+        <div><div class="num-lg" style="font-size:22px;color:var(--info);">Mes 14</div><div class="num-label">Punto de equilibrio</div></div>
+        <div style="width:1px;height:36px;background:rgba(255,255,255,0.06);"></div>
+        <div><div class="num-lg" style="font-size:22px;color:var(--purple);">$1.5M</div><div class="num-label">GMV a&ntilde;o 5</div></div>
+      </div>
+      <table>
+        <tr><th>Concepto</th><th style="text-align:right;">Monto</th><th style="text-align:right;">%</th></tr>
+        <tr><td>&#x1F4BB; Desarrollo t&eacute;cnico (MVP + v2.0)</td><td style="text-align:right;font-weight:600;color:var(--text-main);">$14,000</td><td style="text-align:right;">40%</td></tr>
+        <tr><td>&#x1F4F0; Marketing y captaci&oacute;n inicial</td><td style="text-align:right;font-weight:600;color:var(--text-main);">$8,000</td><td style="text-align:right;">23%</td></tr>
+        <tr><td>&#x2601;&#xFE0F; Infraestructura cloud (2 a&ntilde;os)</td><td style="text-align:right;font-weight:600;color:var(--text-main);">$5,000</td><td style="text-align:right;">14%</td></tr>
+        <tr><td>&#x2696;&#xFE0F; Gastos legales + registro LOCTI</td><td style="text-align:right;font-weight:600;color:var(--text-main);">$3,000</td><td style="text-align:right;">9%</td></tr>
+        <tr><td>&#x1F6E1;&#xFE0F; Fondo de contingencia (25% extra)</td><td style="text-align:right;font-weight:600;color:var(--text-main);">$5,000</td><td style="text-align:right;">14%</td></tr>
+        <tr style="border-top:2px solid var(--accent);"><td style="font-weight:800;color:var(--accent);">Total</td><td style="text-align:right;font-weight:800;color:var(--accent);">$35,000</td><td style="text-align:right;font-weight:800;color:var(--accent);">100%</td></tr>
+      </table>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;">
+      <div class="card">
+        <h4 style="color:var(--accent);">Distribuci&oacute;n del presupuesto</h4>
+        <div class="pct-label"><span>&#x1F4BB; Desarrollo</span><span>40%</span></div>
+        <div class="bar-track"><div class="bar-fill bar-accent" style="width:40%;"></div></div>
+        <div class="pct-label mt-2"><span>&#x1F4F0; Marketing</span><span>23%</span></div>
+        <div class="bar-track"><div class="bar-fill bar-info" style="width:23%;"></div></div>
+        <div class="pct-label mt-2"><span>&#x2601;&#xFE0F; Infraestructura</span><span>14%</span></div>
+        <div class="bar-track"><div class="bar-fill bar-success" style="width:14%;"></div></div>
+        <div class="pct-label mt-2"><span>&#x2696;&#xFE0F; Legales</span><span>9%</span></div>
+        <div class="bar-track"><div class="bar-fill bar-purple" style="width:9%;"></div></div>
+        <div class="pct-label mt-2"><span>&#x1F6E1;&#xFE0F; Contingencia</span><span>14%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:14%;background:linear-gradient(90deg,var(--danger),#f87171);"></div></div>
+      </div>
+      <div class="card" style="text-align:center;padding:14px;">
+        <p style="font-size:12px;color:var(--text-muted);">&#x1F6A8; Fondo de contingencia cr&iacute;tico en Venezuela: cambios de d&oacute;lar, cortes el&eacute;ctricos, ajustes regulatorios.</p>
+      </div>
+      <div class="card" style="text-align:center;padding:12px;">
+        <p style="font-size:11px;color:var(--text-secondary);"><strong>Uso de fondos mes a mes:</strong> Mes 1-3: Desarrollo MVP ($10K) | Mes 4-6: Marketing + despliegue ($8K) | Mes 7-12: v2.0 + operaciones ($12K) | Contingencia: $5K</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-index="9">
+  <div style="position:absolute;top:10%;right:-30px;width:120px;height:120px;border:1px solid rgba(252,215,3,0.06);border-radius:50%;pointer-events:none;"></div>
+  <h2>Hoja de Ruta</h2>
+  <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:20px;">
+    <div class="tl">
+      <div class="tl-item">
+        <span class="tl-month">Mes 1-3</span>
+        <span class="tl-desc"><strong>Lanzamiento MVP</strong> &mdash; inventario + ventas offline + 10 clientes piloto</span>
+        <span class="tl-tag">T&eacute;cnico</span>
+      </div>
+      <div class="tl-item">
+        <span class="tl-month">Mes 4-6</span>
+        <span class="tl-desc"><strong>Captaci&oacute;n inicial</strong> &mdash; 500 clientes en Caracas, Miranda, Zulia</span>
+        <span class="tl-tag">Comercial</span>
+      </div>
+      <div class="tl-item">
+        <span class="tl-month">Mes 7-9</span>
+        <span class="tl-desc"><strong>Versi&oacute;n 2.0</strong> &mdash; facturaci&oacute;n electr&oacute;nica + reportes avanzados</span>
+        <span class="tl-tag">T&eacute;cnico</span>
+      </div>
+      <div class="tl-item">
+        <span class="tl-month">Mes 10-13</span>
+        <span class="tl-desc"><strong>Escalamiento</strong> &mdash; 2,000 clientes, optimizaci&oacute;n de infraestructura</span>
+        <span class="tl-tag">Empresa</span>
+      </div>
+      <div class="tl-item">
+        <span class="tl-month">Mes 14</span>
+        <span class="tl-desc"><strong>Punto de equilibrio</strong> operativo alcanzado</span>
+        <span class="tl-tag">Empresa</span>
+      </div>
+      <div class="tl-item">
+        <span class="tl-month">Mes 18-24</span>
+        <span class="tl-desc"><strong>Expansi&oacute;n internacional</strong> &mdash; Colombia + apps nativas iOS/Android</span>
+        <span class="tl-tag">Negocio</span>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <div class="card">
+        <div class="flex gap-3 items-center mb-2">
+          <div class="icon-circle" style="background:var(--accent-glow);color:var(--accent);">&#x1F3C6;</div>
+          <h4 style="color:var(--accent);margin-bottom:0;">Factores clave de &eacute;xito</h4>
+        </div>
+        <ul>
+          <li>MVP funcional en <strong>3 meses</strong> con funcionalidades core s&oacute;lidas.</li>
+          <li>Feedback temprano de <strong>10 clientes piloto</strong> desde el mes 1.</li>
+          <li>Iteraciones r&aacute;pidas basadas en <strong>datos de uso reales</strong> y encuestas.</li>
+          <li>Expansi&oacute;n internacional solo despu&eacute;s de <strong>validaci&oacute;n local</strong> s&oacute;lida.</li>
+        </ul>
+      </div>
+      <div class="card" style="display:flex;flex-direction:column;gap:6px;padding:14px 20px;">
+        <div class="flex-between" style="font-size:12px;color:var(--text-secondary);">
+          <span>&#x1F4C5; Inicio: Julio 2026</span>
+          <span>&#x1F3C1; Meta: Mes 14 equilibrio</span>
+          <span>&#x1F4C8; Hitos: 6 en 24 meses</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="slide" data-index="10" style="padding:0;">
+  <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;padding:44px 64px;text-align:center;position:relative;">
+    <div style="position:absolute;top:-100px;right:-100px;width:400px;height:400px;border:1px solid rgba(252,215,3,0.04);border-radius:50%;pointer-events:none;"></div>
+    <div style="position:absolute;bottom:-80px;left:-80px;width:300px;height:300px;border:1px solid rgba(252,215,3,0.03);border-radius:50%;pointer-events:none;"></div>
+    <h2 style="margin-bottom:16px;">Conclusiones</h2>
+    <div class="close-text" style="max-width:620px;">
+      <img src="assets/images/DiME_Logo_Inverso.png" alt="DiME" style="height:36px;width:auto;margin-bottom:10px;opacity:0.8;">
+      <p style="font-size:16px;">DiME es una plataforma construida <strong>para Venezuela y desde Venezuela</strong>, pensando en las condiciones reales del pa&iacute;s.</p>
+      <p style="margin-top:14px;font-weight:600;color:var(--text-main);font-size:14px;">Hemos demostrado:</p>
+      <div class="flex gap-2 flex-wrap" style="justify-content:center;margin:10px 0;">
+        <div class="stat-pill" style="background:var(--accent-glow);border-color:rgba(252,215,3,0.2);padding:6px 14px;"><strong>Problema real</strong> +2.5M afectados</div>
+        <div class="stat-pill" style="background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.2);padding:6px 14px;"><strong>Soluci&oacute;n</strong> offline-first</div>
+        <div class="stat-pill" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.2);padding:6px 14px;"><strong>Mercado</strong> 15K clientes en 5 a&ntilde;os</div>
+        <div class="stat-pill" style="background:rgba(167,139,250,0.08);border-color:rgba(167,139,250,0.2);padding:6px 14px;"><strong>ROI</strong> 320% en 3 a&ntilde;os</div>
+        <div class="stat-pill" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.2);padding:6px 14px;"><strong>Inversi&oacute;n</strong> $35,000 solicitados</div>
+      </div>
+      <p style="font-size:14px;margin-top:6px;">Proyecto <strong>viable</strong> con plan claro de mercado, ingresos y sostenibilidad financiera.</p>
+      <hr class="divider" style="max-width:300px;margin:14px auto;">
+      <p style="font-size:13px;color:var(--text-muted);"><strong>Pr&oacute;ximos pasos:</strong> Validaci&oacute;n con 10 clientes piloto &middot; Registro LOCTI &middot; Desarrollo MVP &middot; Lanzamiento Julio 2026</p>
+      <p class="close-cta" style="font-size:24px;margin-top:12px;">Tu negocio, siempre contigo.</p>
+    </div>
+  </div>
+</div>
+
+</div>
+
+
+<div class="nav" id="navDots"></div>
+
+<script>
+let cur=0;
+const s=document.querySelectorAll('.slide');
+let animating=false;
+const nav=document.getElementById('navDots');
+s.forEach((_,i)=>{const d=document.createElement('button');d.className='nav-dot';d.onclick=()=>go(i);nav.appendChild(d);});
+function u(){
+  s.forEach((e,i)=>{
+    e.classList.remove('anim-enter','anim-leave');
+    if(i===cur){ e.classList.add('active','anim-enter'); }
+    else{ e.classList.remove('active'); }
+  });
+  const dots=nav.children;
+  for(let i=0;i<dots.length;i++){dots[i].classList.toggle('active',i===cur);}
+  document.getElementById('progressFill').style.width = ((cur+1)/s.length*100)+'%';
+  document.getElementById('slideNumber').textContent = String(cur+1).padStart(2,'0')+' / 11';
+  setTimeout(()=>{ animating=false; },480);
+}
+function go(i){if(animating||i===cur)return;animating=true;cur=i;u();}
+function nextSlide(){ if(animating)return; if(cur<s.length-1){ animating=true; cur++; u(); } }
+function prevSlide(){ if(animating)return; if(cur>0){ animating=true; cur--; u(); } }
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowDown')nextSlide();if(e.key==='ArrowLeft'||e.key==='ArrowUp')prevSlide();});
+
+let touchY=0;
+document.addEventListener('touchstart',e=>{touchY=e.changedTouches[0].screenY;},{passive:true});
+document.addEventListener('touchend',e=>{const dy=touchY-e.changedTouches[0].screenY;if(Math.abs(dy)>40){dy>0?nextSlide():prevSlide();}},{passive:true});
+
+let wheelTimer=0;
+document.addEventListener('wheel',e=>{
+  const now=Date.now();
+  if(now-wheelTimer<500||animating)return;
+  wheelTimer=now;
+  if(e.deltaY>0)nextSlide();else prevSlide();
+},{passive:true});
+
+u();
+
+(function(){
+  const grid = document.getElementById('bgGrid');
+  const cvs = document.createElement('canvas');
+  cvs.width = 200; cvs.height = 200;
+  const ctx = cvs.getContext('2d');
+  for(let i=0;i<4000;i++){ const x=Math.random()*200|0, y=Math.random()*200|0; ctx.fillStyle='rgba(252,215,3,'+(Math.random()*0.03+0.01).toFixed(3)+')'; ctx.fillRect(x,y,1,1); }
+  grid.style.background = 'radial-gradient(ellipse at 50% 0%, rgba(252,215,3,0.015) 0%, transparent 60%), url('+cvs.toDataURL()+') repeat';
+  grid.style.backgroundSize = '200px 200px, 200px 200px';
+  grid.style.animation = 'gridMove 30s linear infinite';
+  const p = document.getElementById('bgParticles');
+  for(let i=0;i<25;i++){
+    const dot = document.createElement('div');
+    const size = Math.random()*2+1;
+    dot.style.cssText = 'position:absolute;width:'+size+'px;height:'+size+'px;background:rgba(252,215,3,'+(Math.random()*0.12+0.02).toFixed(3)+');border-radius:50%;left:'+(Math.random()*100)+'%;top:'+(Math.random()*100)+'%;animation:floatUp '+(Math.random()*8+6).toFixed(1)+'s linear infinite;animation-delay:'+(Math.random()*6).toFixed(1)+'s;';
+    p.appendChild(dot);
+  }
+  const nc = document.getElementById('noiseCanvas');
+  const nctx = nc.getContext('2d');
+  function drawNoise(){
+    const w=nc.offsetWidth, h=nc.offsetHeight;
+    nc.width=w; nc.height=h;
+    const id = nctx.createImageData(w,h);
+    for(let i=0;i<id.data.length;i+=4){
+      const v=Math.random()*255|0;
+      id.data[i]=v; id.data[i+1]=v; id.data[i+2]=v; id.data[i+3]=80;
+    }
+    nctx.putImageData(id,0,0);
+  }
+  drawNoise();
+  window.addEventListener('resize',drawNoise);
+  document.querySelectorAll('.slide').forEach(sl=>{
+    const circles = sl.querySelectorAll('[style*="border-radius:50%"]');
+    circles.forEach((c,i)=>{
+      c.style.animation = 'drift '+(6+i*2).toFixed(1)+'s ease-in-out infinite';
+      c.style.animationDelay = (i*1.5)+'s';
+    });
+  });
+})();
+</script>
+</body>
+</html>
