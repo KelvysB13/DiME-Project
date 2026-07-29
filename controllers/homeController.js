@@ -21,12 +21,28 @@ async function cargarPlanes() {
         const data = await res.json();
         const planes = data.planes || [];
 
+        const basicFeatures = planes[0]?.features || [];
+
         grid.innerHTML = planes
             .map((p, i) => {
-                const features = (p.features || [])
-                    .map((f) => `<li>${FEATURE_LABELS[f] || f}</li>`)
-                    .join("");
                 const isFeatured = i === planes.length - 1;
+
+                let features;
+                if (isFeatured) {
+                    const premiumOnly = (p.features || []).filter(
+                        (f) => !basicFeatures.includes(f)
+                    );
+                    features =
+                        `<li>Todo lo que contiene el plan básico</li>` +
+                        premiumOnly
+                            .map((f) => `<li>${FEATURE_LABELS[f] || f}</li>`)
+                            .join("");
+                } else {
+                    features = (p.features || [])
+                        .map((f) => `<li>${FEATURE_LABELS[f] || f}</li>`)
+                        .join("");
+                }
+
                 const badge = isFeatured
                     ? '<div class="pricing-badge">Más popular</div>'
                     : "";
