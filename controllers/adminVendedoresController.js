@@ -93,7 +93,7 @@ async function renderVendedoresSection() {
                     </tbody>
                 </table>
             </div>
-            <div id="vendedores-pagination" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 0;border-top:1px solid var(--border-light);margin-top:8px"></div>
+            <div id="vendedores-pagination" style="display:flex;align-items:center;justify-content:center;gap:8px;padding:12px 0;margin-top:8px"></div>
         </div>
     `;
 
@@ -177,9 +177,10 @@ function renderPagination(container, data) {
     const pages = data.total_pages || totalPages;
 
     if (pages <= 1) {
-        container.innerHTML = '';
+        container.style.display = 'none';
         return;
     }
+    container.style.display = 'flex';
 
     let html = '';
     html += `<button class="btn-edit" onclick="goToPage(${page - 1})" ${page <= 1 ? 'disabled style="opacity:0.4;cursor:not-allowed"' : ''}>Anterior</button>`;
@@ -193,7 +194,7 @@ function renderPagination(container, data) {
     }
 
     for (let i = start; i <= end; i++) {
-        html += `<button class="btn-edit" onclick="goToPage(${i})" ${i === page ? 'style="background-color:var(--primary);color:#fff;border-color:var(--primary)"' : ''}>${i}</button>`;
+        html += `<button class="btn-edit${i === page ? ' active-page' : ''}" onclick="goToPage(${i})">${i}</button>`;
     }
 
     if (end < pages) {

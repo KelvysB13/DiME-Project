@@ -438,7 +438,7 @@ to {
 
     width: var(--sidebar-width);
     background-color: var(--primary-text);
-    background-image: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 35%, var(--primary-light) 70%, var(--primary) 100%);
+    background-image: linear-gradient(135deg, #031c3c 0%, #011126 35%, #05234a 70%, #031c3c 100%);
     background-size: 200% 200%;
     animation: gradientShift 10s ease infinite;
     display: flex;
@@ -524,6 +524,7 @@ to {
     color: rgba(255,255,255,0.65);
     background: transparent;
     border: none;
+    border-left: 3px solid transparent;
     cursor: pointer;
     transition: all 0.15s ease;
     text-align: left;
@@ -719,6 +720,7 @@ to {
     --border: #30363D;
     --border-light: #21262D;
     --primary-text: #f1f5f9;
+    --primary: #FCD703;
     --bar-track: #21262D;
     --bar-primary: #58a6ff;
     --bar-accent: #fcd703;
