@@ -71,6 +71,7 @@ async function loadDiagnosticoEmbeds() {
     const emptyEl = document.getElementById(`diag-${key}-empty`);
     const embedEl = document.getElementById(`diag-${key}-embed`);
     const iframe = document.getElementById(`diag-${key}-iframe`);
+    const loadingEl = document.getElementById(`diag-${key}-loading`);
     const dashboardUrl = embedUrls[key];
 
     if (!emptyEl || !embedEl || !iframe) return;
@@ -85,6 +86,12 @@ async function loadDiagnosticoEmbeds() {
     iframe.src = dashboardUrl;
     emptyEl.style.display = 'none';
     embedEl.style.display = 'block';
+
+    if (loadingEl) loadingEl.classList.remove('diag-loading-hidden');
+    iframe.addEventListener('load', function onLoad() {
+      if (loadingEl) loadingEl.classList.add('diag-loading-hidden');
+      iframe.removeEventListener('load', onLoad);
+    }, { once: true });
   });
 }
 
