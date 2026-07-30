@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>DiME · Hoja de Ruta · Presentación Final</title>
+<title>DiME · Diagnóstico Integral de Métricas E-commerce</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
@@ -54,7 +54,6 @@
 
   .grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
   .grid-3 { display:grid; grid-template-columns:1fr 1fr 1fr; gap:16px; }
-  .grid-4 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
 
   .card { background:linear-gradient(145deg,rgba(15,23,42,0.6),rgba(15,23,42,0.3)); backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px); border:1px solid rgba(255,255,255,0.06); border-radius:var(--radius-lg); padding:22px 24px; box-shadow:var(--shadow-card),inset 0 1px 0 rgba(255,255,255,0.04); transition:transform .3s cubic-bezier(.16,1,.3,1), border-color .3s; position:relative; overflow:hidden; }
   .card:hover { transform:translateY(-3px) scale(1.005); border-color:rgba(255,255,255,0.1); }
@@ -119,7 +118,7 @@
   @media (max-width:768px) {
     .slide { padding:24px 16px; }
     h2 { font-size:22px; }
-    .grid-2, .grid-3, .grid-4, .foda-grid { grid-template-columns:1fr; }
+    .grid-2, .grid-3, .foda-grid { grid-template-columns:1fr; }
     .tl-item { flex-direction:column; align-items:flex-start; gap:4px; }
     .tl-month { min-width:auto; }
   }
@@ -137,6 +136,7 @@
 
 <div class="slides-wrapper" style="position:relative;z-index:3;">
 
+<!-- 1. PORTADA -->
 <div class="slide portada active" data-index="0" style="padding:0;">
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;padding:44px 64px;position:relative;gap:10px;">
     <div style="position:absolute;top:-80px;right:-80px;width:300px;height:300px;border:1px solid rgba(252,215,3,0.06);border-radius:50%;"></div>
@@ -147,512 +147,368 @@
       <div style="position:absolute;inset:-20px;background:radial-gradient(circle,rgba(252,215,3,0.1) 0%,transparent 70%);border-radius:50%;filter:blur(20px);"></div>
       <img src="assets/images/DiME_Logo_Inverso.png" alt="DiME" style="height:64px;width:auto;opacity:0.95;position:relative;">
     </div>
-    <div style="font-size:13px;font-weight:600;color:var(--text-muted);letter-spacing:6px;text-transform:uppercase;margin-top:4px;">Hoja de Ruta</div>
-    <div class="bar-sep" style="margin:8px auto;"></div>
-    <p class="sub" style="margin-top:2px;">Plataforma de Gesti&oacute;n Inteligente para Microempresas</p>
+    <div style="font-size:13px;font-weight:600;color:var(--text-muted);letter-spacing:6px;text-transform:uppercase;margin-top:4px;">Hoja de Ruta &middot; Presentación Final</div>
+    <p class="sub" style="margin-top:2px;">Diagnóstico Integral de Métricas E-commerce</p>
+    <p style="font-size:11px;color:var(--text-muted);margin-top:2px;">Startup de Inteligencia de Negocios (Business Intelligence) para vendedores de Mercado Libre</p>
     <div style="display:flex;gap:20px;flex-wrap:wrap;justify-content:center;margin-top:8px;">
       <div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-width:110px;padding:8px 16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);border-radius:var(--radius-md);">
-        <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;font-family:'JetBrains Mono',monospace;">Presentaci&oacute;n</div>
-        <div style="font-size:13px;font-weight:600;color:var(--text-secondary);">Final &middot; Julio 2026</div>
+        <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;font-family:'JetBrains Mono',monospace;">Materia</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text-secondary);">Innovación y Desarrollo</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-width:110px;padding:8px 16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);border-radius:var(--radius-md);">
-        <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;font-family:'JetBrains Mono',monospace;">Duraci&oacute;n</div>
-        <div style="font-size:13px;font-weight:600;color:var(--text-secondary);">15 minutos</div>
+        <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;font-family:'JetBrains Mono',monospace;">Profesor</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text-secondary);">Flores Damián</div>
       </div>
       <div style="display:flex;flex-direction:column;align-items:center;gap:3px;min-width:110px;padding:8px 16px;background:rgba(255,255,255,0.02);border:1px solid rgba(255,255,255,0.04);border-radius:var(--radius-md);">
-        <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;font-family:'JetBrains Mono',monospace;">Formato</div>
-        <div style="font-size:13px;font-weight:600;color:var(--text-secondary);">Presencial</div>
+        <div style="font-size:9px;color:var(--text-muted);text-transform:uppercase;letter-spacing:2px;font-family:'JetBrains Mono',monospace;">Fecha</div>
+        <div style="font-size:13px;font-weight:600;color:var(--text-secondary);">30-07-2026</div>
       </div>
     </div>
     <div style="display:flex;align-items:center;gap:16px;margin-top:8px;">
       <div style="width:60px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,0.06));"></div>
-      <div style="font-size:10px;color:var(--text-muted);letter-spacing:3px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;">Equipo</div>
+      <div style="font-size:10px;color:var(--text-muted);letter-spacing:3px;text-transform:uppercase;font-family:'JetBrains Mono',monospace;">Integrantes</div>
       <div style="width:60px;height:1px;background:linear-gradient(90deg,rgba(255,255,255,0.06),transparent);"></div>
     </div>
-    <p class="integrantes" style="margin-top:4px;font-size:14px;color:var(--text-secondary);font-weight:500;line-height:1.8;text-align:center;">Mariam Quintero &middot; Patricia Avenda&ntilde;o &middot; Alejandro Brice&ntilde;o</p>
-    <p class="integrantes" style="font-size:13px;font-weight:400;color:var(--text-muted);line-height:1.6;text-align:center;">Gabriela Caraballo &middot; Rolannys Sanchez &middot; Kelvys Concepcion</p>
-    <div style="margin-top:10px;display:flex;gap:16px;flex-wrap:wrap;justify-content:center;">
-      <div class="stat-pill" style="padding:4px 16px;font-size:12px;">&#x1F4F1; Android / iOS / Web</div>
-      <div class="stat-pill" style="padding:4px 16px;font-size:12px;">&#x26A1; Offline-first</div>
-      <div class="stat-pill" style="padding:4px 16px;font-size:12px;">&#x1F4B0; Desde $5/mes</div>
-    </div>
+    <p style="margin-top:4px;font-size:14px;color:var(--text-secondary);font-weight:500;line-height:1.8;text-align:center;">Kelvys Concepcion &middot; Mariam Quintero &middot; Avendaño Licett</p>
+    <p style="font-size:13px;font-weight:400;color:var(--text-muted);line-height:1.6;text-align:center;">Gabriela Caraballo &middot; Rolannys Sanchez &middot; Alejandro Briceño</p>
   </div>
 </div>
 
+<!-- 2. EL PROBLEMA Y LA SOLUCIÓN -->
 <div class="slide" data-index="1">
   <div style="position:absolute;top:20%;right:-40px;width:180px;height:180px;border:1px solid rgba(239,68,68,0.08);border-radius:50%;pointer-events:none;"></div>
-  <h2>Problema &amp; Soluci&oacute;n</h2>
+  <h2>El Problema &amp; La Solución</h2>
   <div class="grid-2">
     <div class="card" style="border-top:4px solid var(--danger);">
       <div class="flex gap-3 items-center mb-2">
         <div class="icon-circle" style="background:rgba(239,68,68,0.12);color:var(--danger);">&#x26A0;</div>
-        <h4 style="color:var(--danger);margin-bottom:0;">El Problema</h4>
+        <h4 style="color:var(--danger);margin-bottom:0;">Problema</h4>
       </div>
-      <p style="margin-bottom:10px;font-size:13px;">Microempresas venezolanas sin herramientas digitales accesibles ni offline-first.</p>
-      <div class="stat-row">
-        <div class="stat-pill"><strong>85%</strong> sin sistema digital</div>
-        <div class="stat-pill"><strong>+2.5M</strong> microempresas afectadas</div>
-      </div>
+      <p style="margin-bottom:10px;font-size:13px;">Miles de vendedores de Mercado Libre reciben datos sobre ventas, reputación, logística y atención al cliente, pero <strong style="color:var(--text-main);">no saben interpretarlos</strong>.</p>
       <ul>
-        <li>Soluciones cloud fallan con cortes de luz/internet (<span style="color:var(--danger);">p&eacute;rdida de datos</span>).</li>
-        <li>Precios SaaS en USD (<span class="highlight">$20+/mes</span>) inaccesibles para el mercado local.</li>
-        <li>Alternativas: papel, Excel o apps gen&eacute;ricas no adaptadas al contexto venezolano.</li>
+        <li>Toman decisiones por <span class="highlight">intuición</span>.</li>
+        <li><span style="color:var(--danger);">Pierden ventas</span> por no detectar oportunidades.</li>
+        <li><span style="color:var(--danger);">Disminuye su reputación</span> sin saber por qué.</li>
+        <li>Desaprovechan <span class="highlight">oportunidades de crecimiento</span>.</li>
       </ul>
     </div>
     <div class="card" style="border-top:4px solid var(--success);">
       <div class="flex gap-3 items-center mb-2">
         <div class="icon-circle" style="background:rgba(34,197,94,0.12);color:var(--success);">&#x1F4A1;</div>
-        <h4 style="color:var(--success);margin-bottom:0;">La Soluci&oacute;n</h4>
+        <h4 style="color:var(--success);margin-bottom:0;">Solución</h4>
       </div>
-      <p style="margin-bottom:10px;font-size:13px;">DiME: plataforma <strong style="color:var(--text-main);">offline-first</strong> y multiplataforma, 100% venezolana.</p>
-      <div class="stat-row">
-        <div class="stat-pill"><strong>Offline</strong> sin p&eacute;rdida de datos</div>
-        <div class="stat-pill"><strong>$5/mes</strong> desde</div>
-      </div>
+      <p style="margin-bottom:10px;font-size:13px;">Software <strong style="color:var(--text-main);">SaaS</strong> que se conecta mediante la API oficial de Mercado Libre y transforma datos complejos en:</p>
       <ul>
-        <li>Funciona <span class="highlight">sin conexi&oacute;n</span>, sincroniza autom&aacute;ticamente al reconectar.</li>
-        <li>Precio local: <span class="highlight">$5/mes</span> vs $20+ de la competencia internacional.</li>
-        <li>Interfaz simple con curva de aprendizaje m&iacute;nima, inspirada en el flujo del papel.</li>
+        <li>Indicadores claros (<span class="highlight">KPIs</span>).</li>
+        <li><span class="highlight">Diagnóstico automático</span> del negocio.</li>
+        <li>Recomendaciones <span class="highlight">personalizadas</span>.</li>
+        <li>Plan de acción <span class="highlight">paso a paso</span>.</li>
       </ul>
     </div>
   </div>
   <hr class="divider">
-  <div class="flex gap-3 flex-wrap" style="justify-content:center;">
-    <div class="stat-pill"><strong>&#x1F4CA; Dato clave:</strong> 3 de cada 4 microempresas han perdido ventas por fallas tecnol&oacute;gicas</div>
-    <div class="stat-pill"><strong>&#x1F3AF; Enfoque:</strong> producto dise&ntilde;ado para la realidad venezolana, no adaptado de otro mercado</div>
+  <div class="card" style="text-align:center;padding:14px 20px;max-width:700px;margin:0 auto;">
+    <p style="font-style:italic;color:var(--text-secondary);">"DiME analiza automáticamente la información de una cuenta de Mercado Libre, detecta qué afecta el rendimiento del vendedor y genera un plan de acción para ayudarlo a vender más, mejorar su reputación y hacer crecer su negocio."</p>
+  </div>
+
+</div>
+
+<!-- 3. FODA -->
+<div class="slide" data-index="2" style="padding-top:30px;">
+  <div style="position:absolute;top:10%;left:-50px;width:200px;height:200px;border:1px solid rgba(252,215,3,0.05);border-radius:50%;pointer-events:none;"></div>
+  <p style="font-size:11px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;letter-spacing:3px;margin-bottom:6px;">ANALISIS FODA</p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;width:100%;">
+    <div class="foda-card f-fort" style="grid-column:1;">
+      <h4 style="display:flex;align-items:center;gap:8px;font-size:12px;">🟩 FORTALEZAS</h4>
+      <hr style="border:none;height:1px;background:linear-gradient(90deg,var(--success),transparent);margin:6px 0 10px;">
+      <ul style="font-size:12px;">
+        <li><strong>Conocimiento profundo del contexto local</strong><br><span style="color:var(--text-muted);font-size:11px;">Dolarización, apagones, inflación, etc.</span></li>
+        <li><strong>Automatización de diagnósticos</strong><br><span style="color:var(--text-muted);font-size:11px;">Procesos optimizados y eficientes.</span></li>
+        <li><strong>Estructura de monetización en USD</strong><br><span style="color:var(--text-muted);font-size:11px;">Mitiga el riesgo de exposición a la devaluación y la volatilidad económica.</span></li>
+      </ul>
+    </div>
+    <div class="foda-card f-opor" style="grid-column:2;">
+      <h4 style="display:flex;align-items:center;gap:8px;font-size:12px;">🟦 OPORTUNIDADES</h4>
+      <hr style="border:none;height:1px;background:linear-gradient(90deg,var(--info),transparent);margin:6px 0 10px;">
+      <ul style="font-size:12px;">
+        <li><strong>Auge del sector E-commerce</strong><br><span style="color:var(--text-muted);font-size:11px;">Aprovechamiento del crecimiento y la adopción acelerada en el mercado emergente venezolano.</span></li>
+        <li><strong>Nicho comercial desatendido</strong><br><span style="color:var(--text-muted);font-size:11px;">Escasa competencia local en plataformas de BI y analítica para vendedores de Mercado Libre.</span></li>
+        <li><strong>Proyección internacional</strong><br><span style="color:var(--text-muted);font-size:11px;">Viabilidad técnica para rápida penetración en Colombia, Perú y Argentina con ajustes mínimos.</span></li>
+      </ul>
+    </div>
+    <div class="foda-card f-deb" style="grid-column:1;">
+      <h4 style="display:flex;align-items:center;gap:8px;font-size:12px;">🟧 DEBILIDADES</h4>
+      <hr style="border:none;height:1px;background:linear-gradient(90deg,var(--danger),transparent);margin:6px 0 10px;">
+      <ul style="font-size:12px;">
+        <li><strong>Fase del proyecto</strong><br><span style="color:var(--text-muted);font-size:11px;">Actualmente en etapa de desarrollo.</span></li>
+        <li><strong>Restricciones de la API</strong><br><span style="color:var(--text-muted);font-size:11px;">Limitaciones de conectividad y geobloqueo regional en Mercado Libre.</span></li>
+        <li><strong>Validación de mercado</strong><br><span style="color:var(--text-muted);font-size:11px;">Aún sin pruebas directas con usuarios reales.</span></li>
+        <li><strong>Capacidad operativa</strong><br><span style="color:var(--text-muted);font-size:11px;">Equipo compacto multidisciplinario con dedicación a tiempo parcial.</span></li>
+      </ul>
+    </div>
+    <div class="foda-card f-amen" style="grid-column:2;">
+      <h4 style="display:flex;align-items:center;gap:8px;font-size:12px;">🟥 AMENAZAS</h4>
+      <hr style="border:none;height:1px;background:linear-gradient(90deg,var(--warning),transparent);margin:6px 0 10px;">
+      <ul style="font-size:12px;">
+        <li><strong>Competencia internacional</strong><br><span style="color:var(--text-muted);font-size:11px;">Actores externos con mayor tracción y presupuesto.</span></li>
+        <li><strong>Dependencia de terceros</strong><br><span style="color:var(--text-muted);font-size:11px;">Vulnerabilidad operativa ante cambios en políticas, costos o estructura de la API de Mercado Libre.</span></li>
+      </ul>
+    </div>
   </div>
 </div>
 
-<div class="slide" data-index="2">
-  <div style="position:absolute;bottom:10%;left:-50px;width:200px;height:200px;border:1px solid rgba(252,215,3,0.05);border-radius:50%;pointer-events:none;"></div>
-  <h2>An&aacute;lisis FODA</h2>
-  <div class="foda-grid">
-    <div class="foda-card f-fort">
-      <div class="flex gap-3 items-center mb-2">
-        <div class="icon-circle" style="background:rgba(34,197,94,0.12);color:var(--success);">&#11088;</div>
-        <h4 style="margin-bottom:0;">Fortalezas</h4>
-      </div>
-      <ul>
-        <li>Tecnolog&iacute;a <strong>offline-first</strong> &uacute;nica en el mercado local.</li>
-        <li>Equipo con conocimiento profundo del contexto venezolano.</li>
-        <li>Arquitectura modular y escalable (cloud h&iacute;brido).</li>
-        <li>Costos operativos bajos permiten precio competitivo.</li>
-      </ul>
-    </div>
-    <div class="foda-card f-deb">
-      <div class="flex gap-3 items-center mb-2">
-        <div class="icon-circle" style="background:rgba(239,68,68,0.12);color:var(--danger);">&#x1F6AB;</div>
-        <h4 style="margin-bottom:0;">Debilidades</h4>
-      </div>
-      <ul>
-        <li>Marca sin reconocimiento en el mercado.</li>
-        <li>Equipo peque&ntilde;o con recursos limitados.</li>
-        <li>Dependencia de dispositivos m&oacute;viles b&aacute;sicos.</li>
-        <li>Sin historial de ventas ni casos de &eacute;xito.</li>
-      </ul>
-    </div>
-    <div class="foda-card f-opor">
-      <div class="flex gap-3 items-center mb-2">
-        <div class="icon-circle" style="background:rgba(59,130,246,0.12);color:var(--info);">&#x1F4C8;</div>
-        <h4 style="margin-bottom:0;">Oportunidades</h4>
-      </div>
-      <ul>
-        <li><strong>+2.5M</strong> de microempresas no digitalizadas en Venezuela.</li>
-        <li>Crecimiento del pago m&oacute;vil y billeteras digitales.</li>
-        <li>Incentivos <strong>LOCTI</strong> para inversi&oacute;n en startups tecnol&oacute;gicas.</li>
-        <li>Poca competencia directa con soluci&oacute;n offline-first.</li>
-      </ul>
-    </div>
-    <div class="foda-card f-amen">
-      <div class="flex gap-3 items-center mb-2">
-        <div class="icon-circle" style="background:rgba(167,139,250,0.12);color:var(--purple);">&#x26A1;</div>
-        <h4 style="margin-bottom:0;">Amenazas</h4>
-      </div>
-      <ul>
-        <li>Inestabilidad cambiaria y regulaciones econ&oacute;micas.</li>
-        <li>Competidores grandes bajan precios agresivamente.</li>
-        <li>Empeoramiento de infraestructura el&eacute;ctrica/de red.</li>
-        <li>Barreras de entrada en pagos digitales.</li>
-      </ul>
-    </div>
-  </div>
-  <hr class="divider">
-  <div class="flex gap-3 flex-wrap" style="justify-content:center;">
-    <div class="stat-pill" style="background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.2);"><strong>Estrategia:</strong> apalancar fortalezas (offline-first) para capturar oportunidad (2.5M no digitalizados)</div>
-    <div class="stat-pill" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2);"><strong>Riesgo cr&iacute;tico:</strong> competidores establecidos podr&iacute;an copiar funcionalidad offline en 12-18 meses</div>
-  </div>
-</div>
-
-<div class="slide" data-index="3">
-  <div style="position:absolute;top:15%;right:-30px;width:140px;height:140px;border:1px solid rgba(59,130,246,0.08);border-radius:50%;pointer-events:none;"></div>
-  <h2>An&aacute;lisis PESTEL</h2>
-  <p style="margin-bottom:12px;color:var(--text-muted);font-size:13px;">Dimensiones del entorno que impactan directa o indirectamente a DiME en Venezuela</p>
-  <table>
-    <tr><th style="width:11%;">Dimensi&oacute;n</th><th style="width:22%;">Factor clave</th><th>Impacto en DiME</th><th style="width:10%;">Riesgo</th></tr>
+<!-- 4. PESTEL -->
+<div class="slide" data-index="3" style="padding-top:30px;">
+  <div style="position:absolute;top:30%;left:-50px;width:180px;height:180px;border:1px solid rgba(252,215,3,0.05);border-radius:50%;pointer-events:none;"></div>
+  <h2 style="font-size:24px;">Análisis PESTEL</h2>
+  <p style="margin-bottom:10px;color:var(--text-muted);font-size:12px;">Dimensiones críticas para DiME (Operación Venezuela)</p>
+  <table style="font-size:12px;">
+    <tr><th style="width:10%;">Dimensión</th><th style="width:18%;">Factor clave</th><th>Impacto en DiME</th></tr>
     <tr>
-      <td style="color:var(--accent);font-weight:600;">Pol&iacute;tico</td>
-      <td>Ley de Ciencia y Tecnolog&iacute;a (LOCTI)</td>
-      <td>Acceso a fondos de inversi&oacute;n para startups tecnol&oacute;gicas registradas.</td>
-      <td><span style="color:var(--success);font-weight:600;">Bajo</span></td>
+      <td style="color:var(--accent);font-weight:600;vertical-align:top;">Económico</td>
+      <td style="vertical-align:top;">Diferencial de costos vs. Barreras cambiarias</td>
+      <td style="font-size:11px;line-height:1.5;">Representa la mayor ventaja competitiva del proyecto, pero a su vez un gran desafío logístico. Mantener al equipo y las operaciones técnicas en Venezuela permite a DiME alcanzar márgenes de rentabilidad muy superiores. Sin embargo, exige una estructura financiera internacional sólida para protegerse de la inflación local y cubrir los costos de infraestructura tecnológica en el exterior.</td>
     </tr>
     <tr>
-      <td style="color:var(--accent);font-weight:600;">Econ&oacute;mico</td>
-      <td>Tipo de cambio y dolarizaci&oacute;n de facto</td>
-      <td>Precios en USD, cobro en bol&iacute;vares al paralelo. Ajuste semanal de tarifas.</td>
-      <td><span style="color:var(--warning);font-weight:600;">Medio</span></td>
+      <td style="color:var(--accent);font-weight:600;vertical-align:top;">Tecnológico</td>
+      <td style="vertical-align:top;">Vulnerabilidad de infraestructura básica (Luz e Internet)</td>
+      <td style="font-size:11px;line-height:1.5;">Afecta la rutina diaria del equipo de desarrollo y soporte. Para mitigarlo, el proyecto debe operar con arquitectura 100% en la nube, cultura de trabajo asíncrono y planes de contingencia (UPS, internet satelital), garantizando servicio continuo a los clientes sin que perciban las caídas locales.</td>
     </tr>
     <tr>
-      <td style="color:var(--accent);font-weight:600;">Social</td>
-      <td>Alta penetraci&oacute;n de smartphones Android</td>
-      <td>Base instalada enorme: &gt;90% de los tel&eacute;fonos en Venezuela son Android. No requiere PC.</td>
-      <td><span style="color:var(--success);font-weight:600;">Bajo</span></td>
-    </tr>
-    <tr>
-      <td style="color:var(--accent);font-weight:600;">Tecnol&oacute;gico</td>
-      <td>Cortes el&eacute;ctricos y de internet frecuentes</td>
-      <td>Ventaja diferencial: modo <strong style="color:var(--text-main);">offline-first</strong> es cr&iacute;tico para retenci&oacute;n de clientes.</td>
-      <td><span style="color:var(--danger);font-weight:600;">Alto</span></td>
-    </tr>
-    <tr>
-      <td style="color:var(--accent);font-weight:600;">Legal</td>
-      <td>Facturaci&oacute;n electr&oacute;nica SENIAT obligatoria</td>
-      <td>Requisito legal para negocios formales. DiME debe integrar facturaci&oacute;n en v2.0.</td>
-      <td><span style="color:var(--warning);font-weight:600;">Medio</span></td>
+      <td style="color:var(--accent);font-weight:600;vertical-align:top;">Político</td>
+      <td style="vertical-align:top;">Sanciones y aislamiento financiero internacional</td>
+      <td style="font-size:11px;line-height:1.5;">Constituye una barrera de fricción importante para el modelo de negocio, ya que dificulta la conexión directa entre los ingresos generados en el exterior y el pago de las operaciones diarias.</td>
     </tr>
   </table>
-  <div class="flex gap-2 flex-wrap mt-3">
-    <div class="stat-pill" style="background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.2);">&#x2705; LOCTI = oportunidad de inversi&oacute;n directa</div>
-    <div class="stat-pill" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.2);">&#x1F4B1; Ajuste cambiario semanal necesario</div>
-    <div class="stat-pill" style="background:rgba(239,68,68,0.08);border-color:rgba(239,68,68,0.2);">&#x26A1; Offline-first = ventaja competitiva sostenible</div>
-    <div class="stat-pill" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.2);">&#x1F4F1; 90%+ penetraci&oacute;n Android = mercado listo</div>
-  </div>
 </div>
 
-<div class="slide" data-index="4">
-  <h2>Benchmarking</h2>
-  <table>
-    <tr><th style="width:13%;">Competidor</th><th style="width:22%;">&iquest;Qu&eacute; hace bien?</th><th style="width:22%;">&iquest;Qu&eacute; hace mal?</th><th>&iquest;Qu&eacute; aprendemos?</th></tr>
+<!-- 5. BENCHMARKING -->
+<div class="slide" data-index="4" style="padding-top:30px;">
+  <h2 style="font-size:24px;">Benchmarking</h2>
+  <p style="margin-bottom:10px;color:var(--text-muted);font-size:12px;">Ecosistema de Soluciones E-commerce</p>
+  <table style="font-size:11px;">
+    <tr><th style="width:12%;">Competidor</th><th style="width:20%;">¿Qué hace bien?</th><th style="width:20%;">¿Qué hace mal?</th><th>¿Qué aprendemos de él?</th></tr>
     <tr>
-      <td>
-        <span class="badge b-dir" style="margin-bottom:4px;">Directo</span><br>
-        <span style="font-weight:700;color:var(--text-main);font-size:14px;">Alegra</span>
-        <div style="font-size:10px;color:var(--text-muted);">Facturaci&oacute;n electr&oacute;nica</div>
-      </td>
-      <td>Marca establecida, facturaci&oacute;n SENIAT integrada, contabilidad completa.</td>
-      <td>Requiere internet constante, precio <span class="highlight">$20+/mes</span>, no orientado a microempresas.</td>
-      <td>Ofrecer facturaci&oacute;n electr&oacute;nica desde el d&iacute;a 1 con precio accesible y modo offline.</td>
+      <td style="vertical-align:top;"><span style="font-weight:700;color:var(--text-main);font-size:12px;">Panel Nativo ML</span><br><span style="font-size:9px;color:var(--text-muted);">Indirecto</span></td>
+      <td style="font-size:11px;line-height:1.5;vertical-align:top;">Gratuito, oficial, datos exactos en tiempo real sobre métricas clave.</td>
+      <td style="font-size:11px;line-height:1.5;vertical-align:top;">Información saturada y compleja. Dice qué pasa, no por qué ni cómo solucionarlo.</td>
+      <td style="font-size:11px;line-height:1.5;vertical-align:top;"><strong style="color:var(--success);">Ellos:</strong> Fuente oficial, dueños del dato puro.<br><strong style="color:var(--accent);">DiME:</strong> Traductor inteligente que convierte data bruta en hoja de ruta estratégica accionable.</td>
     </tr>
     <tr>
-      <td>
-        <span class="badge b-dir" style="margin-bottom:4px;">Directo</span><br>
-        <span style="font-weight:700;color:var(--text-main);font-size:14px;">Siigo</span>
-        <div style="font-size:10px;color:var(--text-muted);">Contabilidad y facturaci&oacute;n</div>
-      </td>
-      <td>Presencia regional (Colombia, Venezuela), m&oacute;dulo de n&oacute;mina.</td>
-      <td>Interfaz compleja, requiere capacitaci&oacute;n, precio <span class="highlight">$25+/mes</span>.</td>
-      <td>Curva de aprendizaje debe ser casi cero. Enfoque en simplicidad radical.</td>
+      <td style="vertical-align:top;"><span style="font-weight:700;color:var(--text-main);font-size:12px;">Consultores E-commerce</span><br><span style="font-size:9px;color:var(--text-muted);">Directo</span></td>
+      <td style="font-size:11px;line-height:1.5;vertical-align:top;">Diagnóstico personalizado, trato humano, entienden el nicho del vendedor.</td>
+      <td style="font-size:11px;line-height:1.5;vertical-align:top;">Procesos manuales, lentos, costosos, difíciles de escalar, alto margen de error humano.</td>
+      <td style="font-size:11px;line-height:1.5;vertical-align:top;"><strong style="color:var(--success);">Ellos:</strong> Personalización y empatía uno a uno.<br><strong style="color:var(--accent);">DiME:</strong> Automatiza ese cerebro analítico con la misma precisión, instantáneo y a fracción del costo.</td>
     </tr>
     <tr>
-      <td>
-        <span class="badge b-ind" style="margin-bottom:4px;">Indirecto</span><br>
-        <span style="font-weight:700;color:var(--text-main);font-size:14px;">Cuaderno / Papel</span>
-        <div style="font-size:10px;color:var(--text-muted);">Soluci&oacute;n sustituta</div>
-      </td>
-      <td>Cero costo, sin dependencia tecnol&oacute;gica, funciona en cualquier contexto.</td>
-      <td>No escala, no genera reportes, propenso a errores humanos, sin respaldo.</td>
-      <td>Migraci&oacute;n de papel a digital debe ser trivial. Interfaz que imite el flujo f&iacute;sico.</td>
+      <td style="vertical-align:top;"><span style="font-weight:700;color:var(--text-main);font-size:12px;">Nubimetrics / Real Trends</span><br><span style="font-size:9px;color:var(--text-muted);">Directo</span></td>
+      <td style="font-size:11px;line-height:1.5;vertical-align:top;">Plataformas SaaS consolidadas, excelentes para investigación de competencia y tendencias.</td>
+      <td style="font-size:11px;line-height:1.5;vertical-align:top;">Tableros estáticos. Muestran síntomas pero no diagnostican la raíz del problema interno (logística, CX, catálogo).</td>
+      <td style="font-size:11px;line-height:1.5;vertical-align:top;"><strong style="color:var(--success);">Ellos:</strong> Líderes en mapeo del mercado externo.<br><strong style="color:var(--accent);">DiME:</strong> Se enfoca en la salud operativa interna, auditando CX, finanzas y logística.</td>
     </tr>
   </table>
-  <hr class="divider">
-  <div class="grid-3">
-    <div class="card" style="text-align:center;padding:14px 16px;">
-      <div class="num-lg" style="font-size:20px;">&#x1F3AF;</div>
-      <p style="font-size:12px;margin-top:6px;"><strong>Ventaja clave:</strong> offline-first + precio local accesible ($5 vs $20+)</p>
-    </div>
-    <div class="card" style="text-align:center;padding:14px 16px;">
-      <div class="num-lg" style="font-size:20px;">&#x1F4A1;</div>
-      <p style="font-size:12px;margin-top:6px;"><strong>Diferenciador:</strong> interfaz inspirada en flujo de papel, sin curva de aprendizaje</p>
-    </div>
-    <div class="card" style="text-align:center;padding:14px 16px;">
-      <div class="num-lg" style="font-size:20px;">&#x1F4C8;</div>
-      <p style="font-size:12px;margin-top:6px;"><strong>Mercado:</strong> 2.5M microempresas sin digitalizar = oc&eacute;ano azul</p>
-    </div>
-  </div>
 </div>
 
+<!-- 6. MERCADO Y CLIENTES -->
 <div class="slide" data-index="5">
   <div style="position:absolute;bottom:5%;right:-40px;width:160px;height:160px;border:1px solid rgba(252,215,3,0.06);border-radius:50%;pointer-events:none;"></div>
-  <h2>Mercado y Clientes</h2>
+  <h2 style="font-size:24px;">Mercado y Clientes</h2>
   <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:20px;">
     <div>
       <table>
-        <tr><th style="width:30%;">Aspecto</th><th>Respuesta</th></tr>
-        <tr><td style="color:var(--accent);font-weight:600;">Mercado objetivo</td><td>B2B &mdash; Microempresas venezolanas de 1-10 empleados.</td></tr>
-        <tr><td style="color:var(--accent);font-weight:600;">TAM (mercado total)</td><td><span class="highlight">~2.5M</span> microempresas (INE, Conindustria).</td></tr>
-        <tr><td style="color:var(--accent);font-weight:600;">SAM (mercado alcanzable)</td><td><span class="highlight">~500K</span> microempresas con smartphone y deseos de digitalizarse.</td></tr>
-        <tr><td style="color:var(--accent);font-weight:600;">SOM (mercado obtenible a&ntilde;o 1)</td><td><span class="highlight">500</span> clientes de pago + 1,000 freemium.</td></tr>
-        <tr><td style="color:var(--accent);font-weight:600;">Cobertura inicial</td><td>Caracas, Miranda, Zulia &mdash; 3 principales estados.</td></tr>
-        <tr><td style="color:var(--accent);font-weight:600;">Clientes a&ntilde;o 3</td><td><span class="highlight">5,000</span> activos</td></tr>
-        <tr><td style="color:var(--accent);font-weight:600;">Clientes a&ntilde;o 5</td><td><span class="highlight">15,000</span> activos + expansi&oacute;n Colombia</td></tr>
+        <tr><th style="width:35%;">Aspecto</th><th>Respuesta</th></tr>
+        <tr><td style="color:var(--accent);font-weight:600;">Mercado objetivo</td><td>B2B &mdash; Vendedores profesionales y PYMES de Mercado Libre.</td></tr>
+        <tr><td style="color:var(--accent);font-weight:600;">Alcance geográfico</td><td>Chile y Venezuela.</td></tr>
+        <tr><td style="color:var(--accent);font-weight:600;">Tamaño del mercado</td><td><span class="highlight">~95.000</span> vendedores entre ambos países.</td></tr>
+        <tr><td style="color:var(--accent);font-weight:600;">Clientes estimados Año 1</td><td><span class="highlight">20&ndash;50</span> clientes.</td></tr>
+        <tr><td style="color:var(--accent);font-weight:600;">Clientes estimados Año 5</td><td><span class="highlight">600&ndash;1.000</span> clientes.</td></tr>
       </table>
     </div>
     <div style="display:flex;flex-direction:column;gap:14px;">
       <div class="card">
         <div class="flex gap-3 items-center mb-2">
           <div class="icon-circle" style="background:var(--accent-glow);color:var(--accent);">&#x1F9D1;</div>
-          <h4 style="color:var(--accent);margin-bottom:0;">Perfil del cliente ideal</h4>
+          <h4 style="color:var(--accent);margin-bottom:0;">Cliente ideal</h4>
         </div>
-        <div class="flex gap-2 flex-wrap mb-2">
-          <span class="stat-pill">&#x1F3E0; Due&ntilde;o de comercio</span>
-          <span class="stat-pill">&#x1F4C5; 25-50 a&ntilde;os</span>
-          <span class="stat-pill">&#x1F4F1; Smartphone Android</span>
-          <span class="stat-pill">&#x1F4B5; Ingresos &lt;$1,500/mes</span>
-        </div>
+        <p style="font-size:13px;">Empresas o emprendedores que ya venden en Mercado Libre y desean optimizar ventas, reputación y logística mediante datos.</p>
         <ul>
-          <li>Lleva su negocio en <strong>papel o Excel</strong> porque no ha encontrado algo mejor.</li>
-          <li>Ha intentado apps pero eran caras, requieren internet o son muy complejas.</li>
-          <li>Necesita algo simple: vender, controlar inventario, saber su ganancia del d&iacute;a.</li>
-          <li>Valora la confiabilidad por encima de funciones avanzadas.</li>
+          <li>Ya vende por Mercado Libre.</li>
+          <li>Necesita saber <strong>qué mejorar</strong> para crecer.</li>
+          <li>Quiere hacerlo <strong>sin pagar consultores externos</strong>.</li>
         </ul>
-      </div>
-      <div class="card">
-        <h4 style="color:var(--accent);margin-bottom:0;">Proyecci&oacute;n de crecimiento</h4>
-        <div class="pct-label"><span>A&ntilde;o 1</span><span style="color:var(--text-main);font-weight:600;">500 clientes</span></div>
-        <div class="bar-track"><div class="bar-fill bar-accent" style="width:3%;"></div></div>
-        <div class="pct-label mt-2"><span>A&ntilde;o 3</span><span style="color:var(--text-main);font-weight:600;">5,000 clientes</span></div>
-        <div class="bar-track"><div class="bar-fill bar-info" style="width:33%;"></div></div>
-        <div class="pct-label mt-2"><span>A&ntilde;o 5</span><span style="color:var(--text-main);font-weight:600;">15,000 clientes</span></div>
-        <div class="bar-track"><div class="bar-fill bar-success" style="width:100%;"></div></div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- 7. ESTRATEGIAS DE MERCADO -->
 <div class="slide" data-index="6">
-  <h2>Estrategias de Mercado</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
-    <div class="grid-2" style="grid-template-columns:1fr 1fr;gap:14px;">
-      <div class="card">
-        <div class="flex gap-3 items-center mb-2">
-          <div class="icon-circle" style="background:var(--accent-glow);color:var(--accent);">&#x1F50D;</div>
-          <h4 style="color:var(--accent);margin-bottom:0;">Captaci&oacute;n</h4>
-        </div>
-        <ul>
-          <li>Roadshows en mercados municipales y ferias comerciales.</li>
-          <li>Programa de referidos: <strong>1 mes gratis</strong> por cada amigo que se suscriba.</li>
-          <li>Prueba gratuita 14 d&iacute;as sin necesidad de tarjeta de cr&eacute;dito.</li>
-          <li>Aliados estrat&eacute;gicos: C&aacute;maras de comercio y asociaciones de microempresarios.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <div class="flex gap-3 items-center mb-2">
-          <div class="icon-circle" style="background:rgba(34,197,94,0.12);color:var(--success);">&#x1F91D;</div>
-          <h4 style="color:var(--success);margin-bottom:0;">Fidelizaci&oacute;n</h4>
-        </div>
-        <ul>
-          <li>Soporte v&iacute;a WhatsApp con respuesta <strong>&lt;30 min</strong> en horario comercial.</li>
-          <li>Reportes semanales personalizados con indicadores clave del negocio.</li>
-          <li>Descuentos por pago anual: <strong>2 meses gratis</strong>.</li>
-          <li>Comunidad de usuarios en Telegram para feedback continuo y soporte entre pares.</li>
-        </ul>
-      </div>
-    </div>
-    <div class="grid-2" style="grid-template-columns:1fr 1fr;gap:14px;">
-      <div class="card">
-        <div class="flex gap-3 items-center mb-2">
-          <div class="icon-circle" style="background:rgba(59,130,246,0.12);color:var(--info);">&#x1F4E6;</div>
-          <h4 style="color:var(--info);margin-bottom:0;">Canales de venta</h4>
-        </div>
-        <ul>
-          <li><strong>Venta directa:</strong> fuerza comercial en terreno visitando comercios.</li>
-          <li><strong>Play Store:</strong> versi&oacute;n freemium con upgrade in-app.</li>
-          <li><strong>Web:</strong> suscripci&oacute;n autogestionada con pago via pago m&oacute;vil.</li>
-          <li><strong>Distribuidores:</strong> tiendas de tecnolog&iacute;a locales como punto de activaci&oacute;n.</li>
-        </ul>
-      </div>
-      <div class="card">
-        <div class="flex gap-3 items-center mb-2">
-          <div class="icon-circle" style="background:rgba(167,139,250,0.12);color:var(--purple);">&#x1F3AF;</div>
-          <h4 style="color:var(--purple);margin-bottom:0;">Posicionamiento</h4>
-        </div>
-        <ul>
-          <li><em>"Tu negocio, siempre contigo. Sin internet, sin excusas."</em></li>
-          <li>Marca cercana, confiable, <strong>hecha en Venezuela</strong> para venezolanos.</li>
-          <li>&Eacute;nfasis en ahorro de tiempo y reducci&oacute;n de p&eacute;rdidas por errores manuales.</li>
-          <li>Storytelling centrado en el emprendedor local que lucha d&iacute;a a d&iacute;a.</li>
-        </ul>
-      </div>
-    </div>
-  </div>
+  <div style="position:absolute;top:15%;right:-30px;width:140px;height:140px;border:1px solid rgba(59,130,246,0.08);border-radius:50%;pointer-events:none;"></div>
+  <h2 style="font-size:24px;">Estrategias de Mercado</h2>
+  <table>
+    <tr><th style="width:15%;">Estrategia</th><th>¿Cómo lo haremos?</th></tr>
+    <tr>
+      <td style="color:var(--accent);font-weight:600;">Captación</td>
+      <td>Beta privada, ventas consultivas, redes sociales y marketing digital.</td>
+    </tr>
+    <tr>
+      <td style="color:var(--accent);font-weight:600;">Fidelización</td>
+      <td>Actualizaciones constantes, soporte técnico y mejoras basadas en datos del cliente.</td>
+    </tr>
+    <tr>
+      <td style="color:var(--accent);font-weight:600;">Canales de venta</td>
+      <td>Página web, ventas online, LinkedIn y alianzas con consultores de e-commerce.</td>
+    </tr>
+    <tr>
+      <td style="color:var(--accent);font-weight:600;">Posicionamiento</td>
+      <td><em>"Convierte datos complejos en decisiones inteligentes para vender más."</em></td>
+    </tr>
+  </table>
   <hr class="divider">
-  <div class="flex gap-2 flex-wrap" style="justify-content:center;">
-    <div class="stat-pill"><strong>KPI captaci&oacute;n:</strong> CAC &lt; $10 por cliente de pago</div>
-    <div class="stat-pill"><strong>KPI fidelizaci&oacute;n:</strong> Churn &lt; 5% mensual</div>
-    <div class="stat-pill"><strong>KPI canales:</strong> 40% de adquisiciones v&iacute;a referidos</div>
+  <div class="grid-2">
+    <div class="card" style="text-align:center;padding:14px;">
+      <p style="font-size:12px;color:var(--text-secondary);"><strong>Fase 1:</strong> Captar pocos clientes para <span class="highlight">validar el producto</span>.</p>
+    </div>
+    <div class="card" style="text-align:center;padding:14px;">
+      <p style="font-size:12px;color:var(--text-secondary);"><strong>Fase 2:</strong> Automatizar y escalar mediante <span class="highlight">marketing digital</span> y alianzas.</p>
+    </div>
   </div>
 </div>
 
+<!-- 8. MODELO DE MONETIZACIÓN -->
 <div class="slide" data-index="7">
-  <div style="position:absolute;top:30%;left:-50px;width:180px;height:180px;border:1px solid rgba(252,215,3,0.05);border-radius:50%;pointer-events:none;"></div>
-  <h2>Modelo de Monetizaci&oacute;n</h2>
+  <h2 style="font-size:24px;">Modelo de Monetización</h2>
   <div style="display:grid;grid-template-columns:1.2fr 1fr;gap:20px;">
     <div>
       <table>
-        <tr><th style="width:30%;">Plan</th><th style="width:15%;">Precio</th><th>Funcionalidades</th></tr>
+        <tr><th style="width:25%;">Plan</th><th style="width:15%;">Precio</th><th>Incluye</th></tr>
         <tr>
-          <td style="font-weight:700;color:var(--text-main);">Freemium</td>
-          <td><span class="highlight">Gratis</span></td>
-          <td>Inventario hasta 50 productos, ventas diarias, dashboard b&aacute;sico.</td>
+          <td style="font-weight:700;color:var(--text-main);">Básico</td>
+          <td><span class="highlight">$50 USD/mes</span></td>
+          <td>Dashboard, KPIs, Diagnóstico estratégico, Plan de acción.</td>
         </tr>
         <tr>
-          <td style="font-weight:700;color:var(--text-main);">B&aacute;sico</td>
-          <td><span class="highlight">$5/mes</span></td>
-          <td>Inventario ilimitado, ventas, control de caja, reportes semanales.</td>
+          <td style="font-weight:700;color:var(--text-main);">Premium</td>
+          <td><span class="highlight">$80 USD/mes</span></td>
+          <td>+ Auditorías profundas, descarga de reportes, diagnóstico por producto.</td>
         </tr>
-        <tr>
-          <td style="font-weight:700;color:var(--text-main);">Pro</td>
-          <td><span class="highlight">$15/mes</span></td>
-          <td>+ Facturaci&oacute;n electr&oacute;nica SENIAT, reportes avanzados, m&uacute;ltiples usuarios.</td>
-        </tr>
-        <tr>
-          <td style="font-weight:700;color:var(--text-main);">Enterprise</td>
-          <td><span class="highlight">$30/mes</span></td>
-          <td>+ Multi-sucursal, API p&uacute;blica, soporte prioritario 24/7, datos ilimitados.</td>
-        </tr>
+      </table>
+      <hr class="divider">
+      <table>
+        <tr><th style="width:30%;">Año</th><th style="text-align:right;">Ingresos estimados</th></tr>
+        <tr><td>Año 1</td><td style="text-align:right;font-weight:600;color:var(--text-main);">$13.200</td></tr>
+        <tr><td>Año 3</td><td style="text-align:right;font-weight:600;color:var(--text-main);">$117.000</td></tr>
+        <tr><td>Año 5</td><td style="text-align:right;font-weight:600;color:var(--text-main);">$585.000</td></tr>
       </table>
     </div>
     <div style="display:flex;flex-direction:column;gap:14px;">
       <div class="card">
-        <div class="flex gap-3 items-center mb-2">
-          <div class="icon-circle" style="background:var(--accent-glow);color:var(--accent);">&#x1F4B0;</div>
-          <h4 style="color:var(--accent);margin-bottom:0;">Proyecci&oacute;n de ingresos</h4>
-        </div>
-        <div class="pct-label"><span>A&ntilde;o 1</span><span style="color:var(--text-main);font-weight:700;">$18,000</span></div>
-        <div class="bar-track"><div class="bar-fill bar-accent" style="width:4%;"></div></div>
-        <div class="pct-label mt-2"><span>A&ntilde;o 2</span><span style="color:var(--text-main);font-weight:700;">$90,000</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:12%;background:linear-gradient(90deg,#eab308,#fcd703);"></div></div>
-        <div class="pct-label mt-2"><span>A&ntilde;o 3</span><span style="color:var(--text-main);font-weight:700;">$270,000</span></div>
-        <div class="bar-track"><div class="bar-fill bar-info" style="width:18%;"></div></div>
-        <div class="pct-label mt-2"><span>A&ntilde;o 5</span><span style="color:var(--text-main);font-weight:700;">$1,500,000</span></div>
+        <h4 style="color:var(--accent);">Proyección de ingresos</h4>
+        <div class="pct-label"><span>Año 1</span><span style="color:var(--text-main);font-weight:700;">$13.200</span></div>
+        <div class="bar-track"><div class="bar-fill bar-accent" style="width:2%;"></div></div>
+        <div class="pct-label mt-2"><span>Año 2</span><span style="color:var(--text-main);font-weight:700;">$39.000</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:7%;background:linear-gradient(90deg,#eab308,#fcd703);"></div></div>
+        <div class="pct-label mt-2"><span>Año 3</span><span style="color:var(--text-main);font-weight:700;">$117.000</span></div>
+        <div class="bar-track"><div class="bar-fill bar-info" style="width:20%;"></div></div>
+        <div class="pct-label mt-2"><span>Año 5</span><span style="color:var(--text-main);font-weight:700;">$585.000</span></div>
         <div class="bar-track"><div class="bar-fill bar-success" style="width:100%;"></div></div>
       </div>
-      <div class="flex gap-2 flex-wrap">
-        <div class="stat-pill">&#x1F504; Churn a&ntilde;o 1: <strong>5%</strong> mensual</div>
-        <div class="stat-pill">&#x1F4C9; Mix esperado: <strong>40%</strong> freemium / <strong>60%</strong> pago</div>
-        <div class="stat-pill">&#x1F4B5; Ticket promedio: <strong>$12</strong>/mes</div>
-        <div class="stat-pill">&#x1F4C8; ARPU a&ntilde;o 1: <strong>$10</strong>/mes</div>
+      <div class="card" style="text-align:center;padding:14px;">
+        <p style="font-size:12px;color:var(--text-muted);">Modelo: <strong style="color:var(--text-main);">Suscripción mensual (SaaS)</strong></p>
       </div>
     </div>
   </div>
 </div>
 
+<!-- 9. INVERSIÓN Y PRESUPUESTO -->
 <div class="slide" data-index="8">
-  <h2>Inversi&oacute;n y Presupuesto</h2>
+  <h2 style="font-size:24px;">Inversión y Presupuesto</h2>
   <div style="display:grid;grid-template-columns:1.3fr 1fr;gap:20px;">
     <div>
       <div class="flex gap-3 items-center flex-wrap" style="margin-bottom:14px;">
-        <div><div class="num-lg">$35,000</div><div class="num-label">Monto solicitado</div></div>
+        <div><div class="num-lg">$30,000</div><div class="num-label">Inversión solicitada</div></div>
         <div style="width:1px;height:36px;background:rgba(255,255,255,0.06);"></div>
-        <div><div class="num-lg" style="font-size:22px;color:var(--success);">320%</div><div class="num-label">ROI estimado 3 a&ntilde;os</div></div>
+        <div><div class="num-lg" style="font-size:22px;color:var(--success);">290%</div><div class="num-label">ROI estimado 3 años</div></div>
         <div style="width:1px;height:36px;background:rgba(255,255,255,0.06);"></div>
-        <div><div class="num-lg" style="font-size:22px;color:var(--info);">Mes 14</div><div class="num-label">Punto de equilibrio</div></div>
-        <div style="width:1px;height:36px;background:rgba(255,255,255,0.06);"></div>
-        <div><div class="num-lg" style="font-size:22px;color:var(--purple);">$1.5M</div><div class="num-label">GMV a&ntilde;o 5</div></div>
+        <div><div class="num-lg" style="font-size:22px;color:var(--info);">Mes 20</div><div class="num-label">Punto de equilibrio</div></div>
       </div>
       <table>
         <tr><th>Concepto</th><th style="text-align:right;">Monto</th><th style="text-align:right;">%</th></tr>
-        <tr><td>&#x1F4BB; Desarrollo t&eacute;cnico (MVP + v2.0)</td><td style="text-align:right;font-weight:600;color:var(--text-main);">$14,000</td><td style="text-align:right;">40%</td></tr>
-        <tr><td>&#x1F4F0; Marketing y captaci&oacute;n inicial</td><td style="text-align:right;font-weight:600;color:var(--text-main);">$8,000</td><td style="text-align:right;">23%</td></tr>
-        <tr><td>&#x2601;&#xFE0F; Infraestructura cloud (2 a&ntilde;os)</td><td style="text-align:right;font-weight:600;color:var(--text-main);">$5,000</td><td style="text-align:right;">14%</td></tr>
-        <tr><td>&#x2696;&#xFE0F; Gastos legales + registro LOCTI</td><td style="text-align:right;font-weight:600;color:var(--text-main);">$3,000</td><td style="text-align:right;">9%</td></tr>
-        <tr><td>&#x1F6E1;&#xFE0F; Fondo de contingencia (25% extra)</td><td style="text-align:right;font-weight:600;color:var(--text-main);">$5,000</td><td style="text-align:right;">14%</td></tr>
-        <tr style="border-top:2px solid var(--accent);"><td style="font-weight:800;color:var(--accent);">Total</td><td style="text-align:right;font-weight:800;color:var(--accent);">$35,000</td><td style="text-align:right;font-weight:800;color:var(--accent);">100%</td></tr>
+        <tr><td>&#x1F4BB; Desarrollo técnico</td><td style="text-align:right;font-weight:600;color:var(--text-main);">$12,000</td><td style="text-align:right;">40%</td></tr>
+        <tr><td>&#x1F4F0; Marketing</td><td style="text-align:right;font-weight:600;color:var(--text-main);">$6,000</td><td style="text-align:right;">20%</td></tr>
+        <tr><td>&#x2601;&#xFE0F; Infraestructura AWS</td><td style="text-align:right;font-weight:600;color:var(--text-main);">$5,000</td><td style="text-align:right;">17%</td></tr>
+        <tr><td>&#x2696;&#xFE0F; Aspectos legales</td><td style="text-align:right;font-weight:600;color:var(--text-main);">$2,000</td><td style="text-align:right;">7%</td></tr>
+        <tr><td>&#x1F6E1;&#xFE0F; Fondo de contingencia</td><td style="text-align:right;font-weight:600;color:var(--text-main);">$5,000</td><td style="text-align:right;">16%</td></tr>
+        <tr style="border-top:2px solid var(--accent);"><td style="font-weight:800;color:var(--accent);">TOTAL</td><td style="text-align:right;font-weight:800;color:var(--accent);">$30,000</td><td style="text-align:right;font-weight:800;color:var(--accent);">100%</td></tr>
       </table>
     </div>
     <div style="display:flex;flex-direction:column;gap:12px;">
       <div class="card">
-        <h4 style="color:var(--accent);">Distribuci&oacute;n del presupuesto</h4>
-        <div class="pct-label"><span>&#x1F4BB; Desarrollo</span><span>40%</span></div>
+        <h4 style="color:var(--accent);">Distribución del presupuesto</h4>
+        <div class="pct-label"><span>&#x1F4BB; Desarrollo técnico</span><span>40%</span></div>
         <div class="bar-track"><div class="bar-fill bar-accent" style="width:40%;"></div></div>
-        <div class="pct-label mt-2"><span>&#x1F4F0; Marketing</span><span>23%</span></div>
-        <div class="bar-track"><div class="bar-fill bar-info" style="width:23%;"></div></div>
-        <div class="pct-label mt-2"><span>&#x2601;&#xFE0F; Infraestructura</span><span>14%</span></div>
-        <div class="bar-track"><div class="bar-fill bar-success" style="width:14%;"></div></div>
-        <div class="pct-label mt-2"><span>&#x2696;&#xFE0F; Legales</span><span>9%</span></div>
-        <div class="bar-track"><div class="bar-fill bar-purple" style="width:9%;"></div></div>
-        <div class="pct-label mt-2"><span>&#x1F6E1;&#xFE0F; Contingencia</span><span>14%</span></div>
-        <div class="bar-track"><div class="bar-fill" style="width:14%;background:linear-gradient(90deg,var(--danger),#f87171);"></div></div>
-      </div>
-      <div class="card" style="text-align:center;padding:14px;">
-        <p style="font-size:12px;color:var(--text-muted);">&#x1F6A8; Fondo de contingencia cr&iacute;tico en Venezuela: cambios de d&oacute;lar, cortes el&eacute;ctricos, ajustes regulatorios.</p>
-      </div>
-      <div class="card" style="text-align:center;padding:12px;">
-        <p style="font-size:11px;color:var(--text-secondary);"><strong>Uso de fondos mes a mes:</strong> Mes 1-3: Desarrollo MVP ($10K) | Mes 4-6: Marketing + despliegue ($8K) | Mes 7-12: v2.0 + operaciones ($12K) | Contingencia: $5K</p>
+        <div class="pct-label mt-2"><span>&#x1F4F0; Marketing</span><span>20%</span></div>
+        <div class="bar-track"><div class="bar-fill bar-info" style="width:20%;"></div></div>
+        <div class="pct-label mt-2"><span>&#x2601;&#xFE0F; Infraestructura AWS</span><span>17%</span></div>
+        <div class="bar-track"><div class="bar-fill bar-success" style="width:17%;"></div></div>
+        <div class="pct-label mt-2"><span>&#x2696;&#xFE0F; Aspectos legales</span><span>7%</span></div>
+        <div class="bar-track"><div class="bar-fill bar-purple" style="width:7%;"></div></div>
+        <div class="pct-label mt-2"><span>&#x1F6E1;&#xFE0F; Contingencia</span><span>16%</span></div>
+        <div class="bar-track"><div class="bar-fill" style="width:16%;background:linear-gradient(90deg,var(--danger),#f87171);"></div></div>
       </div>
     </div>
   </div>
 </div>
 
+<!-- 10. HOJA DE RUTA -->
 <div class="slide" data-index="9">
   <div style="position:absolute;top:10%;right:-30px;width:120px;height:120px;border:1px solid rgba(252,215,3,0.06);border-radius:50%;pointer-events:none;"></div>
-  <h2>Hoja de Ruta</h2>
-  <div style="display:grid;grid-template-columns:1.5fr 1fr;gap:20px;">
-    <div class="tl">
-      <div class="tl-item">
-        <span class="tl-month">Mes 1-3</span>
-        <span class="tl-desc"><strong>Lanzamiento MVP</strong> &mdash; inventario + ventas offline + 10 clientes piloto</span>
-        <span class="tl-tag">T&eacute;cnico</span>
-      </div>
-      <div class="tl-item">
-        <span class="tl-month">Mes 4-6</span>
-        <span class="tl-desc"><strong>Captaci&oacute;n inicial</strong> &mdash; 500 clientes en Caracas, Miranda, Zulia</span>
-        <span class="tl-tag">Comercial</span>
-      </div>
-      <div class="tl-item">
-        <span class="tl-month">Mes 7-9</span>
-        <span class="tl-desc"><strong>Versi&oacute;n 2.0</strong> &mdash; facturaci&oacute;n electr&oacute;nica + reportes avanzados</span>
-        <span class="tl-tag">T&eacute;cnico</span>
-      </div>
-      <div class="tl-item">
-        <span class="tl-month">Mes 10-13</span>
-        <span class="tl-desc"><strong>Escalamiento</strong> &mdash; 2,000 clientes, optimizaci&oacute;n de infraestructura</span>
-        <span class="tl-tag">Empresa</span>
-      </div>
-      <div class="tl-item">
-        <span class="tl-month">Mes 14</span>
-        <span class="tl-desc"><strong>Punto de equilibrio</strong> operativo alcanzado</span>
-        <span class="tl-tag">Empresa</span>
-      </div>
-      <div class="tl-item">
-        <span class="tl-month">Mes 18-24</span>
-        <span class="tl-desc"><strong>Expansi&oacute;n internacional</strong> &mdash; Colombia + apps nativas iOS/Android</span>
-        <span class="tl-tag">Negocio</span>
-      </div>
+  <h2 style="font-size:24px;">Hoja de Ruta</h2>
+  <div class="tl">
+    <div class="tl-item">
+      <span class="tl-month">Meses 1&ndash;5</span>
+      <span class="tl-desc"><strong>Desarrollo del MVP</strong></span>
+      <span class="tl-tag">Equipo Técnico</span>
     </div>
-    <div style="display:flex;flex-direction:column;gap:10px;">
-      <div class="card">
-        <div class="flex gap-3 items-center mb-2">
-          <div class="icon-circle" style="background:var(--accent-glow);color:var(--accent);">&#x1F3C6;</div>
-          <h4 style="color:var(--accent);margin-bottom:0;">Factores clave de &eacute;xito</h4>
-        </div>
-        <ul>
-          <li>MVP funcional en <strong>3 meses</strong> con funcionalidades core s&oacute;lidas.</li>
-          <li>Feedback temprano de <strong>10 clientes piloto</strong> desde el mes 1.</li>
-          <li>Iteraciones r&aacute;pidas basadas en <strong>datos de uso reales</strong> y encuestas.</li>
-          <li>Expansi&oacute;n internacional solo despu&eacute;s de <strong>validaci&oacute;n local</strong> s&oacute;lida.</li>
-        </ul>
-      </div>
-      <div class="card" style="display:flex;flex-direction:column;gap:6px;padding:14px 20px;">
-        <div class="flex-between" style="font-size:12px;color:var(--text-secondary);">
-          <span>&#x1F4C5; Inicio: Julio 2026</span>
-          <span>&#x1F3C1; Meta: Mes 14 equilibrio</span>
-          <span>&#x1F4C8; Hitos: 6 en 24 meses</span>
-        </div>
-      </div>
+    <div class="tl-item">
+      <span class="tl-month">Meses 6&ndash;10</span>
+      <span class="tl-desc"><strong>Motor de diagnóstico</strong> &mdash; Algoritmos de análisis de datos</span>
+      <span class="tl-tag">Data Analyst</span>
+    </div>
+    <div class="tl-item">
+      <span class="tl-month">Meses 11&ndash;15</span>
+      <span class="tl-desc"><strong>Dashboard React</strong> &mdash; Frontend de visualización</span>
+      <span class="tl-tag">Frontend</span>
+    </div>
+    <div class="tl-item">
+      <span class="tl-month">Meses 16&ndash;18</span>
+      <span class="tl-desc"><strong>Validación con clientes</strong> &mdash; Pruebas y feedback</span>
+      <span class="tl-tag">Todo el equipo</span>
+    </div>
+    <div class="tl-item">
+      <span class="tl-month">Final Año 1</span>
+      <span class="tl-desc"><strong>Primeros clientes pagos</strong> &mdash; Lanzamiento comercial</span>
+      <span class="tl-tag">Equipo Comercial</span>
+    </div>
+    <div class="tl-item">
+      <span class="tl-month">Año 2</span>
+      <span class="tl-desc"><strong>Versión Premium</strong> &mdash; Nuevas funcionalidades</span>
+      <span class="tl-tag">Desarrollo</span>
+    </div>
+    <div class="tl-item">
+      <span class="tl-month">Año 2</span>
+      <span class="tl-desc"><strong>Punto de equilibrio</strong> &mdash; Sostenibilidad financiera</span>
+      <span class="tl-tag">Toda la empresa</span>
+    </div>
+    <div class="tl-item">
+      <span class="tl-month">Años 4&ndash;5</span>
+      <span class="tl-desc"><strong>Expansión internacional</strong> &mdash; Nuevos mercados</span>
+      <span class="tl-tag">Dirección</span>
     </div>
   </div>
 </div>
 
+<!-- 11. CONCLUSIONES Y CIERRE -->
 <div class="slide" data-index="10" style="padding:0;">
   <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;height:100%;padding:44px 64px;text-align:center;position:relative;">
     <div style="position:absolute;top:-100px;right:-100px;width:400px;height:400px;border:1px solid rgba(252,215,3,0.04);border-radius:50%;pointer-events:none;"></div>
@@ -660,25 +516,23 @@
     <h2 style="margin-bottom:16px;">Conclusiones</h2>
     <div class="close-text" style="max-width:620px;">
       <img src="assets/images/DiME_Logo_Inverso.png" alt="DiME" style="height:36px;width:auto;margin-bottom:10px;opacity:0.8;">
-      <p style="font-size:16px;">DiME es una plataforma construida <strong>para Venezuela y desde Venezuela</strong>, pensando en las condiciones reales del pa&iacute;s.</p>
-      <p style="margin-top:14px;font-weight:600;color:var(--text-main);font-size:14px;">Hemos demostrado:</p>
-      <div class="flex gap-2 flex-wrap" style="justify-content:center;margin:10px 0;">
-        <div class="stat-pill" style="background:var(--accent-glow);border-color:rgba(252,215,3,0.2);padding:6px 14px;"><strong>Problema real</strong> +2.5M afectados</div>
-        <div class="stat-pill" style="background:rgba(34,197,94,0.08);border-color:rgba(34,197,94,0.2);padding:6px 14px;"><strong>Soluci&oacute;n</strong> offline-first</div>
-        <div class="stat-pill" style="background:rgba(59,130,246,0.08);border-color:rgba(59,130,246,0.2);padding:6px 14px;"><strong>Mercado</strong> 15K clientes en 5 a&ntilde;os</div>
-        <div class="stat-pill" style="background:rgba(167,139,250,0.08);border-color:rgba(167,139,250,0.2);padding:6px 14px;"><strong>ROI</strong> 320% en 3 a&ntilde;os</div>
-        <div class="stat-pill" style="background:rgba(245,158,11,0.08);border-color:rgba(245,158,11,0.2);padding:6px 14px;"><strong>Inversi&oacute;n</strong> $35,000 solicitados</div>
+      <div class="card" style="margin-bottom:14px;text-align:left;">
+        <ul>
+          <li>DiME resuelve un <span class="highlight">problema real</span> que afecta a miles de vendedores de Mercado Libre.</li>
+          <li>Automatiza un proceso actualmente <span class="highlight">costoso y manual</span> (consultoría).</li>
+          <li>Modelo <span class="highlight">SaaS escalable</span> basado en ingresos recurrentes.</li>
+          <li>Proyección financiera <span class="highlight">realista</span> para Chile y Venezuela.</li>
+          <li>Crecimiento sustentado en una estrategia de <span class="highlight">expansión gradual</span>.</li>
+        </ul>
       </div>
-      <p style="font-size:14px;margin-top:6px;">Proyecto <strong>viable</strong> con plan claro de mercado, ingresos y sostenibilidad financiera.</p>
       <hr class="divider" style="max-width:300px;margin:14px auto;">
-      <p style="font-size:13px;color:var(--text-muted);"><strong>Pr&oacute;ximos pasos:</strong> Validaci&oacute;n con 10 clientes piloto &middot; Registro LOCTI &middot; Desarrollo MVP &middot; Lanzamiento Julio 2026</p>
-      <p class="close-cta" style="font-size:24px;margin-top:12px;">Tu negocio, siempre contigo.</p>
+      <p style="font-size:14px;font-style:italic;color:var(--text-secondary);">"En DiME no solo analizamos datos; convertimos la información en decisiones que impulsan el crecimiento de los negocios."</p>
+      <p class="close-cta" style="font-size:24px;margin-top:12px;">Convierte datos en decisiones inteligentes.</p>
     </div>
   </div>
 </div>
 
 </div>
-
 
 <div class="nav" id="navDots"></div>
 
